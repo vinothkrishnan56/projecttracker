@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ProcessIQ — Workforce KPI Platform</title>
+<title>ProcessIQ — Maintenance KPI Platform v8</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -173,15 +173,67 @@ tr:hover td{background:#F7F5FA;color:#302A3D}
 #err{background:#D94B68;color:#fff}
 
 </style><!-- Dashboard build: embedded workbook data. Uploaded HTML has 880 physical lines; line 1301 is not present in this source. -->
+<style id="qc-style">
+.qcdd{position:relative;display:inline-block}
+.qcbtn{padding:9px 16px;border-radius:12px;font-size:12.5px;font-weight:600;color:#6E687A;white-space:nowrap;transition:.18s}
+.qcbtn.on{background:linear-gradient(135deg,#5B2C91,#7650A3);color:#fff}
+.qcmenu{position:fixed;z-index:9999;background:#fff;border:1px solid #E3DEEC;border-radius:14px;box-shadow:0 12px 32px rgba(40,20,70,.18);padding:6px;min-width:290px;display:none}
+.qcmenu button{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:9px;font-size:12.5px;font-weight:600;color:#2B2240}
+.qcmenu button:hover,.qcmenu button.on{background:#F1EAFA;color:#5B2C91}
+.qcmenu hr{border:0;border-top:1px solid #EEE9F5;margin:4px 0}
+#qcTabSel{display:none;padding:9px 12px;border-radius:12px;border:1px solid #E3DEEC;background:#fff;font-size:12.5px;font-weight:600;color:#2B2240;min-width:240px}
+#v-qc{color:#2B2240}
+#v-qc h2{font:700 20px 'Space Grotesk',sans-serif;color:#4B2378}
+#v-qc h3{font:600 14px 'Space Grotesk',sans-serif;color:#4B2378;margin-bottom:8px}
+#v-qc .qp{font-size:12.5px;color:#6E687A;margin:4px 0 12px}
+#v-qc .qbar{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin:10px 0}
+#v-qc .qbar label{display:block;font-size:10.5px;font-weight:600;color:#6E687A;margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em}
+#v-qc input,#v-qc select{border:1px solid #E3DEEC;border-radius:8px;padding:6px 8px;font-size:12px;background:#fff;color:#2B2240}
+#v-qc .qb{padding:7px 13px;border-radius:10px;font-size:12px;font-weight:600;background:#5B2C91;color:#fff}
+#v-qc .qb.g{background:#fff;color:#5B2C91;border:1px solid #D9CCEC}
+#v-qc .qb.d{background:#fff;color:#C0392B;border:1px solid #F0C4BE;padding:4px 8px}
+#v-qc .qk{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+#v-qc .qk div{background:#FAF9FC;border:1px solid #EEE9F5;border-radius:12px;padding:10px 12px}
+#v-qc .qk b{display:block;font:700 20px 'Space Grotesk',sans-serif;color:#5B2C91}
+#v-qc .qk span{font-size:11px;color:#6E687A}
+#v-qc .qg{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:14px;margin-top:12px}
+#v-qc .qc{height:280px;position:relative}
+#v-qc .qs{overflow:auto;max-height:340px;border:1px solid #EEE9F5;border-radius:12px}
+#v-qc table{border-collapse:collapse;width:100%;font-size:12px}
+#v-qc th{background:#F5F0FB;color:#4B2378;font-weight:600;text-align:left;padding:6px 8px;position:sticky;top:0;white-space:nowrap}
+#v-qc td{padding:3px 4px;border-top:1px solid #F0ECF6}
+#v-qc .qgd input,#v-qc .qgd select{width:100%;min-width:84px}
+#v-qc .qgd input[type=checkbox]{width:auto;min-width:0}
+#v-qc .qa{padding:8px 12px;border-radius:10px;font-size:12px;margin:6px 0;background:#FFF4E5;border:1px solid #FFD9A0}
+#v-qc .qa.r{background:#FDECEA;border-color:#F5B7B1}#v-qc .qa.ok{background:#EAF7EF;border-color:#B7E4C7}
+#v-qc .qsvg{overflow:auto;border:1px solid #EEE9F5;border-radius:12px;background:#fff}
+#v-qc .qn{font-size:11.5px;color:#6E687A;margin-top:6px}
+#kpiHead{grid-area:kpis;margin-bottom:6px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding:0 2px 6px}
+#kpiHead .hc{background:linear-gradient(135deg,#fff,#F6EEFB);border:1px solid #E3D3F0;border-radius:14px;padding:10px 12px;cursor:pointer;transition:.15s}
+#kpiHead .hc:hover,#kpiHead .hc.on{border-color:#5B2C91;box-shadow:0 4px 14px rgba(91,44,145,.18)}
+#kpiHead .hc b{display:block;font:700 22px 'Space Grotesk',sans-serif;color:#7B2D8E}#kpiHead .hc span{font-size:11px;color:#6E687A;font-weight:600}#kpiHead .hc i{display:block;font-style:normal;font-size:10px;color:#8A82A0}
+#v-kpi{color:#2B2240}#v-kpi h2{font:700 20px 'Space Grotesk',sans-serif;color:#4B2378;margin:0}#v-kpi .kd{color:#6E687A;font-size:12.5px;margin:3px 0 8px}
+#v-kpi .kf{background:#F6EEFB;border-left:4px solid #7B2D8E;padding:8px 12px;border-radius:8px;font-size:12px;margin:8px 0}
+#v-kpi .kb{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin:10px 0}#v-kpi .kb label{display:block;font-size:10.5px;font-weight:700;color:#6E687A;text-transform:uppercase;margin-bottom:2px}
+#v-kpi select,#v-kpi input{border:1px solid #D9D2E6;border-radius:8px;padding:6px 8px;font-size:12px;background:#fff;color:#2B2240}
+#v-kpi .kbtn{padding:7px 13px;border-radius:10px;font-size:12px;font-weight:600;background:#5B2C91;color:#fff}#v-kpi .kbtn.g{background:#fff;color:#5B2C91;border:1px solid #D9CCEC}
+#v-kpi .kk{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:8px 0}#v-kpi .kk div{background:#C2609F;color:#fff;border-radius:14px;padding:12px 14px}#v-kpi .kk b{display:block;font:700 24px 'Space Grotesk',sans-serif}#v-kpi .kk span{font-size:11px;opacity:.9}
+#v-kpi .km{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}#v-kpi .kc{background:#fff;border:1px solid #EEE9F5;border-radius:12px;padding:8px}#v-kpi .kc h4{margin:0 0 4px;font-size:12.5px;text-align:center;color:#4B2378}#v-kpi .kh{height:190px;position:relative}
+#v-kpi .kx{background:#fff;border:1px solid #E3DEEC;border-radius:14px;padding:12px;margin-top:12px}#v-kpi .kx h3{font:600 14px 'Space Grotesk',sans-serif;color:#4B2378;margin:0 0 8px}
+#v-kpi .kt{overflow:auto;max-height:380px;border:1px solid #EEE9F5;border-radius:10px}#v-kpi table{border-collapse:collapse;width:100%;font-size:12px}#v-kpi th{background:#F1EAFA;color:#4B2378;text-align:left;padding:6px 8px;position:sticky;top:0;white-space:nowrap}#v-kpi td{padding:5px 8px;border-top:1px solid #F0ECF6}
+#v-kpi .ok{color:#1E8E3E;font-weight:700}#v-kpi .bad{color:#C0392B;font-weight:700}#v-kpi .na{color:#8A82A0}
+#v-kpi .vcs{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px}#v-kpi .vc{border-radius:40px 40px 10px 10px;padding:14px 8px 0;text-align:center;background:#E6E3EA;font-size:12px}#v-kpi .vc u{font-size:11px;font-weight:700;color:#4B2378}#v-kpi .vc div{margin:6px 0}#v-kpi .vc em{display:block;color:#fff;font-style:normal;font-weight:700;padding:6px;border-radius:0 0 8px 8px;margin:8px -8px 0}
+#v-kpi .kg td input{width:78px}#v-kpi .yts{padding:22px;text-align:center;color:#8A82A0;font-weight:600}
+</style>
 </head><body>
 <div id="err"></div><div class="veil" id="veil"><div class="spin"></div><span>INITIALIZING PROCESSIQ…</span></div><div id="busy"></div>
 <div class="trace-wrap"><svg viewBox="0 0 1400 120" preserveAspectRatio="none"><defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#00D4AA" stop-opacity="0"/><stop offset="50%" stop-color="#00D4AA"/><stop offset="100%" stop-color="#00A3FF" stop-opacity="0"/></linearGradient></defs><path class="trace-line" d="M0,60 L100,60 L120,20 L140,100 L160,60 L300,60 L320,30 L340,90 L360,60 L500,60 L520,15 L540,105 L560,60 L700,60 L720,25 L740,95 L760,60 L900,60 L920,20 L940,100 L960,60 L1100,60 L1120,30 L1140,90 L1160,60 L1400,60"/></svg></div>
 
 <div class="shell">
-<header class="top glass"><div class="brand"><div class="mark">PQ</div><div><h1>ProcessIQ Workforce KPI Platform</h1><span>Workflow · Region · Employee performance — Excel-driven</span></div></div>
+<header class="top glass"><div class="brand"><div class="mark">PQ</div><div><h1>ProcessIQ Maintenance System KPI Platform</h1><span>Maintenance System KPIs · Materials &amp; Reliability · Quality · Productivity · OTD · Value · Utilization · Standardization</span></div></div>
 <div class="acts"><div class="search"><span style="opacity:.5">⌕</span><input id="q" placeholder="Search employee, ID, team…"></div>
 <button class="ibtn" id="bUpI" title="Upload Excel">⇪</button><button class="ibtn" id="bRef" title="Refresh">↻</button>
-<button class="pill ghost" id="bTpl">⇩ Master Excel Template</button><button class="pill" id="bDemo">⚙ Load Sample Data</button>
+<button class="pill ghost" id="bTpl">⇩ Quick Template</button><button class="pill" id="bDemo">⚙ Load Sample Data</button>
 <button class="pill ghost" id="bPdf">PDF</button><button class="pill ghost" id="bPpt">PPT</button><button class="pill ghost" id="bXls">Excel</button><button class="pill" id="bMail">✉ Email</button><button class="pill ghost" id="bMgrLock" title="Manager Access (Password: maha)">🔒 Manager Locked</button><button class="ibtn" id="bOut" title="Logout">⏻</button></div></header>
 
 <section class="upload"><div class="dz glass" id="dz"><div class="dzl"><div class="dzi">📊</div><div><h3>Upload employee data &amp; performance workbook</h3><p>Drag &amp; drop an .xlsx / .csv, or Browse. Use “Download Template” for the exact format — one row per employee per month with profile details, Band (IA, TO1E, TO2, TO3, TO4), Workflow, Region and all KPI inputs.</p><div class="st" id="st">No file loaded yet. Load sample data to preview, or upload your sheet.</div></div></div>
@@ -192,7 +244,7 @@ tr:hover td{background:#F7F5FA;color:#302A3D}
 <aside class="tree glass"><div class="pt">Department ▸ Workflow ▸ Region</div><div id="deptNav"></div><div id="tree"></div></aside>
 
 <main>
-<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><div class="tabbar glass" id="tabs"><button class="tab on" data-t="dash">Dashboard</button><button class="tab" data-t="lead">Leaderboard</button><button class="tab" data-t="heat">Heat Map</button><button class="tab" data-t="emp">Employee 360</button><button class="tab" data-t="master">Master Matrix</button><button class="tab" data-t="projects">Projects</button><button class="tab" data-t="follow">Follow-up</button><button class="tab" data-t="performance">Project Performance</button><button class="tab" data-t="resources">Resources</button><button class="tab" data-t="revenue">Revenue</button><button class="tab" data-t="escalations">Escalations</button><button class="tab" data-t="management">Management</button></div><div class="bc" id="bc"></div></div>
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><div class="tabbar glass" id="tabs"><button class="tab on" data-t="k:quality">Quality</button><button class="tab" data-t="k:prod">Productivity</button><button class="tab" data-t="k:otd">OTD</button><button class="tab" data-t="k:value">Value Capture</button><button class="tab" data-t="k:util">Utilization</button><button class="tab" data-t="k:std">Standardization</button><button class="tab" data-t="k:acc">Input Accuracy</button><button class="tab" data-t="projects">Projects</button><button class="tab" data-t="follow">Follow-up</button><button class="tab" data-t="performance">Project Performance</button><button class="tab" data-t="resources">Resources</button><button class="tab" data-t="revenue">Revenue</button><button class="tab" data-t="escalations">Escalations</button><button class="tab" data-t="management">Management</button></div><div class="bc" id="bc"></div></div>
 <div class="filters glass"><div><label>Year</label><select id="fYear"></select></div><div><label>Month</label><select id="fMonth"></select></div><div><label>Band</label><select id="fBand"></select></div><div><label>Team</label><select id="fTeam"></select></div><div><label>Employee</label><select id="fEmp"></select></div><div style="align-self:end"><button class="pill ghost" id="bReset" style="width:100%;justify-content:center">Reset</button></div></div>
 <div class="glass" id="tabExportBar" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;flex-wrap:wrap;background:#FAF9FC">
       <div style="font:600 12px 'Space Grotesk',sans-serif;color:#4B2378" id="tabExportLabel">📊 Active Tab Metrics Export (USD Standardized)</div>
@@ -702,9 +754,45 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 //# sourceMappingURL=pptxgen.bundle.js.map
 
 </script>
+<script id="piq-engine">
+/* ProcessIQ calculation engine — every KPI formula lives here (program layer). The dashboard only renders what this returns. */
+window.PIQ=(function(){
+const sum=a=>a.reduce((x,y)=>x+y,0),mean=a=>a.length?sum(a)/a.length:0,pc=(n,d)=>d?n/d*100:0,num=v=>v===''||v==null||isNaN(+v)?null:+v;
+const T={prod:95,otd:95,qual:5,util:85,std:90,csat:90},K=['asg','res','def','esc','ot','tot','val','ha','hu'];
+/* workforce KPIs */
+function agg(r){const a={n:r.length,cs:0};K.forEach(k=>a[k]=0);r.forEach(x=>{K.forEach(k=>a[k]+=x[k]||0);a.cs+=x.csat||0});return a}
+function kv(a,k){switch(k){case'prod':return pc(a.res,a.asg);case'qual':return a.res?Math.max(0,100-a.def/a.res*100):0;case'val':return a.val;case'util':return pc(a.hu,a.ha);case'otd':return pc(a.ot,a.tot);case'csat':return a.n?a.cs/a.n:0;case'def':return a.def;case'esc':return a.esc}return 0}
+/* maintenance-system KPIs (deliverables / recycle / OTD / productivity / standardization) */
+const M={
+ rec:(D,w,i)=>Math.round((num(D.deliv[w][i])||0)*(num(D.recyc[w][i])||0)/100),
+ defect(D,w,i){const d=num(D.deliv[w][i]);return d?M.rec(D,w,i)/d*100:0},
+ sla:(D,w,i)=>D.otd[w]&&num(D.otd[w][i])!=null?num(D.deliv[w][i])*D.otd[w][i]/100:null,
+ otd(D,w,i){const s=M.sla(D,w,i),d=num(D.deliv[w][i]);return s==null||!d?null:s/d*100},
+ prod:(D,w,i)=>num(D.prod[w][i]),
+ std(D,w,q){const v=D.q.std[w].map(x=>x[2][q]);return v.some(x=>x==null)?null:sum(v)},
+ stdv(D,w,q){const c=M.std(D,w,q);return c!=null?c:D.q.std_head[w][q]},
+ series:(D,w,k)=>D.months.map((_,i)=>k==='quality'?M.defect(D,w,i):k==='otd'?M.otd(D,w,i):M.prod(D,w,i)),
+ avg(D,ws,k){const a=[];ws.forEach(w=>M.series(D,w,k).forEach(v=>{if(v!=null)a.push(v)}));return a.length?mean(a):null},
+ ws(D,w){const a=k=>{const v=M.series(D,w,k).filter(x=>x!=null);return v.length?mean(v):null};return{prod:a('prod'),otd:a('otd'),qual:a('quality'),util:mean(D.q.util[w].filter(x=>x!=null)),std:mean([0,1,2].map(i=>M.stdv(D,w,i)).filter(x=>x!=null))}}
+};
+/* trend + 3-month linear forecast */
+function fc(y,n){const p=y.map((v,i)=>[i,v]).filter(a=>a[1]!=null);if(p.length<2)return{b:0,f:[]};const mx=mean(p.map(a=>a[0])),my=mean(p.map(a=>a[1]));let sx=0,sy=0;p.forEach(([x,v])=>{sx+=(x-mx)**2;sy+=(x-mx)*(v-my)});const b=sx?sy/sx:0,a=my-b*mx;return{b,f:Array.from({length:n},(_,j)=>+(a+b*(y.length+j)).toFixed(2))}}
+/* RAG: g/a/r against targets (defect % is lower-is-better) */
+function rag(k,v){if(v==null)return'n';const t=T[k];if(t==null)return'g';return k==='qual'?(v<=t?'g':v<=t*1.5?'a':'r'):(v>=t?'g':v>=t-10?'a':'r')}
+function insights(c){const o=[],D=c.D,sc=c.WS.map(w=>Object.assign({w},M.ws(D,w))).filter(x=>x.prod!=null),f1=v=>v.toFixed(1);
+ const lo=[...sc].sort((a,b)=>a.prod-b.prod)[0];if(lo)o.push({c:rag('prod',lo.prod),m:`Lowest productivity: ${lo.w} at ${f1(lo.prod)}% (${f1(lo.prod-T.prod)} pt vs ${T.prod}% target)`,o:['ws',lo.w]});
+ const dq=[...sc].sort((a,b)=>b.qual-a.qual)[0];if(dq)o.push({c:rag('qual',dq.qual),m:`Highest recycle/defect rate: ${dq.w} at ${f1(dq.qual)}% (target <${T.qual}%)`,o:['ws',dq.w]});
+ const ot=sc.filter(x=>x.otd!=null&&x.otd<T.otd);o.push({c:ot.length?'a':'g',m:ot.length?`${ot.length} workstream(s) below ${T.otd}% OTD: ${ot.map(x=>x.w).join(', ')}`:`All reporting workstreams meet the ${T.otd}% OTD target`,o:ot[0]?['ws',ot[0].w]:null});
+ if(D.months.length>2){const ov=D.months.map((_,i)=>mean(c.WS.map(w=>M.prod(D,w,i)).filter(x=>x!=null))),f=fc(ov,3);o.push({c:f.b>=0?'g':'a',m:`Productivity trend ${f.b>=0?'rising':'falling'} ${f1(Math.abs(f.b))} pt/month — forecast ${f.f[2].toFixed(1)}% in 3 months`,o:null})}
+ const rg=c.reg&&c.reg.length?[...c.reg].sort((a,b)=>a[1]-b[1])[0]:null;if(rg)o.push({c:'a',m:`Region to watch: ${rg[0]} (${f1(rg[1])}% on the selected KPI)`,o:['rg',rg[0]]});
+ const pj=(c.proj||[]).filter(p=>Number(p.spi)<.9);if(pj.length)o.push({c:'r',m:`${pj.length} project(s) with SPI < 0.90 — e.g. ${pj[0].name}`,o:['rg',pj[0].region]});
+ if(c.acc!=null&&c.acc<100)o.push({c:'a',m:`Input accuracy ${f1(c.acc)}% — review flagged checks before reporting`,o:null});
+ return o}
+return{agg,kv,pc,M,fc,rag,T,insights,setT(o){Object.assign(T,o)},mean,sum}})();
+</script>
 <script>
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const WF=['MMC','MSQ','M&SC','Obsolete','MMDE','MLC','Project Assurance & Compliance','Enterprise Integrity Delivery','Governance & Quality Control (GQC)','Risk & Integrity Execution','Standards & Verification Group','Reliability Engineering & Delivery','Resilient Systems & Projects','Asset & Infrastructure Reliability','Operational Readiness & Stability','Predictive Performance & Projects'],RG=['Angola','Nigeria','Kearl','Labarge','Houston','Texas','Manchester'],BANDS=['IA','TO1E','TO2','TO3','TO4'];
+const WF=['MMC','MM Enrichment','MSQ','M&SC','Obsolescence','Asset Register','SPID'],RG=['Angola','Nigeria','Kearl','Labarge','Houston','Texas','Manchester'],BANDS=['IA','TO1E','TO2','TO3','TO4'];
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const KP={prod:'Productivity',qual:'Quality',val:'Value Deliverable',util:'Resource Utilization',otd:'OTD',csat:'Customer Satisfaction',def:'Quality Defects',esc:'Escalations'};
 const KC={prod:'#00D4AA',qual:'#00A3FF',val:'#FFB020',util:'#A855F7',otd:'#7DD3FC',csat:'#F472B6',def:'#FF5C7A',esc:'#FF8A5C'},INV=['def','esc'];
@@ -716,7 +804,7 @@ const busy=t=>{const b=$('busy');b.textContent=t||'';b.style.display=t?'block':'
 const raf=()=>new Promise(r=>requestAnimationFrame(()=>setTimeout(r,60)));
 
 /* ---------- chart styling ---------- */
-Chart.defaults.color='#625D70';Chart.defaults.font.family='Inter';Chart.defaults.animation=false;
+Chart.defaults.color='#625D70';Chart.defaults.font.family='Inter';Chart.defaults.animation={duration:800,easing:'easeOutQuart',delay:undefined,fn:undefined,from:undefined,loop:undefined,to:undefined,type:undefined};
 Object.assign(Chart.defaults.plugins.tooltip,{backgroundColor:'rgba(43,33,58,.96)',borderColor:'rgba(91,44,145,.28)',borderWidth:1,padding:11,cornerRadius:10,titleFont:{family:'Space Grotesk',weight:'600',size:12},bodyFont:{family:'JetBrains Mono',size:11},boxPadding:4});
 Chart.defaults.plugins.legend.labels.usePointStyle=true;Chart.defaults.plugins.legend.labels.boxWidth=8;
 Chart.register({id:'ctext',afterDraw(c,a,o){if(!o||!o.text)return;const{ctx,chartArea:A}=c,x=(A.left+A.right)/2,y=o.half?A.bottom-6:(A.top+A.bottom)/2;ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#302A3D';ctx.font='600 '+(o.size||26)+'px JetBrains Mono';ctx.shadowColor=o.glow||'transparent';ctx.shadowBlur=14;ctx.fillText(o.text,x,y);ctx.shadowBlur=0;if(o.sub){ctx.fillStyle='#777184';ctx.font='500 10.5px Inter';ctx.fillText(o.sub,x,y+(o.half?-30:20))}ctx.restore()}});
@@ -725,17 +813,17 @@ const G=(c,a=.95,b=.12,h)=>ctx=>{const col=(typeof c==='string'&&c.startsWith('#
 const PB=h=>ctx=>G(PAL[(ctx.dataIndex||0)%PAL.length],.95,.35,h)(ctx);
 const GRID={color:'rgba(91,44,145,.10)',drawTicks:false},AX={grid:GRID,border:{display:false}};
 function mkc0(id,type,labels,sets,opt={}){const el=$(id);if(!el)return;if(CH[id])CH[id].destroy();const round=['doughnut','polarArea','radar','pie'].includes(type),h=opt.indexAxis==='y';
- CH[id]=new Chart(el,{type,data:{labels,datasets:sets},options:Object.assign({responsive:true,maintainAspectRatio:false,animation:false,layout:{padding:4},interaction:{mode:'index',intersect:false},plugins:{legend:{display:sets.length>1||['doughnut','polarArea'].includes(type),position:'bottom'}},
- scales:round?(type==='radar'?{r:{min:0,max:100,grid:{color:'rgba(255,255,255,.1)'},angleLines:{color:'rgba(255,255,255,.1)'},ticks:{display:false},pointLabels:{font:{size:11,weight:'600'}}}}:{}):{x:Object.assign({},AX,h?{beginAtZero:true}:{}),y:Object.assign({},AX,{beginAtZero:true})}},opt,{animation:false})})}
+ CH[id]=new Chart(el,{type,data:{labels,datasets:sets},options:Object.assign({responsive:true,maintainAspectRatio:false,animation:{duration:800,easing:'easeOutQuart'},layout:{padding:4},interaction:{mode:'index',intersect:false},plugins:{legend:{display:sets.length>1||['doughnut','polarArea'].includes(type),position:'bottom'}},
+ scales:round?(type==='radar'?{r:{min:0,max:100,grid:{color:'rgba(255,255,255,.1)'},angleLines:{color:'rgba(255,255,255,.1)'},ticks:{display:false},pointLabels:{font:{size:11,weight:'600'}}}}:{}):{x:Object.assign({},AX,h?{beginAtZero:true}:{}),y:Object.assign({},AX,{beginAtZero:true})}},opt)})}
 function mkc(...a){try{mkc0(...a)}catch(e){console.warn('Chart '+a[0]+' failed',e);showErr('Chart "'+a[0]+'" failed: '+e.message)}}
 const line=(l,d,c,x={})=>Object.assign({label:l,data:d,borderColor:c,backgroundColor:G(c,.38,0),fill:true,tension:.4,borderWidth:3,pointRadius:3,pointBackgroundColor:c,pointBorderColor:'#FFFFFF',pointBorderWidth:2,pointHoverRadius:7},x);
 const bar=(l,d,c,x={})=>Object.assign({label:l,data:d,backgroundColor:G(c,.95,.3),borderRadius:8,borderSkipped:false,maxBarThickness:38},x);
 const pbar=(l,d,h)=>({label:l,data:d,backgroundColor:PB(h),borderRadius:8,borderSkipped:false,maxBarThickness:h?22:40});
 
 /* ---------- maths ---------- */
-function agg(r){const a={asg:0,res:0,def:0,esc:0,ot:0,tot:0,val:0,ha:0,hu:0,cs:0,n:r.length};r.forEach(x=>{['asg','res','def','esc','ot','tot','val','ha','hu'].forEach(k=>a[k]+=x[k]||0);a.cs+=x.csat||0});return a}
-const pc=(n,d)=>d?n/d*100:0;
-function kv(a,k){switch(k){case'prod':return pc(a.res,a.asg);case'qual':return a.res?Math.max(0,100-a.def/a.res*100):0;case'val':return a.val;case'util':return pc(a.hu,a.ha);case'otd':return pc(a.ot,a.tot);case'csat':return a.n?a.cs/a.n:0;case'def':return a.def;case'esc':return a.esc}return 0}
+function agg(r){return PIQ.agg(r)}  /* formulas live in PIQ engine */
+const pc=PIQ.pc;
+function kv(a,k){return PIQ.kv(a,k)}
 const fmt=(k,v)=>k==='val'?'$'+Math.round(v).toLocaleString()+'k':INV.includes(k)?String(Math.round(v)):v.toFixed(1)+'%';
 const grp=(r,f)=>{const m=new Map();r.forEach(x=>{const k=f(x);(m.get(k)||m.set(k,[]).get(k)).push(x)});return m};
 function rows(ex=[]){const s=k=>ex.includes(k)||ex.includes('all'),q=F.q.toLowerCase();return DATA.filter(r=>(s('dept')||!F.dept||F.dept==='All'||r.dept===F.dept)&&(s('wf')||F.wf==='All'||r.wf===F.wf)&&(s('rg')||F.rg==='All'||r.rg===F.rg)&&(s('year')||F.year==='All'||r.year==F.year)&&(s('month')||F.month==='All'||r.month==F.month)&&(s('band')||F.band==='All'||r.band===F.band)&&(s('team')||F.team==='All'||r.team===F.team)&&(s('emp')||F.emp==='All'||r.id===F.emp)&&(s('q')||!q||(r.name+' '+r.id+' '+r.team).toLowerCase().includes(q)))}
@@ -764,7 +852,7 @@ function pickEmp(id){F.emp=id;$('fEmp').value=id;setTab('emp')}
 function kpiStrip(r){const a=agg(r),S=series(rows(['month']));
  $('kpis').innerHTML=Object.keys(KP).map(k=>{const v=S.A.map(x=>kv(x,k)),n=v.length,d=n>1?v[n-1]-v[n-2]:0,good=INV.includes(k)?d<=0:d>=0,sym=k==='val'?'k':INV.includes(k)?'':' pt';
   return`<div class="kc glass ${F.kpi===k?'on':''}" data-k="${k}" style="--k:${KC[k]}"><div class="kl">${KP[k]}</div><div class="kv">${fmt(k,kv(a,k))}</div><div class="kd" style="color:${good?'#00D4AA':'#FF5C7A'}">${n>1?(d>=0?'▲ ':'▼ ')+Math.abs(d).toFixed(k==='val'||INV.includes(k)?0:1)+sym+' vs prev month':'&nbsp;'}</div><div class="sp"><canvas id="sp_${k}"></canvas></div></div>`}).join('');
- Object.keys(KP).forEach(k=>{const id='sp_'+k;if(CH[id])CH[id].destroy();CH[id]=new Chart($(id),{type:'line',data:{labels:S.L,datasets:[{data:S.A.map(x=>kv(x,k)),borderColor:KC[k],backgroundColor:G(KC[k],.4,0),fill:true,tension:.4,borderWidth:2,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}},events:[]}})});
+ Object.keys(KP).forEach(k=>{const id='sp_'+k;if(CH[id])CH[id].destroy();CH[id]=new Chart($(id),{type:'line',data:{labels:S.L,datasets:[{data:S.A.map(x=>kv(x,k)),borderColor:KC[k],backgroundColor:G(KC[k],.4,0),fill:true,tension:.4,borderWidth:2,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:800,easing:'easeOutQuart'},plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}},events:[]}})});
  document.querySelectorAll('.kc').forEach(el=>el.onclick=()=>{F.kpi=el.dataset.k;render()})}
 
 /* ---------- views ---------- */
@@ -951,7 +1039,7 @@ function rnd(s){return()=>(s=Math.imul(s^s>>>15,s|1),s^=s+Math.imul(s^s>>>7,s|61
 function demoRows(){const R=rnd(11),FN=['Arun','Priya','Rahul','Divya','Karthik','Anita','Suresh','Meena','Vikram','Lakshmi','Naveen','Sneha','Imran','Deepa','Rohit','Swathi','Ganesh','Pooja','Manoj','Harini'],LN=['Kumar','Nair','Menon','Raj','Iyer','Das','Rao','Reddy','Joshi','Singh'],T=['Alpha','Bravo','Charlie','Delta','Echo','Foxtrot','Gamma','Helix'],D=['Associate Engineer','Engineer','Senior Engineer','Lead Engineer','Principal Engineer'],out=[],p2=n=>String(n).padStart(2,'0');
  for(let i=0;i<200;i++){const f=FN[i%20],l=LN[Math.floor(i/20)%10],bi=i<60?0:i<110?1:i<150?2:i<180?3:4,s=.84+bi*.03+R()*.07,sl=(R()-.4)*.0025,oe=1+bi*3+(R()*4|0),qe=Math.min(oe,1+(R()*10|0));let k=0;
   [2025,2026].forEach(y=>{for(let m=1;m<=(y===2026?10:12);m++,k++){const asg=40+(R()*30|0),res=Math.min(asg,Math.round(asg*Math.min(1,s+sl*k-R()*.1))),tot=8+(R()*8|0),ha=160-(R()*16|0);
-   out.push({'Name':f+' '+l,'Emp ID':'QG'+(1001+i),'Quest Experience (Yrs)':qe,'Overall Experience (Yrs)':oe,'Team':T[i%8],'Date of Joining':`${2026-qe}-${p2(1+i%12)}-${p2(1+i%28)}`,'Contact':'+91 90000 '+(10000+i*37),'Email':(f+'.'+l).toLowerCase()+'@example.com','Emergency Contact':'+91 98000 '+(20000+i*53),'Designation':D[bi],'Band':BANDS[bi],'Workflow':WF[(i+Math.floor((m-1)/2))%6],'Region':RG[i%7],'Year':y,'Month':MON[m-1],'Assigned MM Qty':asg,'Resolved MM Qty':res,'Customer Satisfaction (%)':+(80+R()*18).toFixed(1),'Quality Defects':R()*4|0,'Escalations':R()<.25?1+(R()*2|0):0,'On-Time Deliveries':Math.max(0,tot-(R()*3|0)),'Total Deliveries':tot,'Value Delivered (USD k)':+(res*(1.2+R()*.8)).toFixed(1),'Hours Available':ha,'Hours Utilized':Math.round(ha*(.78+R()*.2))})}})}
+   out.push({'Name':f+' '+l,'Emp ID':'QG'+(1001+i),'Quest Experience (Yrs)':qe,'Overall Experience (Yrs)':oe,'Team':T[i%8],'Date of Joining':`${2026-qe}-${p2(1+i%12)}-${p2(1+i%28)}`,'Contact':'+91 90000 '+(10000+i*37),'Email':(f+'.'+l).toLowerCase()+'@example.com','Emergency Contact':'+91 98000 '+(20000+i*53),'Designation':D[bi],'Band':BANDS[bi],'Workflow':WF[(i+Math.floor((m-1)/2))%WF.length],'Region':RG[i%7],'Year':y,'Month':MON[m-1],'Assigned MM Qty':asg,'Resolved MM Qty':res,'Customer Satisfaction (%)':+(80+R()*18).toFixed(1),'Quality Defects':R()*4|0,'Escalations':R()<.25?1+(R()*2|0):0,'On-Time Deliveries':Math.max(0,tot-(R()*3|0)),'Total Deliveries':tot,'Value Delivered (USD k)':+(res*(1.2+R()*.8)).toFixed(1),'Hours Available':ha,'Hours Utilized':Math.round(ha*(.78+R()*.2))})}})}
  return out}
 $('bDemo').onclick=()=>{const n=ingest(demoRows());$('st').textContent=`✔ Sample data loaded (${n} records, fictional)`;$('st').style.color='#00D4AA'};
 $('bTpl').onclick=()=>{const d=demoRows(),h=COLS.map(c=>c[1]),ex=['QG1001','QG1006','QG1013'].flatMap(id=>d.filter(r=>r['Emp ID']===id).slice(0,3)),ws=XLSX.utils.json_to_sheet(ex,{header:h});ws['!cols']=h.map(x=>({wch:Math.max(14,x.length+2)}));
@@ -1113,42 +1201,24 @@ $('mAtt').onclick=async()=>{await pdf();ppt();xls()};
 'use strict';
 const PKEY='processiq_project_workspace_usd_v5';
 const P_TABS=['master','projects','follow','performance','resources','revenue','escalations','management'];
-const DEPTS=['Materials Engineering','Integrity Engineering','Reliability Engineering'];
+const DEPTS=['Materials Engineering','Reliability Engineering'];
 const REGIONS=['Angola','Nigeria','Kearl','Labarge','Houston','Texas','Manchester'];
 
 const DEPT_META = {
   'Materials Engineering': {
     short: 'Materials',
-    desc: 'Best for teams managing material selection, NACE sour-service metallurgy, coatings, and specification workflows.',
-    workflows: ['MMC','MSQ','M&SC','Obsolete','MMDE','MLC']
-  },
-  'Integrity Engineering': {
-    short: 'Integrity',
-    desc: 'Best for teams managing compliance, quality assurance, risk, and governance within projects.',
-    workflows: [
-      'Project Assurance & Compliance',
-      'Enterprise Integrity Delivery',
-      'Governance & Quality Control (GQC)',
-      'Risk & Integrity Execution',
-      'Standards & Verification Group'
-    ]
+    desc: 'Material master workflows: MMC, MM Enrichment, MSQ, M&SC and Obsolescence Management.',
+    workflows: ['MMC','MM Enrichment','MSQ','M&SC','Obsolescence']
   },
   'Reliability Engineering': {
     short: 'Reliability',
-    desc: 'Best for teams managing uptime, infrastructure, asset longevity, and resilient project rollouts.',
-    workflows: [
-      'Reliability Engineering & Delivery',
-      'Resilient Systems & Projects',
-      'Asset & Infrastructure Reliability',
-      'Operational Readiness & Stability',
-      'Predictive Performance & Projects'
-    ]
+    desc: 'Asset Register and SPID (spare parts / BOM) workflows supporting static and rotating equipment maintenance.',
+    workflows: ['Asset Register','SPID']
   }
 };
 
 const ALL_WORKFLOWS = [
   ...DEPT_META['Materials Engineering'].workflows,
-  ...DEPT_META['Integrity Engineering'].workflows,
   ...DEPT_META['Reliability Engineering'].workflows
 ];
 
@@ -1166,49 +1236,38 @@ const DEFAULT_PM = {
     {id:'PRJ-1001',name:'Offshore Analyzer Shelter Upgrade',category:'Materials Engineering',workflow:'MMC',region:'Angola',manager:'Arun Kumar',client:'ExxonMobil Angola',start:'2026-01-10',due:'2026-12-15',actual:'',status:'In Progress',progress:78,spi:1.02,cpi:1.05,ftr:96.5,contract:175000,budget:135000,actualCost:118500,managerEmail:'arun.kumar@quest-global.com',teamEmail:'angola.materials@quest-global.com',notes:'Sample conditioning & shelter alloy package'},
     {id:'PRJ-1002',name:'Kearl Sour Gas SCS Package',category:'Materials Engineering',workflow:'MSQ',region:'Kearl',manager:'Priya Nair',client:'ExxonMobil Kearl',start:'2026-02-01',due:'2026-10-15',actual:'',status:'In Progress',progress:64,spi:0.86,cpi:0.97,ftr:94.0,contract:220000,budget:168000,actualCost:125000,managerEmail:'priya.nair@quest-global.com',teamEmail:'kearl.materials@quest-global.com',notes:'NACE MR0175 sour gas wetted material spec'},
     {id:'PRJ-1003',name:'Hastelloy C-276 Wetted Parts Audit',category:'Materials Engineering',workflow:'M&SC',region:'Houston',manager:'Rahul Menon',client:'ExxonMobil Houston',start:'2026-01-15',due:'2026-08-30',actual:'2026-08-25',status:'Completed',progress:100,spi:1.06,cpi:1.07,ftr:99.0,contract:105000,budget:82000,actualCost:76500,managerEmail:'rahul.menon@quest-global.com',teamEmail:'houston.materials@quest-global.com',notes:'Delivered 5 days ahead of schedule'},
-    {id:'PRJ-1004',name:'SilcoNert Moisture Line Retrofit',category:'Materials Engineering',workflow:'MLC',region:'Texas',manager:'Anita Das',client:'ExxonMobil Texas',start:'2026-02-15',due:'2026-10-15',actual:'2026-10-12',status:'Completed',progress:100,spi:1.04,cpi:1.06,ftr:98.4,contract:115000,budget:90000,actualCost:85500,managerEmail:'anita.das@quest-global.com',teamEmail:'texas.materials@quest-global.com',notes:'Trace moisture purge optimization'},
-    {id:'PRJ-1005',name:'Legacy Obsolete Analyzer Replacement',category:'Materials Engineering',workflow:'Obsolete',region:'Manchester',manager:'Meena Reddy',client:'ExxonMobil UK',start:'2026-03-15',due:'2026-09-30',actual:'',status:'In Progress',progress:52,spi:0.79,cpi:0.92,ftr:89.0,contract:130000,budget:107000,actualCost:58000,managerEmail:'meena.reddy@quest-global.com',teamEmail:'uk.materials@quest-global.com',notes:'Delayed due to OEM EOL component re-qualification'},
-    {id:'PRJ-1006',name:'Nigeria SIL-2 & HAZOP Compliance Audit',category:'Integrity Engineering',workflow:'Project Assurance & Compliance',region:'Nigeria',manager:'Chidi Okafor',client:'ExxonMobil Nigeria',start:'2026-02-20',due:'2026-12-10',actual:'',status:'In Progress',progress:84,spi:1.01,cpi:1.02,ftr:97.2,contract:182000,budget:142000,actualCost:121500,managerEmail:'chidi.okafor@quest-global.com',teamEmail:'nigeria.integrity@quest-global.com',notes:'IEC 61511 safety instrumented verification'},
-    {id:'PRJ-1007',name:'LaBarge Cryogenic Valve GQC Gate',category:'Integrity Engineering',workflow:'Governance & Quality Control (GQC)',region:'Labarge',manager:'Karthik Iyer',client:'ExxonMobil LaBarge',start:'2026-04-05',due:'2026-10-20',actual:'',status:'In Progress',progress:58,spi:0.84,cpi:0.96,ftr:92.5,contract:144000,budget:114000,actualCost:95000,managerEmail:'karthik.iyer@quest-global.com',teamEmail:'labarge.integrity@quest-global.com',notes:'Delayed awaiting client rev-B process datasheet'},
-    {id:'PRJ-1008',name:'Houston Enterprise Risk & QA Rollout',category:'Integrity Engineering',workflow:'Enterprise Integrity Delivery',region:'Houston',manager:'Samuel Mensah',client:'ExxonMobil Houston',start:'2026-03-01',due:'2026-12-22',actual:'',status:'In Progress',progress:74,spi:0.99,cpi:1.03,ftr:96.8,contract:162000,budget:123000,actualCost:98000,managerEmail:'samuel.mensah@quest-global.com',teamEmail:'houston.integrity@quest-global.com',notes:'Quality assurance & stage-gate audit'},
-    {id:'PRJ-1009',name:'Angola ASME & API Standards Verification',category:'Integrity Engineering',workflow:'Standards & Verification Group',region:'Angola',manager:'Claire Evans',client:'ExxonMobil Angola',start:'2026-05-01',due:'2027-01-15',actual:'',status:'In Progress',progress:61,spi:1.00,cpi:1.04,ftr:98.1,contract:135000,budget:106000,actualCost:65000,managerEmail:'claire.evans@quest-global.com',teamEmail:'angola.integrity@quest-global.com',notes:'API 555 analyzer compliance audit'},
-    {id:'PRJ-1010',name:'PGC & Photometer Uptime Optimization',category:'Reliability Engineering',workflow:'Reliability Engineering & Delivery',region:'Nigeria',manager:'Divya Raj',client:'ExxonMobil Nigeria',start:'2026-03-01',due:'2026-12-18',actual:'',status:'In Progress',progress:82,spi:1.03,cpi:1.01,ftr:95.6,contract:198000,budget:154000,actualCost:134000,managerEmail:'divya.raj@quest-global.com',teamEmail:'nigeria.reliability@quest-global.com',notes:'99.4% analyzer availability target'},
-    {id:'PRJ-1011',name:'Manchester P&ID Resilient Digital Twin',category:'Reliability Engineering',workflow:'Resilient Systems & Projects',region:'Manchester',manager:'Suresh Rao',client:'ExxonMobil UK',start:'2026-05-01',due:'2027-01-31',actual:'',status:'In Progress',progress:48,spi:0.97,cpi:1.04,ftr:96.0,contract:159000,budget:126000,actualCost:67500,managerEmail:'suresh.rao@quest-global.com',teamEmail:'uk.reliability@quest-global.com',notes:'Redundant telemetry & 3D enclosure twin'},
-    {id:'PRJ-1012',name:'Texas Refinery CEMS Predictive Health',category:'Reliability Engineering',workflow:'Predictive Performance & Projects',region:'Texas',manager:'Elena Rostova',client:'ExxonMobil Texas',start:'2026-03-25',due:'2026-10-25',actual:'',status:'In Progress',progress:69,spi:0.88,cpi:0.98,ftr:94.6,contract:166000,budget:131000,actualCost:91500,managerEmail:'elena.rostova@quest-global.com',teamEmail:'texas.reliability@quest-global.com',notes:'Delayed due to sensor calibration drift'},
-    {id:'PRJ-1013',name:'Kearl Asset Longevity & SCS Readiness',category:'Reliability Engineering',workflow:'Asset & Infrastructure Reliability',region:'Kearl',manager:'Liam OConnor',client:'ExxonMobil Kearl',start:'2026-04-12',due:'2026-12-28',actual:'',status:'In Progress',progress:73,spi:1.01,cpi:1.02,ftr:96.4,contract:152000,budget:118000,actualCost:83000,managerEmail:'liam.oconnor@quest-global.com',teamEmail:'kearl.reliability@quest-global.com',notes:'Cold-weather heat-trace & shelter stability'}
+    {id:'PRJ-1004',name:'SilcoNert Moisture Line Retrofit',category:'Materials Engineering',workflow:'MMC',region:'Texas',manager:'Anita Das',client:'ExxonMobil Texas',start:'2026-02-15',due:'2026-10-15',actual:'2026-10-12',status:'Completed',progress:100,spi:1.04,cpi:1.06,ftr:98.4,contract:115000,budget:90000,actualCost:85500,managerEmail:'anita.das@quest-global.com',teamEmail:'texas.materials@quest-global.com',notes:'Trace moisture purge optimization'},
+    {id:'PRJ-1005',name:'Legacy Obsolete Analyzer Replacement',category:'Materials Engineering',workflow:'Obsolescence',region:'Manchester',manager:'Meena Reddy',client:'ExxonMobil UK',start:'2026-03-15',due:'2026-09-30',actual:'',status:'In Progress',progress:52,spi:0.79,cpi:0.92,ftr:89.0,contract:130000,budget:107000,actualCost:58000,managerEmail:'meena.reddy@quest-global.com',teamEmail:'uk.materials@quest-global.com',notes:'Delayed due to OEM EOL component re-qualification'},
+    {id:'PRJ-1010',name:'PGC & Photometer Uptime Optimization',category:'Reliability Engineering',workflow:'Asset Register',region:'Nigeria',manager:'Divya Raj',client:'ExxonMobil Nigeria',start:'2026-03-01',due:'2026-12-18',actual:'',status:'In Progress',progress:82,spi:1.03,cpi:1.01,ftr:95.6,contract:198000,budget:154000,actualCost:134000,managerEmail:'divya.raj@quest-global.com',teamEmail:'nigeria.reliability@quest-global.com',notes:'99.4% analyzer availability target'},
+    {id:'PRJ-1011',name:'Manchester P&ID Resilient Digital Twin',category:'Reliability Engineering',workflow:'SPID',region:'Manchester',manager:'Suresh Rao',client:'ExxonMobil UK',start:'2026-05-01',due:'2027-01-31',actual:'',status:'In Progress',progress:48,spi:0.97,cpi:1.04,ftr:96.0,contract:159000,budget:126000,actualCost:67500,managerEmail:'suresh.rao@quest-global.com',teamEmail:'uk.reliability@quest-global.com',notes:'Redundant telemetry & 3D enclosure twin'},
+    {id:'PRJ-1012',name:'Texas Refinery CEMS Predictive Health',category:'Reliability Engineering',workflow:'SPID',region:'Texas',manager:'Elena Rostova',client:'ExxonMobil Texas',start:'2026-03-25',due:'2026-10-25',actual:'',status:'In Progress',progress:69,spi:0.88,cpi:0.98,ftr:94.6,contract:166000,budget:131000,actualCost:91500,managerEmail:'elena.rostova@quest-global.com',teamEmail:'texas.reliability@quest-global.com',notes:'Delayed due to sensor calibration drift'},
+    {id:'PRJ-1013',name:'Kearl Asset Longevity & SCS Readiness',category:'Reliability Engineering',workflow:'Asset Register',region:'Kearl',manager:'Liam OConnor',client:'ExxonMobil Kearl',start:'2026-04-12',due:'2026-12-28',actual:'',status:'In Progress',progress:73,spi:1.01,cpi:1.02,ftr:96.4,contract:152000,budget:118000,actualCost:83000,managerEmail:'liam.oconnor@quest-global.com',teamEmail:'kearl.reliability@quest-global.com',notes:'Cold-weather heat-trace & shelter stability'}
   ],
   tasks: [
     {id:'TSK-201',title:'GAD & P&ID Redline Approval',project:'PRJ-1001',category:'Materials Engineering',workflow:'MMC',region:'Angola',owner:'Arun Kumar',stage:'Design',start:'2026-02-01',due:'2026-11-28',progress:90,status:'In Progress',blocker:'Awaiting final vendor HVAC cut-sheet'},
     {id:'TSK-202',title:'NACE MR0175 Sour Service Verification',project:'PRJ-1002',category:'Materials Engineering',workflow:'MSQ',region:'Kearl',owner:'Priya Nair',stage:'Engineering',start:'2026-03-10',due:'2026-10-10',progress:75,status:'In Progress',blocker:'Hastelloy MTR batch delay'},
     {id:'TSK-203',title:'MTR & Alloy 625 Certification Sign-off',project:'PRJ-1003',category:'Materials Engineering',workflow:'M&SC',region:'Houston',owner:'Rahul Menon',stage:'Closeout',start:'2026-07-01',due:'2026-08-25',progress:100,status:'Completed',blocker:'None'},
-    {id:'TSK-204',title:'SIL-2 Safety Loop Audit',project:'PRJ-1006',category:'Integrity Engineering',workflow:'Project Assurance & Compliance',region:'Nigeria',owner:'Chidi Okafor',stage:'Testing',start:'2026-08-15',due:'2026-11-30',progress:85,status:'In Progress',blocker:'None'},
-    {id:'TSK-205',title:'Cryogenic Valve GQC Hold-Point Review',project:'PRJ-1007',category:'Integrity Engineering',workflow:'Governance & Quality Control (GQC)',region:'Labarge',owner:'Karthik Iyer',stage:'Engineering',start:'2026-06-01',due:'2026-10-15',progress:60,status:'In Progress',blocker:'Client process data sheet rev B pending'},
-    {id:'TSK-206',title:'FAT Protocol & Photometer Uptime Test',project:'PRJ-1010',category:'Reliability Engineering',workflow:'Reliability Engineering & Delivery',region:'Nigeria',owner:'Divya Raj',stage:'Testing',start:'2026-08-15',due:'2026-12-05',progress:88,status:'In Progress',blocker:'None'},
-    {id:'TSK-207',title:'CEMS Drift Diagnostic Model',project:'PRJ-1012',category:'Reliability Engineering',workflow:'Predictive Performance & Projects',region:'Texas',owner:'Elena Rostova',stage:'Execution',start:'2026-07-10',due:'2026-10-20',progress:68,status:'In Progress',blocker:'Awaiting span gas cylinder delivery'}
+    {id:'TSK-206',title:'FAT Protocol & Photometer Uptime Test',project:'PRJ-1010',category:'Reliability Engineering',workflow:'Asset Register',region:'Nigeria',owner:'Divya Raj',stage:'Testing',start:'2026-08-15',due:'2026-12-05',progress:88,status:'In Progress',blocker:'None'},
+    {id:'TSK-207',title:'CEMS Drift Diagnostic Model',project:'PRJ-1012',category:'Reliability Engineering',workflow:'SPID',region:'Texas',owner:'Elena Rostova',stage:'Execution',start:'2026-07-10',due:'2026-10-20',progress:68,status:'In Progress',blocker:'Awaiting span gas cylinder delivery'}
   ],
   resources: [
     {id:'QG1001',name:'Arun Kumar',category:'Materials Engineering',workflow:'MMC',region:'Angola',role:'Lead Engineer',skills:'SCS Design, Alloy Spec',project:'PRJ-1001',allocation:95,capacity:100},
     {id:'QG1002',name:'Priya Nair',category:'Materials Engineering',workflow:'MSQ',region:'Kearl',role:'Senior Engineer',skills:'Sour Service, NACE',project:'PRJ-1002',allocation:110,capacity:100},
     {id:'QG1003',name:'Rahul Menon',category:'Materials Engineering',workflow:'M&SC',region:'Houston',role:'Principal Engineer',skills:'Metallurgy, Hastelloy',project:'PRJ-1003',allocation:85,capacity:100},
-    {id:'QG1004',name:'Chidi Okafor',category:'Integrity Engineering',workflow:'Project Assurance & Compliance',region:'Nigeria',role:'Lead Engineer',skills:'SIL-2, HAZOP, QA',project:'PRJ-1006',allocation:95,capacity:100},
-    {id:'QG1005',name:'Karthik Iyer',category:'Integrity Engineering',workflow:'Governance & Quality Control (GQC)',region:'Labarge',role:'Senior Engineer',skills:'ISA Sizing, GQC',project:'PRJ-1007',allocation:105,capacity:100},
-    {id:'QG1006',name:'Divya Raj',category:'Reliability Engineering',workflow:'Reliability Engineering & Delivery',region:'Nigeria',role:'Lead Engineer',skills:'Photometers, PGC Uptime',project:'PRJ-1010',allocation:100,capacity:100},
-    {id:'QG1007',name:'Suresh Rao',category:'Reliability Engineering',workflow:'Resilient Systems & Projects',region:'Manchester',role:'Senior Engineer',skills:'Digital Twin, Redundancy',project:'PRJ-1011',allocation:90,capacity:100},
-    {id:'QG1008',name:'Elena Rostova',category:'Reliability Engineering',workflow:'Predictive Performance & Projects',region:'Texas',role:'Senior Engineer',skills:'Predictive CEMS, Analytics',project:'PRJ-1012',allocation:95,capacity:100}
+    {id:'QG1006',name:'Divya Raj',category:'Reliability Engineering',workflow:'Asset Register',region:'Nigeria',role:'Lead Engineer',skills:'Photometers, PGC Uptime',project:'PRJ-1010',allocation:100,capacity:100},
+    {id:'QG1007',name:'Suresh Rao',category:'Reliability Engineering',workflow:'SPID',region:'Manchester',role:'Senior Engineer',skills:'Digital Twin, Redundancy',project:'PRJ-1011',allocation:90,capacity:100},
+    {id:'QG1008',name:'Elena Rostova',category:'Reliability Engineering',workflow:'SPID',region:'Texas',role:'Senior Engineer',skills:'Predictive CEMS, Analytics',project:'PRJ-1012',allocation:95,capacity:100}
   ],
   transactions: [
     {id:'REV-301',date:'2026-02-15',project:'PRJ-1001',category:'Materials Engineering',workflow:'MMC',region:'Angola',type:'Booked',reference:'PO-EXX-8841',amount:175000,notes:'Initial PO award'},
     {id:'REV-302',date:'2026-08-10',project:'PRJ-1001',category:'Materials Engineering',workflow:'MMC',region:'Angola',type:'Collected',reference:'WIRE-99281',amount:105000,notes:'60% milestone settled'},
     {id:'REV-303',date:'2026-08-30',project:'PRJ-1003',category:'Materials Engineering',workflow:'M&SC',region:'Houston',type:'Collected',reference:'INV-2026-022',amount:105000,notes:'100% completion settlement'},
-    {id:'REV-304',date:'2026-09-15',project:'PRJ-1006',category:'Integrity Engineering',workflow:'Project Assurance & Compliance',region:'Nigeria',type:'Invoiced',reference:'INV-2026-031',amount:145600,notes:'SIL-2 compliance billing'},
-    {id:'REV-305',date:'2026-10-15',project:'PRJ-1007',category:'Integrity Engineering',workflow:'Governance & Quality Control (GQC)',region:'Labarge',type:'Invoiced',reference:'INV-2026-041',amount:72000,notes:'GQC gate milestone'},
-    {id:'REV-306',date:'2026-10-28',project:'PRJ-1010',category:'Reliability Engineering',workflow:'Reliability Engineering & Delivery',region:'Nigeria',type:'Recognized',reference:'INV-2026-052',amount:158400,notes:'FAT & uptime sign-off'},
-    {id:'REV-307',date:'2026-11-08',project:'PRJ-1011',category:'Reliability Engineering',workflow:'Resilient Systems & Projects',region:'Manchester',type:'Booked',reference:'PO-EXX-9045',amount:159000,notes:'Digital twin PO'}
+    {id:'REV-306',date:'2026-10-28',project:'PRJ-1010',category:'Reliability Engineering',workflow:'Asset Register',region:'Nigeria',type:'Recognized',reference:'INV-2026-052',amount:158400,notes:'FAT & uptime sign-off'},
+    {id:'REV-307',date:'2026-11-08',project:'PRJ-1011',category:'Reliability Engineering',workflow:'SPID',region:'Manchester',type:'Booked',reference:'PO-EXX-9045',amount:159000,notes:'Digital twin PO'}
   ],
   escalations: [
     {id:'ESC-401',project:'PRJ-1002',category:'Materials Engineering',workflow:'MSQ',region:'Kearl',issue:'Hastelloy C-276 bar stock mill delay',level:'Level 2',owner:'Priya Nair',date:'2026-10-05',status:'Open',rootCause:'Alternate NACE-certified mill qualified'},
-    {id:'ESC-402',project:'PRJ-1007',category:'Integrity Engineering',workflow:'Governance & Quality Control (GQC)',region:'Labarge',issue:'Client P&ID rev B pressure rating mismatch',level:'Critical',owner:'Karthik Iyer',date:'2026-10-18',status:'In Review',rootCause:'TQ-014 issued for ANSI Class 600 flange update'},
-    {id:'ESC-403',project:'PRJ-1012',category:'Reliability Engineering',workflow:'Predictive Performance & Projects',region:'Texas',issue:'CEMS span calibration cylinder customs hold',level:'Level 2',owner:'Elena Rostova',date:'2026-10-22',status:'Open',rootCause:'Broker submitted MSDS; expedited clearance'}
+    {id:'ESC-403',project:'PRJ-1012',category:'Reliability Engineering',workflow:'SPID',region:'Texas',issue:'CEMS span calibration cylinder customs hold',level:'Level 2',owner:'Elena Rostova',date:'2026-10-22',status:'Open',rootCause:'Broker submitted MSDS; expedited clearance'}
   ]
 };
 
@@ -1222,6 +1281,7 @@ try{
   }
 }catch(e){P={...P,...JSON.parse(JSON.stringify(DEFAULT_PM))};}
 
+window.PQ={get:()=>P,save:()=>saveP(),render:()=>{try{if(P_TABS.includes(F.tab))renderP()}catch(e){}}};
 const saveP=()=>{try{localStorage.setItem(PKEY,JSON.stringify({dept:P.dept,wf:P.wf,reg:P.reg,unlocked:P.unlocked,projects:P.projects,tasks:P.tasks,resources:P.resources,transactions:P.transactions,escalations:P.escalations,openWfs:[...P.openWfs]}));}catch(e){}};
 const moneyP=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(Number(n)||0);
 const moneyK=n=>'$'+(Number(n)/1000).toFixed(0)+'k';
@@ -1308,19 +1368,13 @@ syncLockUI();
 
 function enrichWorkforceRecords(arr){
   if(!Array.isArray(arr)) return arr;
+  const m=DEPT_META['Materials Engineering'].workflows, rl=DEPT_META['Reliability Engineering'].workflows;
   arr.forEach((r, idx)=>{
     if(r.dept && DEPT_META[r.dept]) return;
-    const mod = idx % 3;
-    if(mod === 0){
-      r.dept = 'Materials Engineering';
-      if(!DEPT_META['Materials Engineering'].workflows.includes(r.wf)) r.wf = DEPT_META['Materials Engineering'].workflows[idx % 6];
-    } else if(mod === 1){
-      r.dept = 'Integrity Engineering';
-      r.wf = DEPT_META['Integrity Engineering'].workflows[idx % 5];
-    } else {
-      r.dept = 'Reliability Engineering';
-      r.wf = DEPT_META['Reliability Engineering'].workflows[idx % 5];
-    }
+    if(m.includes(r.wf)) r.dept='Materials Engineering';
+    else if(rl.includes(r.wf)) r.dept='Reliability Engineering';
+    else if(idx%2===0){ r.dept='Materials Engineering'; r.wf=m[idx%m.length]; }
+    else { r.dept='Reliability Engineering'; r.wf=rl[idx%rl.length]; }
   });
   return arr;
 }
@@ -1744,7 +1798,7 @@ function renderManagement(){
    headP('Management Intelligence & Executive Summary (USD)','Unified portfolio health, USD revenue, cost variance, delivery and escalation governance.',`${tabActionBtns()}<button class="pq-btn primary" data-paction="export">⇩ Export Master Excel</button>`) +
    deptFilterStrip() +
    `<div class="pq-grid">${statP('Project Portfolio',total,'Active & closed','#5B2C91')}${statP('Completion Rate',total?Math.round(done/total*100)+'%':'0%',done+' of '+total+' completed','#00A88F')}${statP('Delayed Projects',late,'Schedule watch','#D94B68')}${statP('Open Escalations',open,'Action required','#F2A900')}${statP('Recorded Revenue (USD)',moneyP(rev),'All stages','#2386C8')}${statP('Approved Budget (USD)',moneyP(budget),'Baseline cost','#5B2C91')}${statP('Actual Project Cost (USD)',moneyP(cost),'Incurred spend','#625D70')}${statP('Net Budget Variance (USD)',moneyP(budget-cost),'Savings / overrun','#00A88F')}</div>` +
-   `<div class="pq-card"><h3>Portfolio by Engineering Department (USD)</h3><div class="sub">Contract value &amp; budget variance across Materials, Integrity, and Reliability Engineering ($k)</div><div class="pq-chart"><canvas id="pq-ch-mgmt-cat"></canvas></div></div>` +
+   `<div class="pq-card"><h3>Portfolio by Engineering Department (USD)</h3><div class="sub">Contract value &amp; budget variance across Materials and Reliability Engineering ($k)</div><div class="pq-chart"><canvas id="pq-ch-mgmt-cat"></canvas></div></div>` +
    `<div class="pq-card"><h3>Engineering Department Scorecard (USD)</h3>${tableP(['Department','Projects','Completed','Delayed','Avg SPI','Avg CPI','Contract Value (USD)','Budget Variance (USD)'],rows)}</div>`
  );
  mkChartP('pq-ch-mgmt-cat',{type:'bar',data:{labels:DEPTS,datasets:[{label:'Contract Value (USD)',data:DEPTS.map(c=>projs.filter(x=>x.category===c).reduce((a,x)=>a+(Number(x.contract)||0),0)),backgroundColor:'#5B2C91',borderRadius:6},{label:'Budget Variance (USD)',data:DEPTS.map(c=>projs.filter(x=>x.category===c).reduce((a,x)=>a+((Number(x.budget)||0)-(Number(x.actualCost)||0)),0)),backgroundColor:'#00A88F',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}}}}});
@@ -2036,6 +2090,503 @@ window.setTab=function(t){
 };
 if(typeof window.tree==='function') window.tree();
 updateTabExportBar();
+})();
+</script>
+
+<script id="qc-module">
+(function(){
+'use strict';
+const Q=s=>document.querySelector(s),KEY='piq_qc_v2';
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const num=v=>{const n=parseFloat(v);return isNaN(n)?null:n};
+const sum=a=>a.reduce((x,y)=>x+y,0),mean=a=>a.length?sum(a)/a.length:0;
+const sd=a=>{if(a.length<2)return 0;const m=mean(a);return Math.sqrt(sum(a.map(x=>(x-m)**2))/(a.length-1))};
+const med=a=>{if(!a.length)return 0;const s=[...a].sort((x,y)=>x-y),h=s.length>>1;return s.length%2?s[h]:(s[h-1]+s[h])/2};
+const fx=(v,d=2)=>v==null||isNaN(v)||!isFinite(v)?'-':(+v).toFixed(d);
+const uniq=a=>[...new Set(a.filter(x=>x!==''&&x!=null))];
+const T0=new Date(),ds=o=>{const d=new Date(T0);d.setDate(d.getDate()-o);return d.toISOString().slice(0,10)};
+let seed=11;const rnd=()=>{seed=seed*16807%2147483647;return seed/2147483647};
+const gs=()=>Math.sqrt(-2*Math.log(rnd()||1e-9))*Math.cos(2*Math.PI*rnd());
+const pick=(a,w)=>{let r=rnd()*sum(w),i=0;while(r>w[i]&&i<a.length-1){r-=w[i];i++}return a[i]};
+const SM6=['Man','Machine','Method','Material','Measurement','Mother Nature'];
+/* ---------- sample data ---------- */
+function sample(){
+ const D={check:[],pareto:[],fish:[],hist:[],ctrl:[],scat:[],flow:[]};
+ const cats=['Weld defect (porosity / lack of fusion)','NDT rejectable indication','Coating DFT deficiency','CUI / corrosion finding','Dimensional / alignment deviation','MTC / PMI grade mismatch','Mechanical seal leakage','Hydrotest leak','Missing ITP hold-point record','Bolting torque deviation'],w=[24,18,14,12,9,7,6,4,4,2];
+ const wbs=['M12 Topsides piping spools','Hull cargo tank 3P coating','K-1001 Export gas compressor (rotating)','V-1101 HP separator (static)'],
+  proj=['FPSO Topsides Fabrication','FPSO Hull & Marine','FPSO Operations Maintenance','FPSO Operations Maintenance'],pid=['FPSO-01-TS','FPSO-01-HM','FPSO-01-OM','FPSO-01-OM'],
+  loc=['Module M12 - Fab yard','Cargo tank 3P','Compressor deck','Process deck'],dep=['QA/QC','Fabrication Yard','Mechanical Maint.','Integrity (RBI)'],own=['A. Rao (QC)','S. Khan (Integrity)','M. Iyer (Mech.)','J. Costa (Marine)'];
+ for(let i=0;i<48;i++){const k=i%4,c=pick(cats,w);D.check.push({pid:pid[k],pname:proj[k],wbs:wbs[k],date:ds(Math.floor(i*1.4)),dept:dep[k],loc:loc[k],itype:['Daily','Weekly','Monthly'][i%7?0:(i%2?1:2)],cat:c,desc:'NCR raised: '+c,cnt:1+Math.floor(rnd()*(w[cats.indexOf(c)]/5+1)),owner:own[i%4],rem:i%9?'':'Ref ITP hold point'})}
+ [[52,18200],[40,26000],[31,9300],[27,54000],[16,4800],[11,15400],[9,31500],[6,22000],[5,500],[3,900]].forEach((v,i)=>D.pareto.push({cat:cats[i],freq:v[0],cost:v[1],period:'Q4-2026',ref:wbs[i%4]}));
+ const F=(problem,ref,defect,cat,cause,ev,imp,act,own,st,ver)=>D.fish.push({problem,ref,defect,cat,cause,evidence:ev,impact:imp,action:act,owner:own,target:ds(-14),verified:ver,status:st});
+ const p1='Repeated mechanical seal failures - export gas compressor K-1001',r1='K-1001 Export gas compressor (rotating)',d1='Mechanical seal leakage';
+ F(p1,r1,d1,'Man','Seal installed without alignment check by new technician','Overhaul WO review','High','Competency sign-off for API 682 seals','M. Iyer (Mech.)','In Progress',true);
+ F(p1,r1,d1,'Machine','Shaft misalignment / coupling soft foot','Laser alignment report','High','Re-align; add alignment hold point','M. Iyer (Mech.)','Done',true);
+ F(p1,r1,d1,'Machine','Seal flush (API Plan 32) flow low','DCS trend','High','Clean strainer; fit flow transmitter','S. Khan (Integrity)','Open',true);
+ F(p1,r1,d1,'Method','Start-up without seal pot venting step in procedure','Procedure audit','Medium','Revise start-up SOP','A. Rao (QC)','In Progress',false);
+ F(p1,r1,d1,'Material','Elastomer incompatible with sour gas (H2S)','Seal teardown report','High','Change to FFKM / re-evaluate datasheet','S. Khan (Integrity)','Open',true);
+ F(p1,r1,d1,'Measurement','Vibration probe drift - late alarm','Calibration record','Medium','Calibrate bently-nevada probes','M. Iyer (Mech.)','Open',false);
+ F(p1,r1,d1,'Mother Nature','Hot humid salt-laden atmosphere on compressor deck','Weather / ambient log','Low','Enclosure ventilation upgrade','J. Costa (Marine)','Open',false);
+ F(p1,r1,d1,'Man','Operator unfamiliar with seal pot topping-up','Shift log','Medium','Toolbox training','M. Iyer (Mech.)','In Progress',false);
+ const p2='Recurring CUI on topsides process piping',r2='M12 Topsides piping spools',d2='CUI / corrosion finding';
+ F(p2,r2,d2,'Material','Carbon steel in 60-120 C CUI temperature range without coating','RBI CUI screening','High','Apply TSA coating on CS 60-120 C lines','S. Khan (Integrity)','In Progress',true);
+ F(p2,r2,d2,'Method','Insulation jacketing seals not inspected','Inspection round','High','Add to inspection plan (RBI)','S. Khan (Integrity)','Open',true);
+ F(p2,r2,d2,'Man','Damaged cladding after scaffolding works','Walkdown photos','Medium','Scaffold handling controls','J. Costa (Marine)','Open',false);
+ F(p2,r2,d2,'Measurement','Corrosion monitoring (CML) points insufficient','CML review','Medium','Add UT CMLs on dead-legs','A. Rao (QC)','Done',true);
+ F(p2,r2,d2,'Mother Nature','Offshore splash & salt spray','Environmental data','Medium','Upgrade jacketing sealant','J. Costa (Marine)','Open',false);
+ F(p2,r2,d2,'Machine','Failed heat tracing causing wet insulation','Maintenance notification','Low','Repair heat tracing','M. Iyer (Mech.)','Open',false);
+ [['Weld hardness HV10 (sour service)','HV','',250,212,14],['Coating DFT - hull tank','µm',280,450,340,38],['UT wall thickness - production header','mm',10.5,'',12.4,.5]].forEach(p=>{for(let i=0;i<40;i++)D.hist.push({ref:p[0].startsWith('Coating')?wbs[1]:wbs[0],param:p[0],unit:p[1],lsl:p[2],usl:p[3],sample:i+1,value:+(p[4]+gs()*p[5]).toFixed(2),date:ds(40-i),inspector:own[i%4],rem:''})});
+ const VP='Vibration K-1001 DE bearing (mm/s RMS)',UT='UT wall thickness CML-12 (mm)',NR='Weld NDT rejection per batch (RT/UT)',CUI='CUI findings per inspection round';
+ for(let s=1;s<=30;s++)D.ctrl.push({ref:wbs[2],param:VP,unit:'mm/s',date:ds(60-s*2),sample:s,value:+(2.8+gs()*.25+(s>20?(s-20)*.09:0)+(s==9?1.1:0)).toFixed(2),n:1,owner:'M. Iyer (Mech.)',rem:s>26?'ISO 20816 alert 4.5 mm/s':''});
+ for(let s=1;s<=20;s++)for(let j=0;j<4;j++)D.ctrl.push({ref:wbs[3],param:UT,unit:'mm',date:ds(120-s*5),sample:s,value:+(12.6-s*.015+gs()*.12).toFixed(3),n:4,owner:'S. Khan (Integrity)',rem:''});
+ for(let s=1;s<=20;s++)D.ctrl.push({ref:wbs[0],param:NR,unit:'welds',date:ds(60-s*3),sample:s,value:s==13?11:Math.max(0,Math.round(2.5+gs()*1.3)),n:50,owner:'A. Rao (QC)',rem:''});
+ for(let s=1;s<=20;s++)D.ctrl.push({ref:wbs[0],param:CUI,unit:'findings',date:ds(120-s*6),sample:s,value:Math.max(0,Math.round(5+gs()*2)),n:1,owner:'S. Khan (Integrity)',rem:''});
+ [['Operating temperature (°C)','CUI corrosion rate (mpy)',.85,60,6,2,.12],['Months since overhaul','Mech. seal leakage (ml/h)',.8,2,3,3,.9],['PM compliance (%)','Unplanned trips per quarter',-.8,70,3,9,-.4],['Welder experience (yrs)','Weld repair rate (%)',-.1,3,3,6,-.1]].forEach(p=>{for(let i=0;i<20;i++){const x=+(p[3]+i*p[4]/3+gs()).toFixed(1),y=+(p[5]+p[6]*(x-p[3])*(Math.abs(p[2])>.5?1:.3)+gs()*(Math.abs(p[2])>.5?.6:2.2)).toFixed(2);D.scat.push({ref:'FPSO-01',xn:p[0],x,yn:p[1],y,date:ds(30-i),id:'S'+(i+1),rem:''})}});
+ const FL='Weld fabrication & NDT release - topsides spool',S=[['Start','Material receipt & MTC/PMI verification','QA/QC','PO + MTC','Released material','','Receiving inspection checklist','A. Rao (QC)'],['Process','Cutting, bevelling & fit-up','Fabrication Yard','Released material','Fitted joint','Misalignment / high-low','','S. Khan (Integrity)'],['Inspection','Fit-up inspection (hold point)','QA/QC','Fitted joint','Fit-up report','','ITP hold point','A. Rao (QC)'],['Process','Welding per WPS/PQR','Fabrication Yard','Fit-up report','Welded joint','Porosity / lack of fusion',' ','S. Khan (Integrity)'],['Inspection','NDT (RT / UT / MPI)','NDT Contractor','Welded joint','NDT report','Missed indication','NDT procedure + Level II review','A. Rao (QC)'],['Decision','NDT accepted?','QA/QC','NDT report','Accept / repair','','','A. Rao (QC)'],['Process','PWHT & hydrotest','Fabrication Yard','Accepted weld','Tested spool','Leak at flange','Test procedure','M. Iyer (Mech.)'],['Approval','Class / client release (MDR)','QA/QC','Dossier','Signed MDR','','Release note','J. Costa (Marine)'],['End','Load-out to FPSO','Marine','Released spool','Shipped spool','','','J. Costa (Marine)']];
+ S.forEach((r,i)=>D.flow.push({pid:'PR-FAB-01',ref:wbs[0],pname:FL,seq:i+1,step:r[1],dept:r[2],input:r[3],output:r[4],stype:r[0],decision:r[0]=='Decision'?'Pass?':'',fail:r[5],qc:r[6].trim(),owner:r[7],next:r[0]=='Decision'?7:'',x:'',y:''}));
+ const OH='Rotating equipment overhaul - K-1001',S2=[['Start','Work order raised (CMMS)','Planning','PM / notification','Approved WO','','',''],['Process','Isolate, depressurise & LOTO (PTW)','Operations','Approved WO','Safe work area','Incomplete isolation','Permit to work','M. Iyer (Mech.)'],['Process','Dismantle & inspect','Mechanical Maint.','Machine','Inspection findings','Damage during removal','',''],['Inspection','Dimensional & NDT check (shaft / seals)','Integrity (RBI)','Components','Measurements','Missed crack','API 617 limits table','S. Khan (Integrity)'],['Decision','Within API 617 limits?','Integrity (RBI)','Measurements','Reuse / replace','','','S. Khan (Integrity)'],['Process','Reassemble & align','Mechanical Maint.','Accepted parts','Assembled train','Soft foot / misalignment','','M. Iyer (Mech.)'],['Inspection','Laser alignment & seal leak test','Mechanical Maint.','Assembled train','Test record','','Alignment tolerance sheet','M. Iyer (Mech.)'],['Approval','Maintenance supervisor release','Mechanical Maint.','Test record','Signed WO','','Sign-off form','M. Iyer (Mech.)'],['End','Return to service','Operations','Signed WO','Machine in service','','','']];
+ S2.forEach((r,i)=>D.flow.push({pid:'PR-MNT-01',ref:wbs[2],pname:OH,seq:i+1,step:r[1],dept:r[2],input:r[3],output:r[4],stype:r[0],decision:r[0]=='Decision'?'Reuse?':'',fail:r[5],qc:r[6],owner:r[7],next:r[0]=='Decision'?6:'',x:'',y:''}));
+ return D}
+const COLS={
+check:[['pid','Project ID'],['pname','Project name'],['wbs','Activity / WBS'],['date','Inspection date','date'],['dept','Department'],['loc','Location'],['itype','Inspection type','sel',['Daily','Weekly','Monthly']],['cat','Defect category'],['desc','Defect description'],['cnt','Frequency / count','number'],['owner','Responsible person'],['rem','Remarks']],
+pareto:[['cat','Defect category'],['freq','Defect frequency','number'],['cost','Defect cost (optional)','number'],['period','Reporting period'],['ref','Project / activity ref']],
+fish:[['problem','Problem statement'],['ref','Project / activity'],['defect','Defect category'],['cat','Cause category','sel',SM6],['cause','Potential root cause'],['evidence','Supporting evidence'],['impact','Impact','sel',['High','Medium','Low']],['action','Corrective action'],['owner','Responsible person'],['target','Target date','date'],['verified','Verified root cause','chk'],['status','Action status','sel',['Open','In Progress','Done']]],
+hist:[['ref','Project / activity ref'],['param','Measurement parameter'],['unit','Unit'],['lsl','Spec min','number'],['usl','Spec max','number'],['sample','Sample no.','number'],['value','Measurement value','number'],['date','Date','date'],['inspector','Inspector'],['rem','Remarks']],
+ctrl:[['ref','Project / activity ref'],['param','Process / quality parameter'],['unit','Unit'],['date','Date','date'],['sample','Sample no.','number'],['value','Measurement','number'],['n','Sample size','number'],['owner','Process owner'],['rem','Remarks']],
+scat:[['ref','Project / activity ref'],['xn','Variable X name'],['x','X measurement','number'],['yn','Variable Y name'],['y','Y measurement','number'],['date','Date','date'],['id','Sample / ref ID'],['rem','Remarks']],
+flow:[['pid','Process ID'],['ref','Project / activity ref (links to Check Sheet WBS)'],['pname','Process name'],['seq','Sequence','number'],['step','Process step'],['dept','Responsible dept'],['input','Input'],['output','Output'],['stype','Symbol / stage','sel',['Start','Process','Decision','Inspection','Approval','End']],['decision','Decision point'],['fail','Potential failure point'],['qc','Quality control measure'],['owner','Responsible person'],['next','Next seq (optional)','number']]};
+const BLANK={check:{cnt:1,itype:'Daily',date:ds(0)},pareto:{},fish:{cat:'Man',impact:'Medium',status:'Open',verified:false},hist:{},ctrl:{n:1,date:ds(0)},scat:{date:ds(0)},flow:{stype:'Process'}};
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.data){S={data:sample(),cfg:{cur:'int',f:{check:{},hist:{},scat:{},fish:{},flow:{}},pareto:{src:'check',mode:'freq',thr:80},ctrl:{param:'Vibration K-1001 DE bearing (mm/s RMS)',types:{'Vibration K-1001 DE bearing (mm/s RMS)':'imr','UT wall thickness CML-12 (mm)':'xbar','Weld NDT rejection per batch (RT/UT)':'p','CUI findings per inspection round':'c'},run:7,trend:6,spec:{'Vibration K-1001 DE bearing (mm/s RMS)':{u:4.5,l:null},'UT wall thickness CML-12 (mm)':{l:10.5,u:null}}},check:{grain:'daily'},tabDD:false}}}
+const C=S.cfg,Dt=S.data;
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const CH={};
+function chart(id,cfg){const el=document.getElementById(id);if(!el||!window.Chart)return;const old=window.Chart.getChart?window.Chart.getChart(el):null;if(old)old.destroy();if(CH[id]){try{CH[id].destroy()}catch(e){}}if(!cfg.type)cfg.type='bar';cfg.options=Object.assign({responsive:true,maintainAspectRatio:false,animation:{duration:800,easing:'easeOutQuart'},plugins:{legend:{labels:{boxWidth:10,font:{size:10}}}}},cfg.options||{});CH[id]=new Chart(el,cfg)}
+const PAL=['#5B2C91','#00A3A3','#E67E22','#2E86DE','#C0392B','#7F8C8D','#27AE60','#D4AC0D'];
+const cv=id=>`<div class="qc"><canvas id="${id}"></canvas></div>`;
+const card=(t,b)=>`<div class="card glass"><h3>${t}</h3>${b}</div>`;
+const kpis=a=>`<div class="qk">${a.map(k=>`<div><b>${k[1]}</b><span>${k[0]}</span></div>`).join('')}</div>`;
+const tbl=(h,r)=>`<div class="qs"><table><thead><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${r.map(x=>`<tr>${x.map(c=>`<td style="padding:5px 8px">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const al=(m,c)=>`<div class="qa ${c||''}">${m}</div>`;
+const opts=(a,v,all)=>(all?`<option value="">${all}</option>`:'')+a.map(x=>`<option${String(x)===String(v)?' selected':''}>${esc(x)}</option>`).join('');
+/* ---------- analysis functions ---------- */
+const inR=(d,a,b)=>(!a||d>=a)&&(!b||d<=b);
+const chkRows=()=>{const f=C.f.check;return Dt.check.filter(r=>(!f.p||r.pname===f.p)&&(!f.d||r.dept===f.d)&&(!f.w||r.wbs===f.w)&&inR(r.date,f.a,f.b))};
+const grp=(rows,kf,vf)=>{const m={};rows.forEach(r=>{const k=kf(r)||'(blank)';m[k]=(m[k]||0)+vf(r)});return m};
+const cnt=r=>num(r.cnt)||0;
+function pareto(){const P=C.pareto;let m,cost={};
+ if(P.src==='check'){m=grp(Dt.check,r=>r.cat,cnt);const uc={};Dt.pareto.forEach(r=>{if(num(r.freq))uc[r.cat]=(num(r.cost)||0)/num(r.freq)});Object.keys(m).forEach(k=>cost[k]=(uc[k]||0)*m[k])}
+ else{m=grp(Dt.pareto,r=>r.cat,r=>num(r.freq)||0);cost=grp(Dt.pareto,r=>r.cat,r=>num(r.cost)||0)}
+ const val=k=>P.mode==='cost'?cost[k]:m[k];let rows=Object.keys(m).map(k=>({cat:k,freq:m[k],cost:cost[k]||0,v:val(k)||0})).sort((a,b)=>b.v-a.v);
+ const tot=sum(rows.map(r=>r.v));let c=0;rows.forEach(r=>{r.pct=tot?r.v/tot*100:0;const prev=c;c+=r.v;r.cum=tot?c/tot*100:0;r.vital=prev/(tot||1)*100<P.thr});return{rows,tot}}
+function hist(){const p=C.f.hist.param||(Dt.hist[0]||{}).param,rows=Dt.hist.filter(r=>r.param===p&&num(r.value)!=null),v=rows.map(r=>num(r.value));
+ if(!v.length)return{p,v:[],bins:[]};const n=v.length,mn=Math.min(...v),mx=Math.max(...v),k=Math.min(15,Math.max(5,Math.ceil(1+3.322*Math.log10(n)))),w=(mx-mn)/k||1;
+ const bins=Array.from({length:k},(_,i)=>({lo:mn+i*w,hi:mn+(i+1)*w,c:0}));v.forEach(x=>{bins[Math.min(k-1,Math.floor((x-mn)/w))].c++});
+ const r0=rows.find(r=>num(r.lsl)!=null||num(r.usl)!=null)||{},lsl=num(r0.lsl),usl=num(r0.usl),m=mean(v),s=sd(v);
+ const out=rows.filter(r=>(lsl!=null&&num(r.value)<lsl)||(usl!=null&&num(r.value)>usl)),cp=lsl!=null&&usl!=null&&s?(usl-lsl)/(6*s):null,cpk=s?Math.min(usl!=null?(usl-m)/(3*s):1e9,lsl!=null?(m-lsl)/(3*s):1e9):null;
+ return{p,unit:r0.unit||'',v,bins,w,lsl,usl,m,s,md:med(v),mn,mx,out,pin:(n-out.length)/n*100,cp,cpk:cpk>1e8?null:cpk,rows}}
+const A2=[1.88,1.023,.729,.577,.483,.419,.373,.337,.308],D3=[0,0,0,0,0,.076,.136,.184,.223],D4=[3.267,2.574,2.282,2.114,2.004,1.924,1.864,1.816,1.777];
+function vio(p,cl,u,l){const o=p.map(()=>''),R=C.ctrl.run,Tn=C.ctrl.trend;
+ p.forEach((x,i)=>{if(x>u[i]||x<l[i])o[i]='R1'});
+ for(let i=R-1;i<p.length;i++){const s=p.slice(i-R+1,i+1);if(s.every(x=>x>cl)||s.every(x=>x<cl))for(let j=i-R+1;j<=i;j++)o[j]=o[j]||'R2'}
+ for(let i=Tn-1;i<p.length;i++){const s=p.slice(i-Tn+1,i+1);let up=1,dn=1;for(let j=1;j<s.length;j++){if(!(s[j]>s[j-1]))up=0;if(!(s[j]<s[j-1]))dn=0}if(up||dn)for(let j=i-Tn+1;j<=i;j++)o[j]=o[j]||'R3'}return o}
+function ctrl(param,type){const rows=Dt.ctrl.filter(r=>r.param===param&&num(r.value)!=null);let L,P,cl,u,l,sec=null,dts;
+ if(!rows.length)return null;
+ if(type==='xbar'){const g={},dd={};rows.forEach(r=>{(g[r.sample]=g[r.sample]||[]).push(num(r.value));dd[r.sample]=r.date});const k=Object.keys(g).sort((a,b)=>a-b),arr=k.map(x=>g[x]),n=Math.min(10,Math.max(2,Math.round(mean(arr.map(a=>a.length)))));
+  P=arr.map(mean);const R=arr.map(a=>Math.max(...a)-Math.min(...a)),X=mean(P),Rb=mean(R);L=k;dts=k.map(x=>dd[x]);cl=X;u=P.map(()=>X+A2[n-2]*Rb);l=P.map(()=>X-A2[n-2]*Rb);
+  const su=R.map(()=>D4[n-2]*Rb),sl=R.map(()=>D3[n-2]*Rb);sec={t:'R chart (range)',L,P:R,cl:Rb,u:su,l:sl,v:vio(R,Rb,su,sl)}}
+ else{const rs=[...rows].sort((a,b)=>(a.date+String(1e6+(+a.sample))).localeCompare(b.date+String(1e6+(+b.sample))));L=rs.map(r=>r.sample);dts=rs.map(r=>r.date);const v=rs.map(r=>num(r.value));
+  if(type==='imr'){P=v;cl=mean(v);const mr=v.slice(1).map((x,i)=>Math.abs(x-v[i])),mb=mean(mr);u=v.map(()=>cl+2.66*mb);l=v.map(()=>cl-2.66*mb);const su=mr.map(()=>3.267*mb);sec={t:'Moving range chart',L:L.slice(1),P:mr,cl:mb,u:su,l:mr.map(()=>0),v:vio(mr,mb,su,mr.map(()=>0))}}
+  else if(type==='p'){const nn=rs.map(r=>num(r.n)||1);P=v.map((x,i)=>x/nn[i]);cl=sum(v)/sum(nn);u=nn.map(n=>cl+3*Math.sqrt(cl*(1-cl)/n));l=nn.map(n=>Math.max(0,cl-3*Math.sqrt(cl*(1-cl)/n)))}
+  else{P=v;cl=mean(v);u=v.map(()=>cl+3*Math.sqrt(cl));l=v.map(()=>Math.max(0,cl-3*Math.sqrt(cl)))}}
+ const vi=vio(P,cl,u,l),bad=vi.filter(x=>x).length+(sec?sec.v.filter(x=>x).length:0);return{L,P,cl,u,l,sec,vi,dts,bad,ok:!bad,type}}
+function corr(rows){const x=rows.map(r=>num(r.x)),y=rows.map(r=>num(r.y)),n=x.length;if(n<2)return{n};const mx=mean(x),my=mean(y);let sxy=0,sxx=0,syy=0;x.forEach((a,i)=>{sxy+=(a-mx)*(y[i]-my);sxx+=(a-mx)**2;syy+=(y[i]-my)**2});
+ const r=sxx&&syy?sxy/Math.sqrt(sxx*syy):null,b=sxx?sxy/sxx:0,a=my-b*mx,TC={1:12.71,2:4.3,3:3.18,4:2.78,5:2.57,6:2.45,7:2.36,8:2.31,9:2.26,10:2.23,12:2.18,15:2.13,20:2.09,25:2.06,30:2.04,60:2};
+ let sig=null;if(r!=null&&n>=5){const df=n-2,kk=Object.keys(TC).map(Number).filter(k=>k<=df).pop(),t=Math.abs(r)*Math.sqrt(df/(1-r*r||1e-12));sig=t>TC[kk]}
+ return{n,r,b,a,r2:r==null?null:r*r,sig,x,y,mx,my,xmin:Math.min(...x),xmax:Math.max(...x)}}
+const strength=r=>{const a=Math.abs(r);return a>=.7?'strong':a>=.4?'moderate':a>=.2?'weak':'negligible'};
+const flowRows=()=>{const p=C.f.flow.p||(Dt.flow[0]||{}).pname;return Dt.flow.filter(r=>r.pname===p).sort((a,b)=>(num(a.seq)||0)-(num(b.seq)||0))};
+const linked=r=>r.ref?sum(Dt.check.filter(c=>c.wbs&&c.wbs.toLowerCase().includes(String(r.ref).toLowerCase())).map(cnt)):0;
+function flowAn(rows){const gaps=[];rows.forEach(r=>{if(r.fail&&!r.qc)gaps.push(`Step ${r.seq} "${r.step}": failure point "${r.fail}" has no QC measure`)});
+ if(rows.length&&!rows.some(r=>r.stype==='Inspection'))gaps.push('No inspection stage defined in this process');if(rows.length&&!rows.some(r=>r.stype==='Approval'))gaps.push('No approval stage defined in this process');
+ rows.forEach(r=>{if(r.stype==='Decision'&&!r.next)gaps.push(`Decision step ${r.seq} has no "next" branch defined`)});
+ const L=rows.map(linked),mx=Math.max(0,...L),bott=rows.filter((r,i)=>mx>0&&L[i]>=.75*mx&&L[i]>0).map(r=>r.seq);return{gaps,bott,fails:rows.filter(r=>r.fail),L}}
+const grain=(d,g)=>{if(g==='monthly')return d.slice(0,7);if(g==='weekly'){const x=new Date(d);x.setDate(x.getDate()-((x.getDay()+6)%7));return x.toISOString().slice(0,10)}return d};
+/* ---------- grid ---------- */
+function grid(key,rows){const cols=COLS[key];return `<div class="qs qgd"><table><thead><tr><th>#</th>${cols.map(c=>`<th>${c[1]}</th>`).join('')}<th></th></tr></thead><tbody>${rows.map((r,i)=>`<tr data-i="${Dt[key].indexOf(r)}"><td>${i+1}</td>${cols.map(c=>`<td>${c[2]==='sel'?`<select data-k="${c[0]}">${opts(c[3],r[c[0]])}</select>`:c[2]==='chk'?`<input type="checkbox" data-k="${c[0]}"${r[c[0]]?' checked':''}>`:`<input data-k="${c[0]}" type="${c[2]||'text'}" value="${esc(r[c[0]])}">`}</td>`).join('')}<td><button class="qb d" data-del="${Dt[key].indexOf(r)}">✕</button></td></tr>`).join('')}</tbody></table></div>`}
+function bindGrid(key,onchg){const root=Q('#qcGrid');if(!root)return;root.onchange=e=>{const t=e.target,tr=t.closest('tr');if(!tr||!t.dataset.k)return;const r=Dt[key][+tr.dataset.i];r[t.dataset.k]=t.type==='checkbox'?t.checked:t.value;save();onchg(t.dataset.k)};
+ root.onclick=e=>{const b=e.target.closest('[data-del]');if(b){Dt[key].splice(+b.dataset.del,1);save();open(C.cur)}}}
+const filt=(id,l,h)=>`<div><label>${l}</label>${h}</div>`;
+/* ---------- tool modules ---------- */
+const M={};
+M.check={title:'Tool 1 · Check Sheet',purpose:'FPSO fabrication, hull/marine and static & rotating machinery maintenance: record NCRs, inspection failures and non-conformities; auto-totals and frequency distribution.',
+ bar(){const f=C.f.check,D=Dt.check;return filt('','Project',`<select data-f="p">${opts(uniq(D.map(r=>r.pname)),f.p,'All')}</select>`)+filt('','Department',`<select data-f="d">${opts(uniq(D.map(r=>r.dept)),f.d,'All')}</select>`)+filt('','Activity / WBS',`<select data-f="w">${opts(uniq(D.map(r=>r.wbs)),f.w,'All')}</select>`)+filt('','From',`<input type="date" data-f="a" value="${f.a||''}">`)+filt('','To',`<input type="date" data-f="b" value="${f.b||''}">`)+filt('','Trend',`<select data-g="1">${['daily','weekly','monthly'].map(x=>`<option${C.check.grain===x?' selected':''}>${x}</option>`).join('')}</select>`)},
+ dash(){const R=chkRows(),tot=sum(R.map(cnt)),bc=grp(R,r=>r.cat,cnt),ks=Object.keys(bc).sort((a,b)=>bc[b]-bc[a]);
+  const html=kpis([['Total inspections',R.length],['Total defects',tot],['Defect categories',ks.length],['Top category',ks[0]||'-']])+
+  `<div class="qg">${card('Defect frequency by category',cv('qcc1'))}${card('Defects by project activity',cv('qcc2'))}${card('Defect trend ('+C.check.grain+')',cv('qcc3'))}${card('Frequency distribution',tbl(['Category','Count','%','Cum %'],(()=>{let c=0;return ks.map(k=>{c+=bc[k];return[esc(k),bc[k],fx(bc[k]/tot*100,1),fx(c/tot*100,1)]})})()))}</div>`;
+  const draw=()=>{chart('qcc1',{type:'bar',data:{labels:ks,datasets:[{label:'Defects',data:ks.map(k=>bc[k]),backgroundColor:PAL[0]}]}});const bw=grp(R,r=>r.wbs,cnt);chart('qcc2',{type:'bar',data:{labels:Object.keys(bw),datasets:[{label:'Defects',data:Object.values(bw),backgroundColor:PAL[1]}]},options:{indexAxis:'y'}});
+   const bt=grp(R,r=>grain(r.date,C.check.grain),cnt),tk=Object.keys(bt).sort();chart('qcc3',{type:'line',data:{labels:tk,datasets:[{label:'Defects',data:tk.map(k=>bt[k]),borderColor:PAL[2],backgroundColor:PAL[2],tension:.25}]}})};
+  return{html,draw,sheet:[['Category','Count','%'],...ks.map(k=>[k,bc[k],+(bc[k]/tot*100).toFixed(1)])],txt:[`Inspections: ${R.length}`,`Total defects: ${tot}`,...ks.slice(0,5).map(k=>`${k}: ${bc[k]}`)]}}};
+M.pareto={title:'Tool 2 · Pareto Chart',purpose:'Rank defect categories, show cumulative % and isolate the vital few using a configurable 80/20 threshold.',
+ bar(){const P=C.pareto;return filt('','Data source',`<select data-p="src"><option value="check"${P.src==='check'?' selected':''}>Check Sheet (auto)</option><option value="manual"${P.src==='manual'?' selected':''}>Manual entry</option></select>`)+filt('','Analysis basis',`<select data-p="mode"><option value="freq"${P.mode==='freq'?' selected':''}>Frequency</option><option value="cost"${P.mode==='cost'?' selected':''}>Cost</option></select>`)+filt('','Threshold %',`<input type="number" data-p="thr" value="${P.thr}" min="1" max="100" style="width:70px">`)},
+ note:'Manual rows are used directly in Manual mode; in Check Sheet mode, cost = (manual cost ÷ manual frequency) × check-sheet frequency.',
+ dash(){const {rows,tot}=pareto(),P=C.pareto,u=P.mode==='cost'?'Cost':'Frequency',vf=rows.filter(r=>r.vital);
+  const html=kpis([['Total '+u.toLowerCase(),fx(tot,0)],['Categories',rows.length],['Vital few (≤'+P.thr+'%)',vf.length],['Top contributor',rows[0]?rows[0].cat:'-']])+`<div class="qg">${card('Pareto chart',cv('qcc1'))}${card('Top 5 defect categories',tbl(['Rank','Category',u,'%','Cum %'],rows.slice(0,5).map((r,i)=>[i+1,esc(r.cat),fx(r.v,0),fx(r.pct,1),fx(r.cum,1)])))}${card('Distribution by project / activity',cv('qcc2'))}${card('Priority improvement areas',vf.map(r=>al(`<b>${esc(r.cat)}</b> — ${fx(r.pct,1)}% of ${u.toLowerCase()} (cum ${fx(r.cum,1)}%). Focus corrective action here first.`)).join('')||'<div class="qn">No data</div>')}</div>`;
+  const draw=()=>{chart('qcc1',{data:{labels:rows.map(r=>r.cat),datasets:[{type:'bar',label:u,data:rows.map(r=>r.v),backgroundColor:rows.map(r=>r.vital?PAL[0]:'#C9BBE0'),yAxisID:'y'},{type:'line',label:'Cumulative %',data:rows.map(r=>r.cum),borderColor:PAL[2],backgroundColor:PAL[2],yAxisID:'y1'},{type:'line',label:P.thr+'% threshold',data:rows.map(()=>P.thr),borderColor:PAL[4],borderDash:[6,4],pointRadius:0,yAxisID:'y1'}]},options:{scales:{y:{beginAtZero:true},y1:{position:'right',min:0,max:100,grid:{drawOnChartArea:false}}}}});
+   const bw=P.src==='check'?grp(Dt.check,r=>r.wbs,cnt):grp(Dt.pareto,r=>r.ref,r=>P.mode==='cost'?num(r.cost)||0:num(r.freq)||0);chart('qcc2',{type:'doughnut',data:{labels:Object.keys(bw),datasets:[{data:Object.values(bw),backgroundColor:PAL}]}})};
+  return{html,draw,sheet:[['Rank','Category',u,'%','Cum %','Vital few'],...rows.map((r,i)=>[i+1,r.cat,r.v,+r.pct.toFixed(1),+r.cum.toFixed(1),r.vital?'Yes':'No'])],txt:rows.slice(0,5).map((r,i)=>`#${i+1} ${r.cat}: ${fx(r.v,0)} (${fx(r.pct,1)}%, cum ${fx(r.cum,1)}%)`)}}};
+M.fish={title:'Tool 3 · Cause-and-Effect (Fishbone) Diagram',purpose:'Capture multiple 6M causes per problem, highlight verified root causes and link them to corrective actions.',
+ bar(){const ps=uniq(Dt.fish.map(r=>r.problem));return filt('','Problem',`<select data-f="p">${opts(ps,C.f.fish.p||ps[0])}</select>`)},
+ rows(){const ps=uniq(Dt.fish.map(r=>r.problem)),p=C.f.fish.p||ps[0];return Dt.fish.filter(r=>r.problem===p)},
+ dash(){const R=M.fish.rows(),prob=R[0]?R[0].problem:'(no problem)',by=SM6.map(m=>R.filter(r=>r.cat===m)),ver=R.filter(r=>r.verified),unres=ver.filter(r=>r.status!=='Done');
+  const rec={};R.forEach(r=>{const k=String(r.cause).trim().toLowerCase();rec[k]=rec[k]||{c:0,t:r.cause};rec[k].c++});const rc=Object.values(rec).filter(x=>x.c>1);
+  const st={Open:0,'In Progress':0,Done:0};R.forEach(r=>st[r.status]=(st[r.status]||0)+1);
+  let svg=`<svg id="fbSvg" viewBox="0 0 1120 520" width="1120" height="520" xmlns="http://www.w3.org/2000/svg" font-family="Arial,sans-serif"><rect width="1120" height="520" fill="#fff"/><line x1="30" y1="260" x2="880" y2="260" stroke="#4B2378" stroke-width="4"/><rect x="880" y="225" width="225" height="70" rx="10" fill="#5B2C91"/><text x="992" y="256" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">${esc(prob.slice(0,30))}</text><text x="992" y="274" fill="#E7D9F7" font-size="11" text-anchor="middle">EFFECT / PROBLEM</text>`;
+  by.forEach((cs,bi)=>{const top=bi<3,x0=170+(bi%3)*250,y0=top?50:470,x1=x0+110;svg+=`<rect x="${x0-60}" y="${top?18:476}" width="130" height="26" rx="6" fill="#F1EAFA" stroke="#5B2C91"/><text x="${x0+5}" y="${top?36:494}" font-size="12" font-weight="700" fill="#4B2378" text-anchor="middle">${SM6[bi]} (${cs.length})</text><line x1="${x0}" y1="${y0+(top?-6:6)}" x2="${x1}" y2="260" stroke="#4B2378" stroke-width="2.5"/>`;
+   const gap=Math.min(26,170/Math.max(cs.length,1));cs.slice(0,7).forEach((c,i)=>{const y=top?85+i*gap:435-i*gap,x=x0+Math.abs(y-y0)*(110/210),ver=c.verified;svg+=`<line x1="${x-70}" y1="${y}" x2="${x}" y2="${y}" stroke="${ver?'#C0392B':'#9A8FB0'}" stroke-width="${ver?2.5:1.3}"/><text x="${x-74}" y="${y-3}" font-size="10.5" text-anchor="end" fill="${ver?'#C0392B':'#2B2240'}" font-weight="${ver?700:400}">${ver?'★ ':''}${esc(String(c.cause).slice(0,30))}</text>`})});
+  svg+=`</svg>`;
+  const html=kpis([['Causes logged',R.length],['Verified root causes',ver.length],['Unresolved verified',unres.length],['Actions done',st.Done||0]])+`<div class="card glass"><h3>Fishbone diagram — ${esc(prob)}</h3><div class="qsvg">${svg}</div><div class="qn">★ red = verified root cause. Edit the table below; the diagram redraws automatically.</div></div><div class="qg">${card('Root-cause distribution by 6M',cv('qcc1'))}${card('Corrective action status',cv('qcc2'))}${card('Major recurring causes',rc.length?tbl(['Cause','Occurrences'],rc.map(x=>[esc(x.t),x.c])):'<div class="qn">No cause appears more than once.</div>')}${card('Unresolved root causes & actions',unres.length?tbl(['Root cause','Action','Owner','Target','Status'],unres.map(r=>[esc(r.cause),esc(r.action),esc(r.owner),esc(r.target),esc(r.status)])):al('All verified root causes have completed actions.','ok'))}</div>${al('<b>RCA summary:</b> '+(R.length?`${R.length} potential causes across ${by.filter(b=>b.length).length} of 6 categories; ${ver.length} verified. Largest category: ${SM6[by.map(b=>b.length).indexOf(Math.max(...by.map(b=>b.length)))]}. ${unres.length} verified root cause(s) still need corrective action completion.`:'No data'))}`;
+  const draw=()=>{chart('qcc1',{type:'bar',data:{labels:SM6,datasets:[{label:'All causes',data:by.map(b=>b.length),backgroundColor:'#C9BBE0'},{label:'Verified',data:by.map(b=>b.filter(r=>r.verified).length),backgroundColor:PAL[4]}]}});chart('qcc2',{type:'doughnut',data:{labels:Object.keys(st),datasets:[{data:Object.values(st),backgroundColor:[PAL[4],PAL[2],PAL[6]]}]}})};
+  return{html,draw,sheet:[['Category','Causes','Verified'],...SM6.map((m,i)=>[m,by[i].length,by[i].filter(r=>r.verified).length])],txt:[`Problem: ${prob}`,`Causes: ${R.length}, verified: ${ver.length}, unresolved verified: ${unres.length}`,...SM6.map((m,i)=>`${m}: ${by[i].length}`)],svg:'fbSvg'}}};
+M.hist={title:'Tool 4 · Histogram',purpose:'Analyse distribution and variation, compare against specification limits and flag out-of-spec measurements.',
+ bar(){return filt('','Parameter',`<select data-f="param">${opts(uniq(Dt.hist.map(r=>r.param)),C.f.hist.param||(Dt.hist[0]||{}).param)}</select>`)},
+ rows(){const p=C.f.hist.param||(Dt.hist[0]||{}).param;return Dt.hist.filter(r=>r.param===p)},
+ dash(){const h=hist();if(!h.v.length)return{html:al('No numeric data for this parameter.'),draw(){},sheet:[],txt:[]};
+  const lab=h.bins.map(b=>fx((b.lo+b.hi)/2,2)),pdf=x=>Math.exp(-.5*((x-h.m)/h.s)**2)/(h.s*Math.sqrt(2*Math.PI)),inb=b=>{const c=(b.lo+b.hi)/2;return !((h.lsl!=null&&c<h.lsl)||(h.usl!=null&&c>h.usl))};
+  const html=kpis([['Samples',h.v.length],['Mean',fx(h.m)],['Median',fx(h.md)],['Std deviation',fx(h.s,3)],['Min / Max',fx(h.mn)+' / '+fx(h.mx)],['Within spec',fx(h.pin,1)+'%'],['Cp / Cpk',fx(h.cp)+' / '+fx(h.cpk)]])+`<div class="qg">${card('Histogram — '+esc(h.p)+' ('+esc(h.unit)+')',cv('qcc1'))}${card('Specification comparison',tbl(['Item','Value'],[['Spec min (LSL)',fx(h.lsl)],['Spec max (USL)',fx(h.usl)],['Observed min',fx(h.mn)],['Observed max',fx(h.mx)],['Out of spec',h.out.length],['Within spec %',fx(h.pin,1)],['Class width',fx(h.w,3)]]))}</div>${card('Measurements outside specification',h.out.length?tbl(['Sample','Value','Date','Inspector'],h.out.map(r=>[r.sample,r.value,r.date,esc(r.inspector)])):al('All measurements are within specification.','ok'))}`;
+  const draw=()=>chart('qcc1',{data:{labels:lab,datasets:[{type:'bar',label:'Frequency',data:h.bins.map(b=>b.c),backgroundColor:h.bins.map(b=>inb(b)?PAL[1]:PAL[4]),barPercentage:1,categoryPercentage:1},...(h.s?[{type:'line',label:'Normal fit',data:h.bins.map(b=>h.v.length*h.w*pdf((b.lo+b.hi)/2)),borderColor:PAL[0],pointRadius:0,tension:.35}]:[])]},options:{scales:{x:{title:{display:true,text:`Class midpoint (${h.unit}) — spec ${fx(h.lsl)} to ${fx(h.usl)}; red = outside spec`}}}}});
+  return{html,draw,sheet:[['Class low','Class high','Frequency'],...h.bins.map(b=>[+b.lo.toFixed(3),+b.hi.toFixed(3),b.c]),[],['Mean',h.m],['Median',h.md],['Std dev',h.s],['Within spec %',h.pin]],txt:[`Parameter: ${h.p}`,`n=${h.v.length} mean=${fx(h.m)} median=${fx(h.md)} sd=${fx(h.s,3)}`,`Spec ${fx(h.lsl)}-${fx(h.usl)}; within spec ${fx(h.pin,1)}%; Cp ${fx(h.cp)} Cpk ${fx(h.cpk)}`]}}};
+M.ctrl={title:'Tool 5 · Control Chart',purpose:'Monitor condition & process stability (vibration, UT wall thickness, NDT rejection, CUI findings) using statistical limits; alarm/spec limits (e.g. ISO 20816, min. wall) are shown separately.',
+ bar(){const c=C.ctrl,ps=uniq(Dt.ctrl.map(r=>r.param)),t=c.types[c.param]||'imr',sp=c.spec[c.param]||{};return filt('','Parameter',`<select data-c="param">${opts(ps,c.param)}</select>`)+filt('','Chart type',`<select data-c="type">${[['imr','Individuals & Moving Range'],['xbar','X-bar & R'],['p','p chart'],['c','c chart']].map(o=>`<option value="${o[0]}"${t===o[0]?' selected':''}>${o[1]}</option>`).join('')}</select>`)+filt('','Run rule (N same side)',`<input type="number" data-c="run" value="${c.run}" min="3" max="12" style="width:70px">`)+filt('','Trend rule (N points)',`<input type="number" data-c="trend" value="${c.trend}" min="3" max="12" style="width:70px">`)+filt('','Spec LSL (engineering)',`<input type="number" data-c="lsl" value="${sp.l??''}" style="width:80px">`)+filt('','Spec USL (engineering)',`<input type="number" data-c="usl" value="${sp.u??''}" style="width:80px">`)},
+ rows(){return Dt.ctrl.filter(r=>r.param===C.ctrl.param)},
+ dash(){const c=C.ctrl,type=c.types[c.param]||'imr',R=ctrl(c.param,type);if(!R)return{html:al('No data for this parameter.'),draw(){},sheet:[],txt:[]};const sp=c.spec[c.param]||{};
+  const alerts=[];R.vi.forEach((x,i)=>{if(x)alerts.push([R.L[i],R.dts[i],fx(R.P[i],3),x==='R1'?'Beyond control limit':x==='R2'?`Run of ${c.run}+ on one side of centre line`:`Trend of ${c.trend}+ points`])});
+  if(R.sec)R.sec.v.forEach((x,i)=>{if(x)alerts.push([R.sec.L[i],'-',fx(R.sec.P[i],3),'Variation chart: '+(x==='R1'?'beyond limit':'pattern')])});
+  const bym={};R.dts.forEach((d,i)=>{const m=String(d).slice(0,7);bym[m]=bym[m]||{p:[],v:0};bym[m].p.push(R.P[i]);if(R.vi[i])bym[m].v++});
+  const html=kpis([['Process status',R.ok?'IN CONTROL':'OUT OF CONTROL'],['Centre line',fx(R.cl,3)],['UCL',fx(R.u[0],3)],['LCL',fx(R.l[0],3)],['Signals',R.bad]])+(R.ok?al('Process appears statistically stable.','ok'):al(`<b>Potential process instability:</b> ${R.bad} signal(s) detected — investigate special causes.`,'r'))+`<div class="qn" style="margin:0 0 6px">Control limits (UCL/LCL) are computed from the process data. Specification limits (purple dashed) are engineering requirements and are not used to calculate control limits.</div><div class="qg">${card('Control chart ('+({imr:'Individuals',xbar:'X-bar',p:'p',c:'c'}[type])+')',cv('qcc1'))}${R.sec?card(R.sec.t,cv('qcc2')):''}${card('Out-of-control / pattern signals',alerts.length?tbl(['Sample','Date','Value','Signal'],alerts):al('No signals.','ok'))}${card('Historical process performance',tbl(['Month','Points','Mean','Signals'],Object.keys(bym).sort().map(m=>[m,bym[m].p.length,fx(mean(bym[m].p),3),bym[m].v])))}</div>`;
+  const ds=(l,d,col,dash,step)=>({label:l,data:d,borderColor:col,borderDash:dash,pointRadius:0,borderWidth:1.6,stepped:step||false,fill:false});
+  const draw=()=>{const ptc=R.vi.map(x=>x==='R1'?PAL[4]:x?PAL[2]:PAL[0]),sets=[{label:'Measurement',data:R.P,borderColor:PAL[0],backgroundColor:ptc,pointBackgroundColor:ptc,pointRadius:R.vi.map(x=>x?6:3.5),borderWidth:1.6},ds('Centre line',R.P.map(()=>R.cl),'#27AE60',[]),ds('UCL (control)',R.u,PAL[4],[6,4],true),ds('LCL (control)',R.l,PAL[4],[6,4],true)];
+   if(sp.u!=null&&sp.u!=='')sets.push(ds('USL (spec)',R.P.map(()=>+sp.u),'#8E44AD',[2,3]));if(sp.l!=null&&sp.l!=='')sets.push(ds('LSL (spec)',R.P.map(()=>+sp.l),'#8E44AD',[2,3]));
+   chart('qcc1',{type:'line',data:{labels:R.L,datasets:sets}});if(R.sec){const s=R.sec,sc=s.v.map(x=>x?PAL[4]:PAL[0]);chart('qcc2',{type:'line',data:{labels:s.L,datasets:[{label:s.t,data:s.P,borderColor:PAL[0],pointBackgroundColor:sc,borderWidth:1.6},ds('Centre',s.P.map(()=>s.cl),'#27AE60',[]),ds('UCL',s.u,PAL[4],[6,4]),ds('LCL',s.l,PAL[4],[6,4])]}})}};
+  return{html,draw,sheet:[['Sample','Date','Value','UCL','CL','LCL','Signal'],...R.L.map((l,i)=>[l,R.dts[i],R.P[i],R.u[i],R.cl,R.l[i],R.vi[i]])],txt:[`Parameter: ${c.param} (${type})`,`Status: ${R.ok?'IN CONTROL':'OUT OF CONTROL'}; signals: ${R.bad}`,`CL ${fx(R.cl,3)}  UCL ${fx(R.u[0],3)}  LCL ${fx(R.l[0],3)}`,...alerts.slice(0,8).map(a=>`Sample ${a[0]}: ${a[3]}`)],R}}};
+M.scat={title:'Tool 6 · Scatter Diagram',purpose:'Explore relationships between two quality variables. Correlation does not prove causation.',
+ bar(){const D=Dt.scat,f=C.f.scat,pairs=uniq(D.map(r=>r.xn+' | '+r.yn));return filt('','Variable pair (X | Y)',`<select data-f="pair">${opts(pairs,f.pair||pairs[0])}</select>`)+filt('','Project / activity',`<select data-f="ref">${opts(uniq(D.map(r=>r.ref)),f.ref,'All')}</select>`)+filt('','From',`<input type="date" data-f="a" value="${f.a||''}">`)+filt('','To',`<input type="date" data-f="b" value="${f.b||''}">`)},
+ rows(){const D=Dt.scat,f=C.f.scat,pair=f.pair||(D[0]?D[0].xn+' | '+D[0].yn:'');return D.filter(r=>r.xn+' | '+r.yn===pair&&(!f.ref||r.ref===f.ref)&&inR(r.date,f.a,f.b))},
+ dash(){const R=M.scat.rows(),s=corr(R),pair=R[0]?`${R[0].xn} vs ${R[0].yn}`:'';if(!R.length)return{html:al('No data.'),draw(){},sheet:[],txt:[]};
+  let it='Not enough data for correlation (need at least 5 paired points).';if(s.n>=5&&s.r!=null)it=`${strength(s.r)} ${s.r>0?'positive':'negative'} linear relationship (r = ${fx(s.r,3)}, R² = ${fx(s.r2,3)}). ${s.sig?'Statistically significant at ~95% confidence.':'Not statistically significant at ~95% confidence.'}`;
+  const html=kpis([['Observations',s.n],['Correlation r',fx(s.r,3)],['R²',fx(s.r2,3)],['Slope',fx(s.b,3)],['Intercept',fx(s.a,3)]])+`<div class="qg">${card('Scatter plot — '+esc(pair),cv('qcc1'))}${card('Relationship interpretation',al(`<b>${esc(it)}</b>`,s.sig?'':'')+al('Correlation does not prove causation. Confirm with designed experiments, process knowledge and root-cause analysis.')+`<div class="qn"><b>Areas for further investigation:</b> ${s.r!=null&&Math.abs(s.r)>=.4?'Check for lurking variables (shift, supplier, operator), examine outliers, and stratify by project/activity.':'Weak/no linear pattern — try other variables, non-linear relationships, or stratify the data.'}</div>`)}</div>`;
+  const draw=()=>chart('qcc1',{type:'scatter',data:{datasets:[{label:'Observations',data:R.map(r=>({x:num(r.x),y:num(r.y)})),backgroundColor:PAL[0]},...(s.r!=null?[{type:'line',label:'Trend line',data:[{x:s.xmin,y:s.a+s.b*s.xmin},{x:s.xmax,y:s.a+s.b*s.xmax}],borderColor:PAL[4],pointRadius:0,borderWidth:2}]:[])]},options:{scales:{x:{title:{display:true,text:R[0].xn}},y:{title:{display:true,text:R[0].yn}}}}});
+  return{html,draw,sheet:[['Statistic','Value'],['n',s.n],['r',s.r],['R2',s.r2],['Slope',s.b],['Intercept',s.a],['Interpretation',it]],txt:[pair,it,'Correlation does not prove causation.'],r:s}}};
+M.flow={title:'Tool 7 · Process Flowchart',purpose:'Visualise fabrication / ITP and maintenance workflows (hold points, NDT, PTW, MDR release); drag symbols, highlight gaps, failure points and defect-linked bottlenecks.',
+ bar(){const ps=uniq(Dt.flow.map(r=>r.pname));return filt('','Process',`<select data-f="p">${opts(ps,C.f.flow.p||ps[0])}</select>`)+`<div><button class="qb g" id="qcRL">Reset layout</button></div>`},
+ rows:flowRows,
+ dash(){const R=flowRows(),a=flowAn(R),n=R.length;const pos=R.map((r,i)=>{const row=Math.floor(i/4),col=row%2?3-i%4:i%4;return{x:num(r.x)!=null&&r.x!==''?+r.x:40+col*250,y:num(r.y)!=null&&r.y!==''?+r.y:30+row*130}});
+  const W=Math.max(1060,...pos.map(p=>p.x+220)),H=Math.max(300,...pos.map(p=>p.y+110));
+  const html=kpis([['Process steps',n],['Inspection stages',R.filter(r=>r.stype==='Inspection').length],['Approval stages',R.filter(r=>r.stype==='Approval').length],['Decision points',R.filter(r=>r.stype==='Decision').length],['Process gaps',a.gaps.length],['Failure points',a.fails.length]])+`<div class="card glass"><h3>Interactive flowchart (drag symbols to move)</h3><div class="qsvg"><svg id="flSvg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,sans-serif"></svg></div><div class="qn">Red dashed = QC gap · Orange = bottleneck (high linked defects from Check Sheet) · ⚠ = failure point</div></div><div class="qg">${card('Process gaps',a.gaps.length?a.gaps.map(g=>al(esc(g),'r')).join(''):al('No gaps detected.','ok'))}${card('Potential failure points & linked defects',tbl(['Step','Failure point','QC measure','Linked defects'],R.map((r,i)=>r.fail||a.L[i]?[r.seq+' '+esc(r.step),esc(r.fail),esc(r.qc)||'<b style="color:#C0392B">none</b>',a.L[i]]:null).filter(Boolean)))}${card('Improvement opportunities',(a.gaps.map(g=>'• Add/define controls: '+esc(g)).concat(a.bott.map(s=>`• Step ${s} is a bottleneck — high linked defects; add an in-process inspection`)).join('<br>'))||'<div class="qn">No opportunities identified.</div>')}</div>`;
+  const draw=()=>{const svg=Q('#flSvg');if(!svg)return;const bx=(i,t)=>{const p=pos[i],cx=p.x+85,cy=p.y+32;return{cx,cy}};
+   const render=()=>{let s='<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#4B2378"/></marker></defs><rect width="100%" height="100%" fill="#fff"/>';
+    R.forEach((r,i)=>{const tgt=num(r.next)!=null?R.findIndex(q=>+q.seq===+r.next):i+1;if(tgt<0||tgt>=n||r.stype==='End')return;const A=bx(i),B=bx(tgt),dx=B.cx-A.cx,dy=B.cy-A.cy,k=Math.min(85/Math.abs(dx||1e-9),32/Math.abs(dy||1e-9));
+     s+=`<line x1="${A.cx+dx*Math.min(k,.45)}" y1="${A.cy+dy*Math.min(k,.45)}" x2="${B.cx-dx*Math.min(Math.min(85/Math.abs(dx||1e-9),32/Math.abs(dy||1e-9))+.02,.45)}" y2="${B.cy-dy*Math.min(Math.min(85/Math.abs(dx||1e-9),32/Math.abs(dy||1e-9))+.02,.45)}" stroke="#4B2378" stroke-width="2" marker-end="url(#ar)"/>${r.stype==='Decision'&&num(r.next)!=null&&tgt!==i+1?`<text x="${(A.cx+B.cx)/2}" y="${(A.cy+B.cy)/2-4}" font-size="10" fill="#4B2378">${tgt<i?'No':'Yes'}</text>`:''}`});
+    R.forEach((r,i)=>{const p=pos[i],gap=r.fail&&!r.qc,bt=a.bott.includes(r.seq),fill=bt?'#FFE2BD':{Start:'#E8F5E9',End:'#E8F5E9',Process:'#EFF3FF',Decision:'#FFF8DC',Inspection:'#E6F7F7',Approval:'#F1EAFA'}[r.stype]||'#fff',st=gap?'#C0392B':'#4B2378',da=gap?'stroke-dasharray="5 3"':'',x=p.x,y=p.y;let sh;
+     if(r.stype==='Decision')sh=`<polygon points="${x+85},${y-4} ${x+170},${y+32} ${x+85},${y+68} ${x},${y+32}" fill="${fill}" stroke="${st}" stroke-width="2" ${da}/>`;
+     else if(r.stype==='Start'||r.stype==='End')sh=`<rect x="${x}" y="${y+6}" width="170" height="52" rx="26" fill="${fill}" stroke="${st}" stroke-width="2" ${da}/>`;
+     else if(r.stype==='Inspection')sh=`<rect x="${x}" y="${y+4}" width="170" height="56" rx="8" fill="${fill}" stroke="${st}" stroke-width="2" ${da}/><rect x="${x+4}" y="${y+8}" width="162" height="48" rx="5" fill="none" stroke="${st}"/>`;
+     else if(r.stype==='Approval')sh=`<polygon points="${x+16},${y+4} ${x+170},${y+4} ${x+154},${y+60} ${x},${y+60}" fill="${fill}" stroke="${st}" stroke-width="2" ${da}/>`;
+     else sh=`<rect x="${x}" y="${y+4}" width="170" height="56" fill="${fill}" stroke="${st}" stroke-width="2" ${da}/>`;
+     s+=`<g data-i="${i}" style="cursor:grab">${sh}<text x="${x+85}" y="${y+28}" font-size="10.5" text-anchor="middle" fill="#2B2240" font-weight="700">${r.seq}. ${esc(String(r.step).slice(0,24))}</text><text x="${x+85}" y="${y+43}" font-size="9" text-anchor="middle" fill="#6E687A">${esc(r.stype==='Decision'?r.decision:String(r.dept).slice(0,22))}</text>${r.fail?`<text x="${x+160}" y="${y+2}" font-size="14" fill="#E67E22">⚠</text>`:''}${gap?`<text x="${x+2}" y="${y+2}" font-size="9" fill="#C0392B" font-weight="700">NO QC</text>`:''}</g>`});svg.innerHTML=s};render();
+   let drag=null;svg.onpointerdown=e=>{const g=e.target.closest('[data-i]');if(!g)return;const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse()),i=+g.dataset.i;drag={i,ox:q.x-pos[i].x,oy:q.y-pos[i].y};svg.setPointerCapture(e.pointerId)};
+   svg.onpointermove=e=>{if(!drag)return;const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());pos[drag.i]={x:Math.max(0,q.x-drag.ox),y:Math.max(0,q.y-drag.oy)};render()};
+   svg.onpointerup=()=>{if(!drag)return;R.forEach((r,i)=>{r.x=Math.round(pos[i].x);r.y=Math.round(pos[i].y)});drag=null;save()}};
+  return{html,draw,sheet:[['Seq','Step','Type','Failure point','QC measure','Linked defects'],...R.map((r,i)=>[r.seq,r.step,r.stype,r.fail,r.qc,a.L[i]]),[],...a.gaps.map(g=>['GAP',g])],txt:[`Steps: ${n}; gaps: ${a.gaps.length}; failure points: ${a.fails.length}`,...a.gaps],svg:'flSvg'}}};
+/* ---------- integrated dashboard ---------- */
+M.int={title:'SEVEN BASIC QC TOOLS – INTEGRATED QUALITY DASHBOARD',purpose:'One-page summary across all seven tools. Open each tool from the QUALITY TOOLS menu to edit data.',
+ dash(){const tot=sum(Dt.check.map(cnt)),P=pareto(),vf=P.rows.filter(r=>r.vital),fr=Dt.fish,ver=fr.filter(r=>r.verified),un=ver.filter(r=>r.status!=='Done'),h=hist(),ps=uniq(Dt.ctrl.map(r=>r.param)),cs=ps.map(p=>({p,t:C.ctrl.types[p]||'imr',R:ctrl(p,C.ctrl.types[p]||'imr')})).filter(x=>x.R),fa=flowAn(Dt.flow.filter(r=>r.pname===(Dt.flow[0]||{}).pname));
+  const pairs=uniq(Dt.scat.map(r=>r.xn+' | '+r.yn)).map(k=>({k,s:corr(Dt.scat.filter(r=>r.xn+' | '+r.yn===k))})).filter(x=>x.s.r!=null);
+  const html=kpis([['Total defects',tot],['Inspections',Dt.check.length],['Vital few categories',vf.length],['Verified root causes',ver.length],['Unresolved RCA actions',un.length],['Within spec ('+esc(h.p||'-')+')',fx(h.pin,1)+'%'],['Unstable processes',cs.filter(c=>!c.R.ok).length+' / '+cs.length],['Process gaps',fa.gaps.length]])+
+  `<div class="qg">${card('Pareto — vital few',cv('qcc1'))}${card('Defect trend (monthly)',cv('qcc2'))}${card('Root causes by 6M',cv('qcc3'))}${card('Process stability (control charts)',tbl(['Parameter','Chart','Status','Signals'],cs.map(c=>[esc(c.p),c.t,c.R.ok?'<b style="color:#27AE60">In control</b>':'<b style="color:#C0392B">Out of control</b>',c.R.bad])))}${card('Scatter correlations',tbl(['Pair (X | Y)','r','Reading'],pairs.map(x=>[esc(x.k),fx(x.s.r,2),strength(x.s.r)+(x.s.r>0?' +':' −')])))}${card('Priority actions',[...vf.slice(0,3).map(r=>`Pareto: attack <b>${esc(r.cat)}</b> (${fx(r.pct,1)}%)`),...un.slice(0,3).map(r=>`RCA: complete "${esc(r.action)}" for ${esc(r.cause)}`),...cs.filter(c=>!c.R.ok).map(c=>`Control: investigate ${esc(c.p)}`),...fa.gaps.slice(0,2).map(esc)].map(x=>al(x)).join('')||al('No priority actions.','ok'))}</div><div class="qn">Correlation does not imply causation. Control limits are statistical; specification limits are engineering requirements.</div>`;
+  const draw=()=>{chart('qcc1',{data:{labels:P.rows.map(r=>r.cat),datasets:[{type:'bar',label:'Value',data:P.rows.map(r=>r.v),backgroundColor:P.rows.map(r=>r.vital?PAL[0]:'#C9BBE0')},{type:'line',label:'Cum %',data:P.rows.map(r=>r.cum),borderColor:PAL[2],yAxisID:'y1'}]},options:{scales:{y1:{position:'right',min:0,max:100,grid:{drawOnChartArea:false}}}}});
+   const bt=grp(Dt.check,r=>r.date.slice(0,7),cnt),tk=Object.keys(bt).sort();chart('qcc2',{type:'line',data:{labels:tk,datasets:[{label:'Defects',data:tk.map(k=>bt[k]),borderColor:PAL[2]}]}});chart('qcc3',{type:'bar',data:{labels:SM6,datasets:[{label:'Causes',data:SM6.map(m=>fr.filter(r=>r.cat===m).length),backgroundColor:PAL[3]}]}})};
+  return{html,draw,sheet:[['KPI','Value'],['Total defects',tot],['Vital few',vf.length],['Verified root causes',ver.length],['Unresolved actions',un.length],['Unstable processes',cs.filter(c=>!c.R.ok).length],['Process gaps',fa.gaps.length]],txt:[`Total defects ${tot}; vital few ${vf.length}`,`Verified root causes ${ver.length}; unresolved ${un.length}`,`Unstable processes ${cs.filter(c=>!c.R.ok).length}/${cs.length}`,`Process gaps ${fa.gaps.length}`]}}};
+/* ---------- view ---------- */
+const NAV=[['int','Integrated Quality Dashboard'],['check','1 · Check Sheet'],['pareto','2 · Pareto Chart'],['fish','3 · Cause-and-Effect (Fishbone)'],['hist','4 · Histogram'],['ctrl','5 · Control Chart'],['scat','6 · Scatter Diagram'],['flow','7 · Process Flowchart']];
+function gridRows(k){return M[k].rows?M[k].rows():Dt[k]}
+function open(k){C.cur=k;save();const m=M[k],root=Q('#v-qc');document.querySelectorAll('main .view').forEach(v=>v.style.display=v===root?'block':'none');const none=Q('#none');if(none)none.style.display='none';
+ document.querySelectorAll('#tabs .tab').forEach(b=>b.classList.remove('on'));Q('#qcBtn').classList.add('on');Q('#qcTabSel').value='qc:'+k;menu.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));
+ const isT=k!=='int';root.innerHTML=`<h2>${m.title}</h2><div class="qp">${m.purpose}</div><div class="qbar" id="qcBar">${m.bar?m.bar():''}${isT?`<button class="qb" id="qcAdd">＋ Add row</button>`:''}<button class="qb g" id="qcX">⇩ Export Excel</button><button class="qb g" id="qcP">⇩ Export PDF</button>${k==='int'?'<button class="qb g" id="qcXA">⇩ Export all tools (Excel)</button>':''}<button class="qb g" id="qcRs">↺ Reload sample data</button></div>${m.note?`<div class="qn">${m.note}</div>`:''}<div id="qcDash"></div>${isT?`<div class="card glass" style="margin-top:14px"><h3>Input template — editable (changes recalculate instantly)</h3><div id="qcGrid">${k==='pareto'&&C.pareto.src==='check'?'<div class="qn">Pareto is using Check Sheet data. Rows below supply optional cost (cost ÷ frequency = unit cost); switch to “Manual entry” to use them directly.</div>':''}${grid(k,gridRows(k))}</div></div>`:''}`;
+ const dr=()=>{const o=M[k].dash();Q('#qcDash').innerHTML=o.html;o.draw();Q('#qcDash')._o=o;return o};dr();
+ if(isT){bindGrid(k,()=>{const sc=Q('#qcGrid .qs').scrollTop;dr();if(k==='fish'||k==='hist'||k==='flow'||k==='ctrl'||k==='scat')void 0});
+  Q('#qcAdd').onclick=()=>{const b=Object.assign({},BLANK[k]),f=C.f[k]||{},rs=gridRows(k),last=rs[rs.length-1]||Dt[k][Dt[k].length-1];COLS[k].forEach(c=>{if(b[c[0]]==null)b[c[0]]=(last&&['pid','pname','problem','param','ref','xn','yn','unit','lsl','usl'].includes(c[0]))?last[c[0]]:c[2]==='number'?'':''});if(k==='flow'&&last)b.seq=(+last.seq||0)+1;Dt[k].push(b);save();open(k)}}
+ const bar=Q('#qcBar');bar.onchange=e=>{const t=e.target;if(t.dataset.f!=null){C.f[k][t.dataset.f]=t.value;save();open(k)}else if(t.dataset.p){C.pareto[t.dataset.p]=t.dataset.p==='thr'?+t.value||80:t.value;save();open(k)}else if(t.dataset.g){C.check.grain=t.value;save();open(k)}else if(t.dataset.c){const c=C.ctrl,d=t.dataset.c;if(d==='param')c.param=t.value;else if(d==='type')c.types[c.param]=t.value;else if(d==='run'||d==='trend')c[d]=+t.value||c[d];else{c.spec[c.param]=c.spec[c.param]||{};c.spec[c.param][d==='lsl'?'l':'u']=t.value===''?null:+t.value}save();open(k)}};
+ Q('#qcX').onclick=()=>xls([k]);Q('#qcP').onclick=()=>pdf(k);if(Q('#qcXA'))Q('#qcXA').onclick=()=>xls(['check','pareto','fish','hist','ctrl','scat','flow','int']);
+ Q('#qcRs').onclick=()=>{if(confirm('Replace all Quality Tools data with fresh sample data?')){S.data=sample();Object.keys(Dt).forEach(x=>delete Dt[x]);Object.assign(Dt,S.data);S.data=Dt;save();open(k)}};
+ if(Q('#qcRL'))Q('#qcRL').onclick=()=>{flowRows().forEach(r=>{r.x='';r.y=''});save();open(k)}}
+/* ---------- export ---------- */
+function xls(keys){if(!window.XLSX)return alert('Excel library unavailable');const wb=XLSX.utils.book_new(),cur=C.cur;
+ keys.forEach(k=>{if(k!=='int'){const rows=Dt[k].map(r=>{const o={};COLS[k].forEach(c=>o[c[1]]=r[c[0]]);return o});XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),(M[k].title.split('·')[1]||k).trim().slice(0,22)+' data')}
+  const keep=C.cur;C.cur=k;const o=M[k].dash();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(o.sheet.length?o.sheet:[['No data']]),(k==='int'?'Integrated':(M[k].title.split('·')[1]||k).trim().slice(0,19)+' analysis'));C.cur=keep});
+ XLSX.writeFile(wb,'Quality_'+(keys.length>1?'All_Tools':keys[0])+'_'+ds(0)+'.xlsx')}
+const svgPng=id=>new Promise(res=>{const s=document.getElementById(id);if(!s)return res(null);const w=s.viewBox.baseVal.width,h=s.viewBox.baseVal.height,x=new XMLSerializer().serializeToString(s),im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=w*1.5;c.height=h*1.5;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);res({d:c.toDataURL('image/png'),w,h})};im.onerror=()=>res(null);im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(x)});
+async function pdf(k){if(!(window.jspdf&&window.jspdf.jsPDF))return alert('PDF library unavailable');const o=Q('#qcDash')._o,d=new window.jspdf.jsPDF('p','pt','a4'),safe=s=>String(s).replace(/[^\x20-\x7E]/g,'-');let y=48;const pg=h=>{if(y+h>800){d.addPage();y=40}};
+ d.setFontSize(15);d.text(safe(M[k].title),40,y);y+=18;d.setFontSize(9);d.text('Generated '+ds(0),40,y);y+=18;d.setFontSize(10);(o.txt||[]).forEach(t=>{d.splitTextToSize(safe(t),510).forEach(l=>{pg(13);d.text(l,40,y);y+=13})});y+=6;
+ if(o.svg){const im=await svgPng(o.svg);if(im){const w=515,h=w*im.h/im.w;pg(h);d.addImage(im.d,'PNG',40,y,w,h);y+=h+10}}
+ document.querySelectorAll('#qcDash canvas').forEach(cn=>{const w=500,h=w*cn.height/cn.width;pg(h+6);d.addImage(cn.toDataURL('image/png'),'PNG',40,y,w,h);y+=h+10});d.save('Quality_'+k+'_'+ds(0)+'.pdf')}
+/* ---------- mount ---------- */
+const tabs=Q('#tabs'),main=Q('main');if(!tabs||!main)return;
+const wrap=document.createElement('div');wrap.className='qcdd';wrap.innerHTML='<button class="qcbtn" id="qcBtn" title="Seven Basic QC Tools">QUALITY TOOLS – SEVEN BASIC QC TOOLS ▾</button>';tabs.appendChild(wrap);
+const menu=document.createElement('div');menu.className='qcmenu';menu.innerHTML=NAV.map((n,i)=>(i==1?'<hr>':'')+`<button data-k="${n[0]}">${n[1]}</button>`).join('');document.body.appendChild(menu);
+wrap.onclick=e=>e.stopPropagation();
+Q('#qcBtn').onclick=e=>{const r=e.currentTarget.getBoundingClientRect();menu.style.left=Math.max(8,Math.min(r.left,innerWidth-310))+'px';menu.style.top=r.bottom+6+'px';menu.style.display=menu.style.display==='block'?'none':'block'};
+menu.onclick=e=>{const b=e.target.closest('button');if(b){menu.style.display='none';open(b.dataset.k)}};document.addEventListener('click',()=>menu.style.display='none');
+const v=document.createElement('div');v.id='v-qc';v.className='view';v.style.display='none';const foot=Q('#foot');foot?foot.parentNode.insertBefore(v,foot):main.appendChild(v);
+/* dropdown-mode for all project tabs */
+const sel=document.createElement('select');sel.id='qcTabSel';const tg=document.createElement('button');tg.className='pill ghost';tg.id='qcTg';tg.style.cssText='padding:7px 12px;font-size:12px';
+const hold=tabs.parentNode;hold.insertBefore(sel,tabs);hold.insertBefore(tg,sel);
+function fillSel(){sel.innerHTML='<optgroup label="Project tabs">'+[...tabs.querySelectorAll('.tab')].map(b=>`<option value="t:${b.dataset.t}">${b.textContent}</option>`).join('')+'</optgroup><optgroup label="QUALITY TOOLS – SEVEN BASIC QC TOOLS">'+NAV.map(n=>`<option value="qc:${n[0]}">${n[1]}</option>`).join('')+'</optgroup>'}
+function dd(){tabs.style.display=C.tabDD?'none':'';sel.style.display=C.tabDD?'inline-block':'none';tg.textContent=C.tabDD?'▦ Show tab bar':'▾ Dropdown tabs';const on=tabs.querySelector('.tab.on');if(on&&C.cur&&v.style.display!=='block')sel.value='t:'+on.dataset.t}
+tg.onclick=()=>{C.tabDD=!C.tabDD;save();fillSel();dd()};
+sel.onchange=()=>{const i=sel.value.indexOf(':'),a=sel.value.slice(0,i),b=sel.value.slice(i+1);if(a==='qc')open(b);else if(b.startsWith('k:')){v.style.display='none';Q('#qcBtn').classList.remove('on');window.KPI.open(b.slice(2));sel.value='t:'+b}else{v.style.display='none';Q('#qcBtn').classList.remove('on');window.setTab(b);sel.value='t:'+b}};
+tabs.addEventListener('click',e=>{if(e.target.closest('.tab')){Q('#qcBtn').classList.remove('on');v.style.display='none';setTimeout(()=>{const on=tabs.querySelector('.tab.on');if(on)sel.value='t:'+on.dataset.t},0)}},true);
+fillSel();dd();window.QC={open};
+})();
+</script>
+<script id="kpi-module">
+(function(){
+'use strict';
+const D0={"months":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep"],"ws":["MMC","MM Enrichment","MSQ","M&SC","Obsolescence","Asset Register","SPID"],"dept":{"MMC":"Materials Engineering","MM Enrichment":"Materials Engineering","MSQ":"Materials Engineering","M&SC":"Materials Engineering","Obsolescence":"Materials Engineering","Asset Register":"Reliability Engineering","SPID":"Reliability Engineering"},"deliv":{"MMC":[8911,19056,19516,15441,16830,14352,14421,19475,18556],"MM Enrichment":[3810,4612,5445,6300,6101,6212,6069,6214,6017],"MSQ":[395,412,435,456,432,415,471,453,463],"M&SC":[25,25,25,25,25,25,25,25,25],"Obsolescence":[762,922,1089,1260,1220,1242,1214,1243,1743],"Asset Register":[7979,11136,16668,16907,16472,21798,25457,24761,19868],"SPID":[2174,2880,3686,3760,3875,2930,2835,3024,3012]},"recyc":{"MMC":[2.3,7.1,4.7,4,1.3,0.9,1.8,2.6,2.5],"MM Enrichment":[1.2,1.6,1.4,0.1,0.1,0.1,0.4,0.6,0.5],"MSQ":[3.2,2.5,2.1,1.6,2.6,3.7,1.2,2.5,2.6],"M&SC":[0,0,0,0,0,0,0,0,0],"Obsolescence":[1.3,1.1,0.8,0.1,1.1,0.1,0.3,0.5,0.3],"Asset Register":[3.5,3,2,1,2,2,3,5,3],"SPID":[8,3,1.5,8,6,2,2,11,4]},"prod":{"MMC":[105.1,98.32,101.01,106.45,104.25,105.39,98.2,93.2,94.8],"MM Enrichment":[92.3,95.23,93.41,98.12,96.66,96.34,93.11,94.23,98.12],"MSQ":[71,66,55,61,79,69,68,74,80],"M&SC":[89,100,94,93,98,100,100,97,100],"Obsolescence":[99,97,98,96,99,96,98,95,97],"Asset Register":[90,96.67,98.33,100.83,100,100,100,126.67,113.33],"SPID":[57.5,80,97.5,102.5,77.5,75,80,87.5,90]},"otd":{"MMC":[87,86,82,91,92,91,82,94,91],"MM Enrichment":[78,76,79,57,61,60,59,61,74],"MSQ":[69,68,68,65,67,69,76,82,80],"M&SC":[91,95,94,90,94,91,96,99,98],"Obsolescence":[100,100,100,100,100,100,100,100,100],"Asset Register":null,"SPID":null},"q":{"quality":{"MMC":{"Critical - Internal":[4.27,1.01,2.24],"Functional - Internal":[0.13,0.05,0.07],"Critical - External":[null,0.13,0.05],"Functional - External":[null,0.01,0.01]},"MM Enrichment":{"Critical - Internal":[5.5,1.77,3.2],"Functional - Internal":[0.16,0.15,0.48],"Critical - External":[null,0.13,0.52],"Functional - External":[null,0,0.08]},"MSQ":{"Critical - Internal":[1.21,0.6,0.31],"Functional - Internal":[1.26,1.21,0.7],"Critical - External":[null,null,null],"Functional - External":[null,null,null]},"M&SC":{"Critical - Internal":[0,0,0],"Functional - Internal":[0,0,0],"Critical - External":[null,null,null],"Functional - External":[null,null,null]},"Obsolescence":{"Critical - Internal":[0.7,0.05,0.2],"Functional - Internal":[0.8,0.05,0.2],"Critical - External":[null,0,0],"Functional - External":[null,0,0]},"Asset Register":{"Critical":[3,0,5],"Functional":[4,0,0]},"SPID":{"Critical":[10,2,2],"Functional":[2,8,2]}},"otd":{"MMC":{"Rush":[96.89,85.96,68.4],"Standard":[95,89.96,87.93]},"MM Enrichment":{"Standard":[78.26,59.58,61.2]},"MSQ":{"Query resolution":[68,66.97,80.8]},"M&SC":{"Material availability analysis":[93.4,91.36,98.2]},"Obsolescence":{"Standard - GR request":[100,100,100]}},"util":{"MMC":[75.93,99.3,99.93],"MM Enrichment":[11,20.45,36],"MSQ":[7.4,7.69,10.71],"M&SC":[7.4,7.4,8.92],"Obsolescence":[13,20,13.5],"Asset Register":[65,64,65],"SPID":[38,61,64]},"prod":{"MMC":[101.46,105.38,95.02],"MM Enrichment":[93.59,97.01,95.2],"MSQ":[68,73,66.92],"M&SC":[94.24,96,100],"Obsolescence":[98,97,97.4],"Asset Register":[59,57,49],"SPID":[3.9,3.8,3.4]},"std_head":{"MMC":[60.14,69.56,73.75],"MM Enrichment":[100,100,100],"MSQ":[88,88,87],"M&SC":[100,100,100],"Obsolescence":[51,55.07,57.64],"Asset Register":[89,82,70],"SPID":[76,80,55]},"std":{"MMC":[["Requestor leveraging UI5 Portal to submit create/change/extend/SS update",40,[31.95,39.72,39.97]],["Information sufficient / supporting docs (hold rate <5%/month)",25,[17.15,16.55,17.61]],["Equipment info provided to link BOM (requests w/o BOM <10%/month)",25,[7.8,7.79,10.21]],["Requestor responds to clarification (<3 business days)",10,[3.24,5.5,5.96]]],"MM Enrichment":[["Requestor leveraging UI5 Portal for enrichment request",25,[25,25,25]],["Information sufficient / supporting docs",25,[25,22,25]],["Part No. validated from vendor/manufacturer website (else mark Obsolete)",25,[25,25,25]],["Requestor responds to clarification",25,[25,25,25]]],"MSQ":[["Requestor leveraging UI5/Control Center to submit spec query",30,[30,30,30]],["Information sufficient; PR No. to track demand",30,[30,30,30]],["ACONEX/LAN folder has all required documents",40,[28,28,27]]],"M&SC":[["Utilization of UI5/Control Center to track material status comments",50,[50,50,50]],["Circulation of material availability analysis to stakeholders",50,[50,50,50]]],"Obsolescence":[["Part No. validated from vendor / manufacturer website; docs in repository",70,[51,55.07,57.64]],["Active part number updated in SAP",30,[0,0,0]]],"Asset Register":[["Leveraging UI5 / CMMS portal for tickets/requests",20,[20,20,null]],["Latest engineering documentation in repository (Aconex, LAN)",20,[20,20,null]],["Alignment with site on Asset Register as per Global Process (GPH) & Equipment Class Library",20,[20,20,null]],["Asset Register with complete attributes of Technical Characteristics",20,[9,3,null]],["Asset Register developed with IFC / As-Built drawings & documents",10,[10,9,null]],["Load / no-load criteria and tag identifiers per site/facility guidelines",10,[10,10,null]]],"SPID":[["Leveraging UI5 or CMMS portal for tickets/requests",20,[20,20,null]],["Latest engineering documentation available in repositories",20,[0,0,null]],["Alignment with site on BOMs as per sparing strategy & baseline document",20,[20,20,null]],["Incorporating spares consumption history from maintenance work orders in BOMs",20,[16,10,null]],["BOMs structured under material assemblies and sub-assemblies",20,[20,20,null]]]},"value":{"MMC":{"label":"DOAG value (duplicate MMs in same plant SOH x unit price)","q":[33853.15,428719.38,null],"items":{"Duplicate MMs - DOAG":[33853.15,428719.38,null],"Critical spares linked with equipment - production loss":[85689900,16812900,null]}},"MM Enrichment":{"label":"Inventory visibility / reduction in total inventory","q":[10700000.0,5720000.0,13930000.0],"items":{"Dormant & overstock visibility (SOH x unit price)":[9814103.16,5334588.59,null],"Improvement in material movement - SOH before enrichment x unit price":[617543.9,326037.45,null],"Reduction in total inventory value":[343042.23,78457.03,0],"Deduplication - inventory visibility":[0,894.69,null],"Deduplication - value saving":[0,41819.15,null]}},"MSQ":{"label":"Planner effort savings (+ demand deletion, duplicate deletion, duplicate query savings)","q":[7170000.0,9260000.0,8170000.0],"items":{"Planner effort savings":[6600000.0,9140000.0,null],"Demand deletion":[522266,43716,null],"Deletion of duplicate MMs":[48478,43686,null],"Duplicate query value savings":[3915,4320,null]}},"M&SC":{"label":"Planner effort saving","q":[75646,109913,122257],"items":{}},"Obsolescence":{"label":"Production loss avoided (obsolete spares linked to critical equipment)","q":[53190,155160,2140380],"items":{}},"Asset Register":{"label":"Value saving (A x $100, B x $75, C x $60 per hour saved)","q":[1353555,2906610,4560290],"items":{}},"SPID":{"label":"Planner effort saved ((0.5A | 1.5B | 3C)/4 x $200/hr)","q":[668700,1430650,693625],"items":{}}},"headline":{"quality":2.07,"prod":92.17,"otd":84.29}},"kpis":[{"k":"quality","n":"Quality","d":"Monitor operational efficiency and defect levels","f":"Defect % = (Recycled MMs or Equipment / Total Delivered) x 100","t":"<5% critical, <10% functional (lower is better)"},{"k":"prod","n":"Productivity","d":"Measures total output in a given timeframe","f":"Productivity % = ((No. of deliverables x Estimated timeline) / Actual booked) x 100","t":"> 95%"},{"k":"otd","n":"OTD","d":"Tracks whether Material / Asset meet agreed-upon SLAs","f":"OTD % = (SLA Met / Total delivered) x 100","t":"> 95%"},{"k":"value","n":"Value Capture","d":"Measurable business revenue, cost savings, or strategic advantage","f":"DOAG, overstock visibility, inventory reduction, production loss, planner effort saving, value saving (see formulas)","t":"USD per quarter"},{"k":"util","n":"Utilization","d":"Measures how efficiently and actively the workflow is utilized by us for the task","f":"Utilization % = (Processed MMs or Equipment by us / Total MMs or Equipment created in SAP) x 100","t":"0-100%"},{"k":"std","n":"Standardization","d":"Measure the uniform rules, guidelines and features to ensure consistency and compatibility","f":"Weighted sum of criteria: proper document available, proper equipment provided/linked, global procedure followed","t":"100% = fully standardized"},{"k":"acc","n":"Input Accuracy","d":"Accuracy and completeness of the input data behind every KPI","f":"Reported vs recalculated variance, completeness, range checks","t":"variance <= 0.5 pt"}],"vf":[["DOAG value","Duplicate MMs available in same plant SOH x unit price"],["Overstock visibility","Dormant or Overstock MMs SOH x unit price"],["Reduction in total inventory","(MM SOH before enrichment - MM SOH after enrichment) x 100"],["Production loss","Probability x identified Obsolete MMs 10% lead time x Production loss per day"],["Planner effort saving","No. of query resolved x 5% of avg. lead time x planner cost per day"],["Value saving","No. of duplicate query identified x 4.5 hours x Bill rate per hour"]]};
+const $=s=>document.querySelector(s),KEY='piq_kpi_v1';
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let DS;try{DS=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!DS||!DS.deliv)DS=JSON.parse(JSON.stringify(D0));
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(DS))}catch(e){}};
+const MO=DS.months,WSN=DS.ws,Q3=['Q1','Q2','Q3'];
+const COL={'MMC':'#E8749F','MM Enrichment':'#B5379F','MSQ':'#4B4BAA','M&SC':'#7CC229','Obsolescence':'#D4A800','Asset Register':'#7F7F7F','SPID':'#0070C0'};
+const TABS=[['quality','Quality'],['prod','Productivity'],['otd','OTD'],['value','Value Capture'],['util','Utilization'],['std','Standardization'],['acc','Input Accuracy']];
+const st={tab:'quality',dept:'All',ws:'All',qtr:'All'};
+const num=v=>v===''||v==null||isNaN(+v)?null:+v,mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null,sum=a=>a.reduce((x,y)=>x+y,0);
+const f2=(v,d=2)=>v==null?'-':(+v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}),pc=(v,d=2)=>v==null?'-':f2(v,d)+'%';
+const usd=v=>v==null?'-':Math.abs(v)>=1e6?'$'+f2(v/1e6,2)+'M':'$'+Math.round(v).toLocaleString('en-US');
+const vis=()=>WSN.filter(w=>(st.dept==='All'||DS.dept[w]===st.dept)&&(st.ws==='All'||st.ws===w));
+/* ---- slide calculations ---- */
+const rec=(w,i)=>PIQ.M.rec(DS,w,i);  /* engine */
+const defect=(w,i)=>PIQ.M.defect(DS,w,i);  /* engine */
+const sla=(w,i)=>PIQ.M.sla(DS,w,i);  /* engine */
+const otdp=(w,i)=>PIQ.M.otd(DS,w,i);  /* engine */
+const prodp=(w,i)=>PIQ.M.prod(DS,w,i);  /* engine */
+const ser=(w,k)=>PIQ.M.series(DS,w,k);  /* engine */
+const avgK=(ws,k)=>{const a=[];ws.forEach(w=>ser(w,k).forEach(v=>{if(v!=null)a.push(v)}));return mean(a)};
+const stdCalc=(w,qi)=>PIQ.M.std(DS,w,qi);  /* engine */
+const stdVal=(w,qi)=>PIQ.M.stdv(DS,w,qi);  /* engine */
+/* ---- charts ---- */
+const CH={};function chart(id,cfg){const el=document.getElementById(id);if(!el||!window.Chart)return;const o=window.Chart.getChart?window.Chart.getChart(el):null;if(o)o.destroy();if(CH[id]){try{CH[id].destroy()}catch(e){}}
+ cfg.options=Object.assign({responsive:true,maintainAspectRatio:false,animation:{duration:800,easing:'easeOutQuart'},plugins:{legend:{labels:{boxWidth:9,font:{size:10}}}}},cfg.options||{});CH[id]=new Chart(el,cfg)}
+const tbl=(h,r)=>`<div class="kt"><table><thead><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${r.map(x=>`<tr>${x.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const kk=a=>`<div class="kk">${a.map(x=>`<div><b>${x[1]}</b><span>${x[0]}</span></div>`).join('')}</div>`;
+const KD=k=>DS.kpis.find(x=>x.k===k);
+const fbox=k=>{const d=KD(k);return `<div class="kf"><b>${d.n}</b> — ${esc(d.d)}<br><b>Calculation:</b> ${esc(d.f)} &nbsp;|&nbsp; <b>Target:</b> ${esc(d.t)}</div>`};
+let draws=[];
+function multiples(kind,ws){draws=[];return `<div class="km">${ws.map((w,i)=>{const id='kp_'+kind+'_'+i;
+ if(kind==='otd'&&!DS.otd[w])return `<div class="kc"><h4>${w}</h4><div class="yts" style="height:190px">Yet to Start</div></div>`;
+ draws.push(()=>{const x=ser(w,kind);
+  if(kind==='quality')chart(id,{data:{labels:MO,datasets:[{type:'bar',label:'Deliverable',data:DS.deliv[w],backgroundColor:'#1F5C7A',yAxisID:'y'},{type:'line',label:'Recycle %',data:x.map(v=>+v.toFixed(2)),borderColor:'#E67E22',backgroundColor:'#E67E22',yAxisID:'y1'}]},options:{scales:{y:{beginAtZero:true},y1:{position:'right',beginAtZero:true,grid:{drawOnChartArea:false}}}}});
+  else chart(id,{type:'line',data:{labels:MO,datasets:[{label:kind==='prod'?'Productivity %':'OTD %',data:x.map(v=>v==null?null:+v.toFixed(2)),borderColor:COL[w],backgroundColor:COL[w],tension:.25},{label:'Target 95%',data:MO.map(()=>95),borderColor:'#C0392B',borderDash:[5,4],pointRadius:0}]}})});
+ return `<div class="kc"><h4>${w}</h4><div class="kh"><canvas id="${id}"></canvas></div></div>`}).join('')}</div>`}
+const stat=(v,t,lowGood)=>v==null?'<span class="na">n/a</span>':((lowGood?v<t:v>=t)?`<span class="ok">${f2(v)}%</span>`:`<span class="bad">${f2(v)}%</span>`);
+/* ---- tabs ---- */
+const V={};
+V.quality=()=>{const ws=vis(),avg=avgK(ws,'quality'),tot=sum(ws.map(w=>sum(DS.deliv[w]))),rc=sum(ws.map(w=>sum(MO.map((_,i)=>rec(w,i)))));
+ const rows=[];ws.forEach(w=>{const q=DS.q.quality[w];Object.keys(q).forEach(m=>{const t=(w==='Asset Register'||w==='SPID')&&m==='Functional'?10:5;rows.push([w,m,...q[m].map(v=>v==null?'<span class="na">-</span>':stat(v,t,true)),'<'+t+'%'])})});
+ return fbox('quality')+kk([['Avg Recycled %',pc(avg)],['Total delivered',Math.round(tot).toLocaleString()],['Recycled MMs / equipment',rc.toLocaleString()],['Workstreams shown',ws.length]])+multiples('quality',ws)+`<div class="kx"><h3>Quarterly defect % by category (Critical / Functional, Internal / External)</h3>${tbl(['Workstream','Category','Q1','Q2','Q3','Target'],rows)}</div>`};
+V.prod=()=>{const ws=vis(),a=avgK(ws,'prod'),all=[];ws.forEach(w=>ser(w,'prod').forEach(v=>all.push(v)));
+ const rows=ws.map(w=>[w,...DS.q.prod[w].map(v=>f2(v,w==='SPID'?1:2)+(w==='Asset Register'?' tags/day':w==='SPID'?' BOM/day/FTE':'%')),w==='Asset Register'?'60 tags/day':w==='SPID'?'4 BOM/day/FTE':'>95%']);
+ return fbox('prod')+kk([['Avg Productivity %',pc(a)],['Best month',pc(Math.max(...all))],['Lowest month',pc(Math.min(...all))],['Months below 95%',all.filter(v=>v<95).length+' / '+all.length]])+multiples('prod',ws)+`<div class="kx"><h3>Quarterly productivity</h3>${tbl(['Workstream','Q1','Q2','Q3','Target'],rows)}</div>`};
+V.otd=()=>{const ws=vis(),a=avgK(ws,'otd'),rows=[];ws.forEach(w=>{const o=DS.q.otd[w];if(!o)rows.push([w,'Request priority','<span class="na">Yet to start</span>','','','>95%']);else Object.keys(o).forEach(m=>rows.push([w,m,...o[m].map(v=>stat(v,95,false)),'>95%']))});
+ return fbox('otd')+kk([['Avg OTD %',pc(a)],['Workstreams reporting',ws.filter(w=>DS.otd[w]).length+' / '+ws.length],['Yet to start',ws.filter(w=>!DS.otd[w]).join(', ')||'-']])+multiples('otd',ws)+`<div class="kx"><h3>Quarterly OTD by request priority (% met SLA)</h3>${tbl(['Workstream','Request priority','Q1','Q2','Q3','Target'],rows)}</div>`};
+V.value=()=>{const ws=vis(),tq=[0,1,2].map(i=>sum(ws.map(w=>DS.q.value[w].q[i]||0)));
+ const cards=ws.map(w=>`<div class="vc"><u>${DS.q.value[w].label.split('(')[0]}</u>${DS.q.value[w].q.map((v,i)=>`<div>${Q3[i]}<br><b>${usd(v)}</b></div>`).join('')}<em style="background:${COL[w]}">${w}</em></div>`).join('');
+ const items=[];ws.forEach(w=>Object.entries(DS.q.value[w].items).forEach(([k,v])=>items.push([w,esc(k),...v.map(usd)])));
+ draws=[()=>chart('kp_val',{type:'bar',data:{labels:ws,datasets:Q3.map((q,i)=>({label:q,data:ws.map(w=>DS.q.value[w].q[i]),backgroundColor:['#00A3A3','#2E86DE','#5B2C91'][i]}))},options:{scales:{y:{type:'logarithmic',title:{display:true,text:'USD (log scale)'}}}}})];
+ return fbox('value')+kk([['Q1 value captured',usd(tq[0])],['Q2 value captured',usd(tq[1])],['Q3 value captured',usd(tq[2])],['Cumulative Q1-Q3',usd(sum(tq))]])+`<div class="kx"><h3>Value capture by workstream</h3><div class="vcs">${cards}</div></div><div class="kx"><h3>Quarterly comparison</h3><div class="kh" style="height:260px"><canvas id="kp_val"></canvas></div></div><div class="kx"><h3>Value items (components)</h3>${tbl(['Workstream','Item','Q1','Q2','Q3'],items)}</div><div class="kx"><h3>Value capture formulas (slide 3)</h3>${tbl(['Value item','Formula'],DS.vf.map(x=>[`<b>${x[0]}</b>`,esc(x[1])]))}</div>`};
+const grouped=(id,get,ws,title)=>draws.push(()=>chart(id,{type:'bar',data:{labels:ws,datasets:Q3.map((q,i)=>({label:q,data:ws.map(w=>get(w,i)),backgroundColor:['#00A3A3','#2E86DE','#5B2C91'][i]}))},options:{scales:{y:{beginAtZero:true,max:100,title:{display:true,text:title}}}}}));
+V.util=()=>{const ws=vis(),q=[0,1,2].map(i=>mean(ws.map(w=>DS.q.util[w][i])));draws=[];grouped('kp_u',(w,i)=>DS.q.util[w][i],ws,'Utilization %');
+ return fbox('util')+kk([['Avg Q1',pc(q[0])],['Avg Q2',pc(q[1])],['Avg Q3',pc(q[2])]])+`<div class="kx"><h3>Utilization by workstream</h3><div class="kh" style="height:280px"><canvas id="kp_u"></canvas></div></div><div class="kx"><h3>Quarterly utilization</h3>${tbl(['Workstream','Q1','Q2','Q3','Note'],ws.map(w=>[w,...DS.q.util[w].map(v=>pc(v)),'Site not leveraging BTC = 0%; leveraging BTC = 100%']))}</div>`};
+V.std=()=>{const ws=vis(),q=[0,1,2].map(i=>mean(ws.map(w=>stdVal(w,i))));draws=[];grouped('kp_s',(w,i)=>stdVal(w,i),ws,'Standardization %');
+ const rows=[];ws.forEach(w=>{DS.q.std[w].forEach(c=>rows.push([w,esc(c[0]),c[1]+'%',...c[2].map(v=>v==null?'<span class="na">-</span>':f2(v))]));rows.push([`<b>${w} total</b>`,'<i>Recalculated (sum of criteria) / reported</i>','100%',...[0,1,2].map(i=>{const c=stdCalc(w,i),h=DS.q.std_head[w][i];return `<b>${c==null?'n/a':f2(c)}</b> / ${f2(h)}`})])});
+ return fbox('std')+kk([['Avg Q1',pc(q[0])],['Avg Q2',pc(q[1])],['Avg Q3',pc(q[2])]])+`<div class="kx"><h3>Standardization by workstream</h3><div class="kh" style="height:280px"><canvas id="kp_s"></canvas></div></div><div class="kx"><h3>Criteria, weightage and achieved points</h3>${tbl(['Workstream','Criterion','Weightage','Q1','Q2','Q3'],rows)}</div>`};
+/* ---- input accuracy ---- */
+function checks(){const out=[],T=.5,all=WSN;
+ [['Avg Recycled % (slide headline)',D0.q.headline.quality,avgK(all,'quality')],['Avg Productivity % (slide headline)',D0.q.headline.prod,avgK(all,'prod')],['Avg OTD % (slide headline)',D0.q.headline.otd,avgK(all,'otd')]].forEach(c=>out.push([c[0],c[1],c[2],c[2]-c[1],Math.abs(c[2]-c[1])<=T?'OK':'CHECK']));
+ WSN.forEach(w=>[0,1,2].forEach(i=>{const c=stdCalc(w,i),h=DS.q.std_head[w][i];out.push([`Standardization ${w} ${Q3[i]}`,h,c,c==null?null:c-h,c==null?'No breakdown':Math.abs(c-h)<=T?'OK':'CHECK'])}));
+ WSN.forEach(w=>{let b=0,r=0;MO.forEach((_,i)=>{[DS.deliv[w][i],DS.recyc[w][i],DS.prod[w][i]].forEach(v=>{if(num(v)==null)b++});const p=num(DS.prod[w][i]),c=num(DS.recyc[w][i]),o=DS.otd[w]?num(DS.otd[w][i]):null;if((p!=null&&(p<0||p>130))||(c!=null&&(c<0||c>100))||(o!=null&&(o<0||o>100)))r++});out.push([`Completeness & range - ${w}`,b,r,null,b+r===0?'OK':'CHECK'])});
+ return out}
+const score=()=>{const c=checks(),ok=c.filter(x=>x[4]==='OK').length,bad=c.filter(x=>x[4]==='CHECK').length;return ok+bad?ok/(ok+bad)*100:100};
+V.acc=()=>{const c=checks(),ws=vis();
+ const rows=c.map(x=>[esc(x[0]),x[1]==null?'-':f2(x[1]),x[2]==null?'-':f2(x[2]),x[3]==null?'-':f2(x[3]),`<span class="${x[4]==='OK'?'ok':x[4]==='CHECK'?'bad':'na'}">${x[4]}</span>`]);
+ let g='';ws.forEach(w=>MO.forEach((m,i)=>g+=`<tr data-w="${esc(w)}" data-i="${i}"><td>${w}</td><td>${m}</td><td><input data-k="deliv" value="${DS.deliv[w][i]??''}"></td><td><input data-k="recyc" value="${DS.recyc[w][i]??''}"></td><td><input data-k="prod" value="${DS.prod[w][i]??''}"></td><td>${DS.otd[w]?`<input data-k="otd" value="${DS.otd[w][i]??''}">`:'<span class="na">Yet to start</span>'}</td></tr>`));
+ return fbox('acc')+kk([['Input accuracy score',f2(score(),1)+'%'],['Checks OK',c.filter(x=>x[4]==='OK').length],['Checks to review',c.filter(x=>x[4]==='CHECK').length]])+`<div class="kx"><h3>Reported vs recalculated, completeness & range checks (tolerance ±0.5 pt)</h3><div id="kpChecks">${tbl(['Check','Reported / blanks','Recalculated / out-of-range','Variance','Status'],rows)}</div><div class="kd">Rows flagged CHECK mean the input does not reproduce the slide headline (e.g. Enrichment Q2 criteria total 97 vs 100; SPID Q2 70 vs 80) — verify against the source deck.</div></div><div class="kx"><h3>Monthly inputs (editable — every tab recalculates)</h3><div class="kt kg" id="kpGrid"><table><thead><tr><th>Workstream</th><th>Month</th><th>Deliverables</th><th>Recycle %</th><th>Productivity %</th><th>OTD %</th></tr></thead><tbody>${g}</tbody></table></div></div>`};
+/* ---- shell ---- */
+function head(){const all=WSN,v3=sum(all.map(w=>DS.q.value[w].q[2]||0));const cards=[['quality','Quality · Avg recycled',pc(avgK(all,'quality')),'target <5%'],['prod','Productivity',pc(avgK(all,'prod')),'target >95%'],['otd','On-Time Delivery',pc(avgK(all,'otd')),'target >95%'],['value','Value Capture (Q3)',usd(v3),'USD, all workstreams'],['util','Utilization (avg Q3)',pc(mean(all.map(w=>DS.q.util[w][2]))),'0-100%'],['std','Standardization (avg Q3)',pc(mean(all.map(w=>stdVal(w,2)))),'100% = standardized'],['acc','Input Accuracy',f2(score(),1)+'%','checks passed']];
+ $('#kpiHead').innerHTML=cards.map(c=>`<div class="hc ${st.tab===c[0]?'on':''}" data-k="${c[0]}"><span>${c[1]}</span><b>${c[2]}</b><i>${c[3]}</i></div>`).join('')}
+function paint(){draws=[];const root=$('#v-kpi'),t=TABS.find(x=>x[0]===st.tab);const wsOpts=WSN.filter(w=>st.dept==='All'||DS.dept[w]===st.dept);if(st.ws!=='All'&&!wsOpts.includes(st.ws))st.ws='All';
+ root.innerHTML=`<h2>${t[1]}</h2><div class="kd">Maintenance System KPIs · Materials Engineering (MMC, MM Enrichment, MSQ, M&SC, Obsolescence) · Reliability Engineering (Asset Register, SPID)</div>
+ <div class="kb"><div><label>Department</label><select id="kD">${['All','Materials Engineering','Reliability Engineering'].map(d=>`<option${d===st.dept?' selected':''}>${d}</option>`).join('')}</select></div><div><label>Workstream</label><select id="kW"><option>All</option>${wsOpts.map(w=>`<option${w===st.ws?' selected':''}>${w}</option>`).join('')}</select></div>
+ <button class="kbtn g" id="kX">⇩ Export Excel</button><button class="kbtn g" id="kP">⇩ Export PDF</button><button class="kbtn g" id="kR">↺ Reset to slide data</button></div><div id="kBody">${V[st.tab]()}</div>`;
+ draws.forEach(d=>d());head();
+ $('#kD').onchange=e=>{st.dept=e.target.value;paint()};$('#kW').onchange=e=>{st.ws=e.target.value;paint()};
+ $('#kX').onclick=xls;$('#kP').onclick=pdf;$('#kR').onclick=()=>{if(confirm('Reset all KPI inputs to the slide data?')){DS=JSON.parse(JSON.stringify(D0));save();paint()}};
+ const g=$('#kpGrid');if(g)g.onchange=e=>{const t=e.target,tr=t.closest('tr');if(!tr||!t.dataset.k)return;const w=tr.dataset.w,i=+tr.dataset.i,v=num(t.value);DS[t.dataset.k][w][i]=v;save();const c=checks();$('#kpChecks').innerHTML=tbl(['Check','Reported / blanks','Recalculated / out-of-range','Variance','Status'],c.map(x=>[esc(x[0]),x[1]==null?'-':f2(x[1]),x[2]==null?'-':f2(x[2]),x[3]==null?'-':f2(x[3]),`<span class="${x[4]==='OK'?'ok':x[4]==='CHECK'?'bad':'na'}">${x[4]}</span>`]));head()}}
+function open(k){st.tab=k;document.querySelectorAll('main .view').forEach(v=>v.style.display=v.id==='v-kpi'?'block':'none');const n=$('#none');if(n)n.style.display='none';const eb=$('#tabExportBar');if(eb)eb.style.display='none';
+ document.querySelectorAll('#tabs .tab').forEach(b=>b.classList.toggle('on',b.dataset.t==='k:'+k));const q=$('#qcBtn');if(q)q.classList.remove('on');paint()}
+function xls(){if(!window.XLSX)return alert('Excel library unavailable');const wb=XLSX.utils.book_new(),ws=vis();
+ const m=[['Workstream','Month','Deliverables','Recycle %','Recycled MMs','Quality Defect %','Productivity %','OTD %']];ws.forEach(w=>MO.forEach((x,i)=>m.push([w,x,DS.deliv[w][i],DS.recyc[w][i],rec(w,i),+defect(w,i).toFixed(2),DS.prod[w][i],DS.otd[w]?DS.otd[w][i]:'Yet to start'])));
+ const q=[['Workstream','Quarter','Utilization %','Productivity','Standardization % (calc)','Standardization % (reported)','Value capture USD']];ws.forEach(w=>[0,1,2].forEach(i=>q.push([w,Q3[i],DS.q.util[w][i],DS.q.prod[w][i],stdCalc(w,i),DS.q.std_head[w][i],DS.q.value[w].q[i]])));
+ XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(m),'Monthly');XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(q),'Quarterly');XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Check','Reported','Recalculated','Variance','Status'],...checks()]),'Input accuracy');XLSX.writeFile(wb,'Maintenance_KPIs_'+st.tab+'.xlsx')}
+function pdf(){if(!(window.jspdf&&window.jspdf.jsPDF))return alert('PDF library unavailable');const d=new window.jspdf.jsPDF('p','pt','a4');let y=48;d.setFontSize(15);d.text('Maintenance System KPIs - '+TABS.find(x=>x[0]===st.tab)[1],40,y);y+=22;d.setFontSize(10);
+ document.querySelectorAll('#kBody .kk div').forEach(e=>{d.text((e.querySelector('span').textContent+': '+e.querySelector('b').textContent).replace(/[^\x20-\x7E]/g,'-'),40,y);y+=14});y+=6;let col=0,rowH=0;
+ document.querySelectorAll('#kBody canvas').forEach(c=>{const w=250,h=w*c.height/c.width;if(col===0&&y+h>800){d.addPage();y=40}d.addImage(c.toDataURL('image/png'),'PNG',40+col*265,y,w,h);rowH=Math.max(rowH,h);if(col===1){y+=rowH+10;rowH=0}col=1-col});d.save('Maintenance_KPIs_'+st.tab+'.pdf')}
+/* ---- mount ---- */
+const tabs=$('#tabs'),shell=$('.shell');if(!tabs)return;
+const mainEl=document.querySelector('main'),v=document.createElement('div');v.id='v-kpi';v.className='view';v.style.display='none';const foot=$('#foot');foot?foot.parentNode.insertBefore(v,foot):mainEl.appendChild(v);
+const kh=document.createElement('section');kh.id='kpiHead';const k0=$('#kpis');if(k0){k0.style.display='none';k0.parentNode.insertBefore(kh,k0)}else mainEl.parentNode.insertBefore(kh,mainEl);
+kh.onclick=e=>{const c=e.target.closest('.hc');if(c)open(c.dataset.k)};
+tabs.addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;const t=b.dataset.t||'';if(t.startsWith('k:')){e.stopImmediatePropagation();e.preventDefault();open(t.slice(2))}else{const eb=$('#tabExportBar');if(eb)eb.style.display='';document.querySelectorAll('#kpiHead .hc').forEach(c=>c.classList.remove('on'))}},true);
+const bR=window.render;window.render=function(){const r=bR.apply(this,arguments);if(st.tab&&$('#tabs .tab.on')&&$('#tabs .tab.on').dataset.t.startsWith('k:')){document.querySelectorAll('main .view').forEach(x=>x.style.display=x.id==='v-kpi'?'block':'none')}return r};
+window.KPI={open,DS:()=>DS,st:()=>st,checks,score,paint,save};
+const first=document.querySelector('#tabs .tab[data-t^="k:"]');setTimeout(()=>open('quality'),50);
+})();
+</script>
+<style id="piq-v8-style">
+/* v8: bigger graphics, overview, drill-down, transitions */
+.cv{height:340px}.cv.sm{height:230px}.trend-cv{height:400px}.pq-chart{height:340px}
+.gr.g3,.pq-charts-2{grid-template-columns:repeat(auto-fit,minmax(440px,1fr))}.pq-charts-3{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+#v-kpi .kh{height:260px}#v-kpi .km{grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:14px}#v-qc .qc{height:340px}#v-qc .qg{grid-template-columns:repeat(auto-fit,minmax(440px,1fr))}
+@keyframes piqIn{from{opacity:0;transform:translateY(14px) scale(.992)}to{opacity:1;transform:none}}
+@keyframes piqPop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+main .view{animation:piqIn .5s cubic-bezier(.2,.7,.2,1)}
+.card,.pq-card,.kx,.pq-stat{transition:transform .25s,box-shadow .25s}.card:hover,.pq-card:hover,.kx:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(91,44,145,.12)}
+.tab{transition:all .25s}.tab:hover:not(.on){background:#F1EAFA;color:#5B2C91}
+#piqOv{grid-area:kpis;display:grid;gap:16px}
+#kpiHead{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))!important;gap:12px!important}
+#kpiHead .hc{padding:16px 16px 14px!important;border-radius:18px!important;transition:all .25s!important}#kpiHead .hc b{font-size:30px!important;margin:4px 0}#kpiHead .hc:hover{transform:translateY(-3px)}
+.ovh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.ovh h2{font:700 20px 'Space Grotesk',sans-serif;color:#4B2378}.ovh p{font-size:12px;color:#777184;margin-top:2px}
+.ovb{border:1px solid #DDD5E8;background:#F5F2F8;color:#5B2C91;border-radius:10px;padding:7px 13px;font:600 12px Inter,sans-serif;transition:.2s}.ovb:hover{background:#5B2C91;color:#fff}
+.ovgs{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.ovc{background:#fff;border:1px solid #E4DFEC;border-radius:20px;padding:16px 18px;box-shadow:0 5px 18px rgba(43,29,65,.045);animation:piqPop .55s both;transition:transform .25s,box-shadow .25s}.ovc:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(91,44,145,.14)}
+.ovc h3{font:600 14px 'Space Grotesk',sans-serif;color:#3D3150}.ovc .s{font-size:11px;color:#858093;margin:2px 0 8px}.ovw{position:relative;height:360px}.ovgs .ovw{height:170px}.ovgs .ovc{text-align:center;padding:12px 14px}.ovgs .ovc h3{font-size:12.5px}
+.ovgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.ovgrid .w2{grid-column:span 2}
+@media(max-width:1150px){.ovgrid{grid-template-columns:1fr 1fr}}@media(max-width:760px){.ovgrid{grid-template-columns:1fr}.ovgrid .w2{grid-column:auto}}
+.ovi{display:flex;gap:10px;flex-wrap:wrap}.ovi span{display:inline-flex;gap:8px;align-items:center;padding:9px 14px;border-radius:14px;font-size:12px;font-weight:600;border:1px solid;animation:piqPop .5s both;transition:transform .2s}.ovi span[data-o]{cursor:pointer}.ovi span:hover{transform:translateY(-2px)}
+.ovi .g{background:rgba(0,168,143,.09);color:#007a69;border-color:rgba(0,168,143,.3)}.ovi .a{background:rgba(242,169,0,.11);color:#8a5d00;border-color:rgba(242,169,0,.35)}.ovi .r{background:rgba(217,75,104,.09);color:#b8324e;border-color:rgba(217,75,104,.3)}
+#piqDrill{position:fixed;inset:0;background:rgba(34,25,46,.5);backdrop-filter:blur(4px);display:none;z-index:85;place-items:center}#piqDrill.on{display:grid}
+#piqDrill .dm{width:min(1320px,97vw);height:min(93vh,940px);overflow:auto;background:#F4F5FA;border-radius:24px;padding:22px 24px;box-shadow:0 30px 80px rgba(20,10,40,.4);animation:piqPop .35s both}
+.dh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:14px}.dh h2{font:700 24px 'Space Grotesk',sans-serif;color:#4B2378}.dh p{font-size:12px;color:#777184;margin-top:2px}
+.dch{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}.dch button{padding:7px 14px;border-radius:20px;border:1px solid #DDD5E8;background:#fff;font:600 12px Inter,sans-serif;color:#625D70;transition:.2s}.dch button.on,.dch button:hover{background:#5B2C91;color:#fff;border-color:#5B2C91}
+.dt{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}.dt div{background:#fff;border:1px solid #E4DFEC;border-radius:16px;padding:12px 14px;border-left:5px solid var(--c,#5B2C91);animation:piqPop .45s both}.dt b{display:block;font:700 24px 'Space Grotesk',sans-serif;color:#252238}.dt span{font-size:10.5px;color:#777184;text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+.dg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.dg .w2{grid-column:span 2}.dg .ovw{height:310px}@media(max-width:1000px){.dg{grid-template-columns:1fr}.dg .w2{grid-column:auto}}
+</style>
+<style id="piq-v8-fix">
+#kpiHead .hc{display:block!important;height:auto!important;min-height:96px;text-align:left!important;font:inherit!important;color:inherit}
+#kpiHead .hc span{display:block;font-size:11.5px;line-height:1.25}#kpiHead .hc i{margin-top:2px}
+</style>
+<script id="piq-v8-layer">
+(function(){'use strict';
+const SCH={"Maint_KPI_Monthly": [["w", "Workstream"], ["m", "Month"], ["deliv", "Deliverables"], ["recyc", "Recycle %"], ["prod", "Productivity"], ["otd", "OTD %"]], "Maint_KPI_Quarterly": [["w", "Workstream"], ["q", "Quarter"], ["util", "Utilization %"], ["prod", "Productivity"], ["std", "Standardization %"], ["val", "Value Capture (USD)"]], "Projects": [["id", "Project ID"], ["name", "Project Name"], ["category", "Department"], ["workflow", "Workflow"], ["region", "Region"], ["manager", "Manager"], ["client", "Client"], ["start", "Start Date"], ["due", "Due Date"], ["actual", "Actual Finish"], ["status", "Status"], ["progress", "Progress %"], ["spi", "SPI"], ["cpi", "CPI"], ["ftr", "FTR %"], ["contract", "Contract Value (USD)"], ["budget", "Budget (USD)"], ["actualCost", "Actual Cost (USD)"], ["managerEmail", "Manager Email"], ["teamEmail", "Team Email"], ["notes", "Notes"]], "Tasks": [["id", "Task ID"], ["title", "Title"], ["project", "Project ID"], ["category", "Department"], ["workflow", "Workflow"], ["region", "Region"], ["owner", "Owner"], ["stage", "Stage"], ["start", "Start Date"], ["due", "Due Date"], ["progress", "Progress %"], ["status", "Status"], ["blocker", "Blocker"]], "Resources": [["id", "Emp ID"], ["name", "Name"], ["category", "Department"], ["workflow", "Workflow"], ["region", "Region"], ["role", "Role"], ["skills", "Skills"], ["project", "Project ID"], ["allocation", "Allocation %"], ["capacity", "Capacity %"]], "Revenue": [["id", "Txn ID"], ["date", "Date"], ["project", "Project ID"], ["category", "Department"], ["workflow", "Workflow"], ["region", "Region"], ["type", "Type"], ["reference", "Reference"], ["amount", "Amount (USD)"], ["notes", "Notes"]], "Escalations": [["id", "Esc ID"], ["project", "Project ID"], ["category", "Department"], ["workflow", "Workflow"], ["region", "Region"], ["issue", "Issue"], ["level", "Level"], ["owner", "Owner"], ["date", "Date"], ["status", "Status"], ["rootCause", "Root Cause / Action"]]},CW={'MMC':'#E8749F','MM Enrichment':'#B5379F','MSQ':'#4B4BAA','M&SC':'#7CC229','Obsolescence':'#D4A800','Asset Register':'#7F7F7F','SPID':'#0070C0'},RC={g:'#00A88F',a:'#F2A900',r:'#D94B68',n:'#B9B3C6'};
+const E=PIQ,M=E.M,CHs={},esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),f1=v=>v==null?'–':(+v).toFixed(1),r2=v=>v==null?null:+(+v).toFixed(2),g=id=>document.getElementById(id);
+const ANIM={duration:800,easing:'easeOutQuart'};
+function mk(id,cfg){const el=g(id);if(!el)return;if(CHs[id])CHs[id].destroy();const o=cfg.options=cfg.options||{};o.responsive=true;o.maintainAspectRatio=false;o.animation=ANIM;o.plugins=Object.assign({legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8,font:{size:11}}}},o.plugins);CHs[id]=new Chart(el,cfg)}
+const AXS=(t,rg)=>({x:{grid:{display:false},ticks:{font:{size:11}}},y:Object.assign({grid:{color:'rgba(91,44,145,.09)'},border:{display:false},beginAtZero:!rg,title:t?{display:true,text:t}:undefined},rg||{})});
+const vals=a=>a.flat().filter(x=>x!=null&&isFinite(x)),Y=(...a)=>{const v=vals(a);if(!v.length)return null;return{min:Math.max(0,Math.floor((Math.min(...v)-6)/5)*5),max:Math.min(110,Math.ceil((Math.max(...v)+4)/5)*5)}},Yb=(...a)=>{const v=vals(a);if(!v.length)return null;return{min:Math.max(0,Math.floor((Math.min(...v)-14)/5)*5)}};
+const ln=(l,d,c,x={})=>Object.assign({label:l,data:d,borderColor:c,backgroundColor:c+'22',tension:.38,borderWidth:2.6,pointRadius:3,pointHoverRadius:7,pointBackgroundColor:c,pointBorderColor:'#fff',pointBorderWidth:2},x);
+const tgt=(n,v)=>({label:'Target',data:Array(n).fill(v),borderColor:'#D94B68',borderDash:[6,5],pointRadius:0,borderWidth:1.5,fill:false});
+function gauge(id,fill,col,txt,sub){fill=Math.max(0,Math.min(100,fill||0));mk(id,{type:'doughnut',data:{labels:['',''],datasets:[{data:[fill,100-fill],backgroundColor:[col,'#EAE6EF'],borderWidth:0,borderRadius:[12,0]}]},options:{rotation:-90,circumference:180,cutout:'74%',plugins:{legend:{display:false},tooltip:{enabled:false},ctext:{text:txt,half:true,size:26,sub,glow:col}},layout:{padding:{top:4,bottom:26}}}})}
+const K=()=>window.KPI&&KPI.DS?KPI:null;
+function ctx(){const k=K();if(!k)return null;const D=k.DS(),S=k.st(),WS=D.ws.filter(w=>(S.dept==='All'||D.dept[w]===S.dept)&&(S.ws==='All'||S.ws===w)),act=document.querySelector('#tabs .tab.on'),mode=act&&act.dataset.t.startsWith('k:')?S.tab:'trend';return{k,D,S,WS,mode}}
+const pq=()=>window.PQ?PQ.get():{projects:[]};
+/* ---------------- overview ---------------- */
+let ovOpen=true,tm;
+function build(){if(g('piqOv'))return;const kh=g('kpiHead'),sh=document.querySelector('.shell');if(!kh||!sh)return;const ov=document.createElement('section');ov.id='piqOv';sh.insertBefore(ov,kh);
+ ov.innerHTML=`<div class="ovh"><div><h2>Executive Overview</h2><p id="ovSub"></p></div><button class="ovb" id="ovTog">▾ Hide graphics</button></div><div id="ovHead"></div><div id="ovBody"><div class="ovgs" id="ovG"></div><div class="ovgrid" style="margin-top:16px">
+ <div class="ovc w2"><h3 id="ovT1"></h3><div class="s" id="ovS1"></div><div class="ovw"><canvas id="ovC1"></canvas></div></div>
+ <div class="ovc"><h3>Workstream scorecard</h3><div class="s">Click a line to drill in</div><div class="ovw"><canvas id="ovC2"></canvas></div></div>
+ <div class="ovc"><h3 id="ovT3"></h3><div class="s">Click a bar to open the region view</div><div class="ovw"><canvas id="ovC3"></canvas></div></div>
+ <div class="ovc"><h3>Delivery mix</h3><div class="s">Total deliverables by workstream</div><div class="ovw"><canvas id="ovC5"></canvas></div></div>
+ <div class="ovc"><h3>Project portfolio</h3><div class="s">Progress vs SPI · bubble = contract value</div><div class="ovw"><canvas id="ovC4"></canvas></div></div></div>
+ <div class="ovi" id="ovI" style="margin-top:16px"></div></div>`;
+ g('ovHead').appendChild(kh);g('ovTog').onclick=()=>{ovOpen=!ovOpen;g('ovBody').style.display=ovOpen?'':'none';g('ovTog').textContent=ovOpen?'▾ Hide graphics':'▸ Show graphics';if(ovOpen)draw()};
+ g('ovI').onclick=e=>{const s=e.target.closest('[data-o]');if(s){const[t,n]=s.dataset.o.split('|');drill(t,n)}};
+ new MutationObserver(()=>sched()).observe(kh,{childList:true})}
+const sched=()=>{clearTimeout(tm);tm=setTimeout(draw,40)};
+function draw(){build();const c=ctx();if(!c||!ovOpen)return;const{D,S,WS,mode,k}=c,T=E.T;
+ g('ovSub').textContent=`${S.dept==='All'?'All departments':S.dept} · ${S.ws==='All'?'all workstreams':S.ws} · ${D.months[0]}–${D.months[D.months.length-1]} · calculated by the ProcessIQ engine`;
+ const av=kk=>M.avg(D,WS,kk),q3=a=>E.mean(a.filter(x=>x!=null)),util=q3(WS.map(w=>D.q.util[w][2])),std=q3(WS.map(w=>M.stdv(D,w,2))),acc=k.score(),d=av('quality'),p=av('prod'),o=av('otd');
+ g('ovG').innerHTML=[['Productivity','ovg1'],['On-Time Delivery','ovg2'],['Recycle / defect %','ovg3'],['Utilization (Q3)','ovg4'],['Standardization (Q3)','ovg5'],['Input accuracy','ovg6']].map(([t,i])=>`<div class="ovc"><h3>${t}</h3><div class="ovw"><canvas id="${i}"></canvas></div></div>`).join('');
+ const pr=(v,kk)=>RC[E.rag(kk,v)];gauge('ovg1',p,pr(p,'prod'),f1(p)+'%','target >'+T.prod+'%');gauge('ovg2',o,pr(o,'otd'),f1(o)+'%','target >'+T.otd+'%');gauge('ovg3',100-(d||0)*10,pr(d,'qual'),f1(d)+'%','target <'+T.qual+'%');gauge('ovg4',util,pr(util,'util'),f1(util)+'%','target >'+T.util+'%');gauge('ovg5',std,pr(std,'std'),f1(std)+'%','target >'+T.std+'%');gauge('ovg6',acc,acc>=95?RC.g:acc>=80?RC.a:RC.r,f1(acc)+'%','checks passed');
+ const clkW=(e,els,ch)=>{if(els.length){const ds=ch.data.datasets[els[0].datasetIndex];if(CW[ds.label])drill('ws',ds.label)}},clkL=(e,els,ch)=>{if(els.length&&CW[ch.data.labels[els[0].index]])drill('ws',ch.data.labels[els[0].index])};
+ const T1={quality:['Recycle / defect % by workstream','Lower is better · target <'+T.qual+'%'],prod:['Productivity % by workstream','Monthly · target >'+T.prod+'%'],otd:['On-time delivery % by workstream','Monthly · target >'+T.otd+'%'],value:['Value captured by quarter (USD)','Stacked by workstream'],util:['Utilization % by quarter','Grouped by workstream'],std:['Standardization % by quarter','Grouped by workstream'],acc:['Input accuracy checks','OK vs flagged'],trend:['Performance trend + 3-month forecast','Average across visible workstreams']}[mode];
+ g('ovT1').textContent=T1[0];g('ovS1').textContent=T1[1];const Q=['Q1','Q2','Q3'];let cfg;
+ if(mode==='quality'||mode==='prod'||mode==='otd'){const kk=mode==='prod'?'prod':mode,ws=WS.filter(w=>mode!=='otd'||D.otd[w]);const ser=ws.map(w=>M.series(D,w,kk).map(r2));cfg={type:'line',data:{labels:D.months,datasets:[...ws.map((w,i)=>ln(w,ser[i],CW[w],{fill:false})),tgt(D.months.length,mode==='quality'?T.qual:T.prod)]},options:{scales:AXS('%',mode==='quality'?null:Y(ser,T.prod)),onClick:clkW,interaction:{mode:'index',intersect:false}}}}
+ else if(mode==='value'){cfg={type:'bar',data:{labels:Q,datasets:WS.map(w=>({label:w,data:D.q.value[w].q,backgroundColor:CW[w],borderRadius:6}))},options:{scales:Object.assign(AXS('USD'),{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:{color:'rgba(91,44,145,.09)'},border:{display:false}}}),onClick:clkW}}}
+ else if(mode==='util'||mode==='std'){cfg={type:'bar',data:{labels:WS,datasets:Q.map((q,i)=>({label:q,data:WS.map(w=>mode==='util'?D.q.util[w][i]:M.stdv(D,w,i)),backgroundColor:['#00A88F','#2386C8','#5B2C91'][i],borderRadius:6}))},options:{scales:AXS('%'),onClick:clkL}}}
+ else if(mode==='acc'){const ch=k.checks(),n=['OK','CHECK'].map(s=>ch.filter(x=>x[4]===s).length);cfg={type:'doughnut',data:{labels:['OK','Needs review','No breakdown'],datasets:[{data:[n[0],n[1],ch.length-n[0]-n[1]],backgroundColor:[RC.g,RC.r,'#C9C3D3'],borderWidth:3,borderColor:'#fff'}]},options:{cutout:'66%',plugins:{ctext:{text:String(ch.length),sub:'checks',size:30}}}}}
+ else{const mo=(kk)=>D.months.map((_,i)=>{const a=WS.map(w=>kk==='prod'?M.prod(D,w,i):M.otd(D,w,i)).filter(x=>x!=null);return a.length?r2(E.mean(a)):null}),pm=mo('prod'),om=mo('otd'),fp=E.fc(pm,3).f,fo=E.fc(om,3).f,L=[...D.months,'F+1','F+2','F+3'],pad=a=>[...Array(D.months.length-1).fill(null),a[a.length-1],...[]];
+  cfg={type:'line',data:{labels:L,datasets:[ln('Productivity',[...pm,null,null,null],'#00A88F',{fill:true}),ln('OTD',[...om,null,null,null],'#2386C8',{fill:false}),ln('Productivity forecast',[...Array(pm.length-1).fill(null),pm[pm.length-1],...fp],'#00A88F',{borderDash:[6,5],fill:false,backgroundColor:'transparent'}),ln('OTD forecast',[...Array(om.length-1).fill(null),om[om.length-1],...fo],'#2386C8',{borderDash:[6,5],fill:false,backgroundColor:'transparent'}),tgt(L.length,T.prod)],},options:{scales:AXS('%',Y(pm,om,fp,fo,[T.prod])),interaction:{mode:'index',intersect:false}}}}
+ mk('ovC1',cfg);
+ const lab=['Productivity','OTD','Quality','Utilization','Standardization'];mk('ovC2',{type:'radar',data:{labels:lab,datasets:WS.map(w=>{const s=M.ws(D,w);return{label:w,data:[s.prod,s.otd,100-(s.qual||0),s.util,s.std].map(r2),borderColor:CW[w],backgroundColor:CW[w]+'1f',borderWidth:2,pointRadius:2}})},options:{scales:{r:{min:50,max:100,ticks:{display:false},grid:{color:'rgba(91,44,145,.12)'},pointLabels:{font:{size:11,weight:'600'}}}},onClick:clkW}});
+ const kp=F.kpi,rg=RG.map(r=>{const q=rows(['rg']).filter(x=>x.rg===r);return[r,q.length?+kv(agg(q),kp).toFixed(1):null]}).filter(a=>a[1]!=null);g('ovT3').textContent=KP[kp]+' by region';
+ mk('ovC3',{type:'bar',data:{labels:rg.map(a=>a[0]),datasets:[{label:KP[kp],data:rg.map(a=>a[1]),backgroundColor:rg.map((a,i)=>PAL[i%PAL.length]+'dd'),borderRadius:10,maxBarThickness:46}]},options:{scales:AXS('',['prod','qual','otd','util','csat'].includes(kp)?Yb(rg.map(a=>a[1])):null),plugins:{legend:{display:false}},onClick:(e,els,ch)=>{if(els.length)drill('rg',ch.data.labels[els[0].index])}}});
+ const tot=WS.map(w=>E.sum(D.deliv[w].map(v=>+v||0)));mk('ovC5',{type:'doughnut',data:{labels:WS,datasets:[{data:tot,backgroundColor:WS.map(w=>CW[w]),borderWidth:3,borderColor:'#fff',hoverOffset:10}]},options:{cutout:'62%',plugins:{ctext:{text:Math.round(E.sum(tot)).toLocaleString(),sub:'deliverables',size:24}},onClick:clkL}});
+ const pj=pq().projects,rs=[...new Set(pj.map(p=>p.region))];mk('ovC4',{type:'bubble',data:{datasets:rs.map((r,i)=>({label:r,backgroundColor:PAL[i%PAL.length]+'b0',borderColor:PAL[i%PAL.length],data:pj.filter(p=>p.region===r).map(p=>({x:+p.progress,y:+p.spi,r:Math.max(7,Math.sqrt(+p.contract||0)/34),n:p.name}))}))},options:{scales:{x:{title:{display:true,text:'Progress %'},min:0,max:105,grid:{color:'rgba(91,44,145,.09)'}},y:{title:{display:true,text:'SPI'},min:.6,max:1.2,grid:{color:'rgba(91,44,145,.09)'}}},plugins:{tooltip:{callbacks:{label:c=>c.raw.n+': '+c.raw.x+'% · SPI '+c.raw.y}}},onClick:(e,els,ch)=>{if(els.length)drill('rg',ch.data.datasets[els[0].datasetIndex].label)}}});
+ g('ovI').innerHTML=E.insights({D,WS,reg:rg,proj:pj,acc}).map(x=>`<span class="${x.c}" ${x.o?`data-o="${esc(x.o[0])}|${esc(x.o[1])}"`:''}>${x.c==='g'?'✔':x.c==='a'?'▲':'●'} ${esc(x.m)}</span>`).join('')}
+/* ---------------- drill-down ---------------- */
+let DK='prod';const DKS=['prod','qual','otd','util','csat'];
+function shell(){if(g('piqDrill'))return;const m=document.createElement('div');m.id='piqDrill';m.innerHTML='<div class="dm" id="dm"></div>';document.body.appendChild(m);m.onclick=e=>{if(e.target===m||e.target.closest('[data-x]'))m.classList.remove('on');const c=e.target.closest('[data-dk]');if(c){DK=c.dataset.dk;drawDrill()}const a=e.target.closest('[data-apply]');if(a){window.setDeptRegion(undefined,'All',a.dataset.apply);m.classList.remove('on')}};document.addEventListener('keydown',e=>{if(e.key==='Escape')m.classList.remove('on')})}
+function drill(t,n){shell();const m=g('piqDrill');m.dataset.t=t;m.dataset.n=n;m.classList.add('on');drawDrill()}
+const tile=(l,v,c)=>`<div style="--c:${c}"><span>${l}</span><b>${v}</b></div>`;
+function drawDrill(){const m=g('piqDrill'),t=m.dataset.t,n=m.dataset.n,dm=g('dm');if(t==='rg')dRegion(dm,n);else dWs(dm,n)}
+function dRegion(dm,R){const r=DATA.filter(x=>x.rg===R),a=agg(r),ov=agg(DATA),N=KP[DK],S=series(r),So=series(DATA),pj=pq().projects.filter(p=>p.region===R),T=E.T;
+ dm.innerHTML=`<div class="dh"><div><h2>📍 ${esc(R)} — regional view</h2><p>${new Set(r.map(x=>x.id)).size} employees · ${r.length} monthly records · click a KPI chip to re-draw every graphic</p></div><div><button class="ovb" data-apply="${esc(R)}">Filter dashboard to ${esc(R)}</button> <button class="ovb" data-x>✕ Close</button></div></div>
+ <div class="dch">${DKS.map(k=>`<button data-dk="${k}" class="${k===DK?'on':''}">${KP[k]}</button>`).join('')}</div>
+ <div class="dt">${DKS.map(k=>tile(KP[k],fmt(k,kv(a,k)),RC[E.rag(k,kv(a,k))])).join('')}${tile('Value delivered',fmt('val',a.val),'#5B2C91')}${tile('Escalations',a.esc,'#D94B68')}</div>
+ <div class="dg"><div class="ovc w2"><h3>${N} — monthly trend vs company + forecast</h3><div class="ovw"><canvas id="dd1"></canvas></div></div><div class="ovc"><h3>Region vs company</h3><div class="ovw"><canvas id="dd2"></canvas></div></div>
+ <div class="ovc"><h3>${N} by workflow</h3><div class="ovw"><canvas id="dd3"></canvas></div></div><div class="ovc"><h3>Top 8 employees — ${N}</h3><div class="ovw"><canvas id="dd4"></canvas></div></div><div class="ovc"><h3>Headcount by band</h3><div class="ovw"><canvas id="dd5"></canvas></div></div>
+ <div class="ovc w2"><h3>Projects in ${esc(R)} — contract vs actual cost (USD)</h3><div class="ovw"><canvas id="dd6"></canvas></div></div><div class="ovc"><h3>Assigned vs resolved</h3><div class="ovw"><canvas id="dd7"></canvas></div></div></div>`;
+ const v=S.A.map(x=>r2(kv(x,DK))),fv=E.fc(v,3).f;
+ mk('dd1',{type:'line',data:{labels:[...S.L,'F+1','F+2','F+3'],datasets:[ln(R,[...v,null,null,null],'#5B2C91',{fill:true,backgroundColor:'#5B2C9122'}),ln('Company',[...So.A.map(x=>r2(kv(x,DK)))],'#F2A900',{fill:false,borderDash:[4,4],pointRadius:0}),ln('Forecast',[...Array(v.length-1).fill(null),v[v.length-1],...fv],'#D94B68',{fill:false,borderDash:[6,5]})]},options:{scales:AXS('',Y(v,So.A.map(x=>kv(x,DK)),fv)),interaction:{mode:'index',intersect:false}}});
+ const RK=['prod','qual','util','otd','csat'];mk('dd2',{type:'radar',data:{labels:RK.map(k=>KP[k]),datasets:[ln(R,RK.map(k=>r2(kv(a,k))),'#5B2C91',{backgroundColor:'#5B2C9130'}),ln('Company',RK.map(k=>r2(kv(ov,k))),'#F2A900',{fill:false,borderDash:[5,4]})]},options:{scales:{r:{min:50,max:100,ticks:{display:false},grid:{color:'rgba(91,44,145,.12)'}}}}});
+ const wf=[...grp(r,x=>x.wf)].map(([w,q])=>[w,+kv(agg(q),DK).toFixed(1)]).sort((x,y)=>y[1]-x[1]);mk('dd3',{type:'bar',data:{labels:wf.map(x=>x[0]),datasets:[{label:N,data:wf.map(x=>x[1]),backgroundColor:wf.map((x,i)=>PAL[i%PAL.length]+'dd'),borderRadius:8}]},options:{scales:AXS('',Yb(wf.map(x=>x[1]))),plugins:{legend:{display:false}},onClick:(e,els,ch)=>{if(els.length)drill('ws',ch.data.labels[els[0].index])}}});
+ const em=[...grp(r,x=>x.id)].map(([i,q])=>[q[0].name,+kv(agg(q),DK).toFixed(1)]).sort((x,y)=>INV.includes(DK)?x[1]-y[1]:y[1]-x[1]).slice(0,8);mk('dd4',{type:'bar',data:{labels:em.map(x=>x[0]),datasets:[{label:N,data:em.map(x=>x[1]),backgroundColor:'#00A88Fcc',borderRadius:8}]},options:{indexAxis:'y',scales:{x:Object.assign({grid:{color:'rgba(91,44,145,.09)'}},Yb(em.map(x=>x[1]))||{}),y:{grid:{display:false}}},plugins:{legend:{display:false}}}});
+ const bc=BANDS.map(b=>new Set(r.filter(x=>x.band===b).map(x=>x.id)).size);mk('dd5',{type:'doughnut',data:{labels:BANDS,datasets:[{data:bc,backgroundColor:PAL.slice(0,5),borderWidth:3,borderColor:'#fff'}]},options:{cutout:'64%',plugins:{ctext:{text:String(E.sum(bc)),sub:'employees',size:26}}}});
+ mk('dd6',{type:'bar',data:{labels:pj.map(p=>p.id),datasets:[{label:'Contract',data:pj.map(p=>+p.contract),backgroundColor:'#5B2C91cc',borderRadius:6},{label:'Budget',data:pj.map(p=>+p.budget),backgroundColor:'#2386C8cc',borderRadius:6},{label:'Actual cost',data:pj.map(p=>+p.actualCost),backgroundColor:'#F2A900cc',borderRadius:6}]},options:{scales:AXS('USD'),plugins:{tooltip:{callbacks:{title:i=>(pj[i[0].dataIndex]||{}).name}}}}});
+ mk('dd7',{type:'bar',data:{labels:S.L,datasets:[{label:'Assigned',data:S.A.map(x=>x.asg),backgroundColor:'#2386C8bb',borderRadius:5},{label:'Resolved',data:S.A.map(x=>x.res),backgroundColor:'#00A88Fbb',borderRadius:5}]},options:{scales:AXS()}})}
+function dWs(dm,W){const k=K();if(!k)return;const D=k.DS(),i0=D.ws.indexOf(W),s=M.ws(D,W),T=E.T,Q=['Q1','Q2','Q3'],r=DATA.filter(x=>x.wf===W),val=D.q.value[W].q;
+ dm.innerHTML=`<div class="dh"><div><h2 style="color:${CW[W]||'#4B2378'}">◆ ${esc(W)} — workstream view</h2><p>${esc(D.dept[W]||'')} · ${D.months[0]}–${D.months[D.months.length-1]}</p></div><button class="ovb" data-x>✕ Close</button></div>
+ <div class="dt">${tile('Productivity',f1(s.prod)+'%',RC[E.rag('prod',s.prod)])}${tile('OTD',s.otd==null?'Yet to start':f1(s.otd)+'%',RC[E.rag('otd',s.otd)])}${tile('Recycle / defect',f1(s.qual)+'%',RC[E.rag('qual',s.qual)])}${tile('Utilization',f1(s.util)+'%',RC[E.rag('util',s.util)])}${tile('Standardization',f1(s.std)+'%',RC[E.rag('std',s.std)])}${tile('Value Q3','$'+Math.round(val[2]||0).toLocaleString(),'#5B2C91')}</div>
+ <div class="dg"><div class="ovc w2"><h3>Deliverables and recycle %</h3><div class="ovw"><canvas id="dd1"></canvas></div></div><div class="ovc"><h3>Quarterly KPIs</h3><div class="ovw"><canvas id="dd2"></canvas></div></div>
+ <div class="ovc w2"><h3>Productivity &amp; OTD vs target + forecast</h3><div class="ovw"><canvas id="dd3"></canvas></div></div><div class="ovc"><h3>Value captured (USD)</h3><div class="ovw"><canvas id="dd4"></canvas></div></div>
+ <div class="ovc w2"><h3>Workforce productivity by region (${esc(W)})</h3><div class="ovw"><canvas id="dd5"></canvas></div></div><div class="ovc"><h3>Headcount by band</h3><div class="ovw"><canvas id="dd6"></canvas></div></div></div>`;
+ const mo=D.months,ql=M.series(D,W,'quality').map(r2);
+ mk('dd1',{data:{labels:mo,datasets:[{type:'bar',label:'Deliverables',data:D.deliv[W],backgroundColor:(CW[W]||'#5B2C91')+'cc',borderRadius:8,yAxisID:'y'},{type:'line',label:'Recycle %',data:D.recyc[W],borderColor:'#D94B68',backgroundColor:'#D94B68',tension:.35,borderWidth:2.6,yAxisID:'y1',pointRadius:3}]},options:{scales:{x:{grid:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(91,44,145,.09)'}},y1:{position:'right',beginAtZero:true,grid:{drawOnChartArea:false}}}}});
+ mk('dd2',{type:'bar',data:{labels:Q,datasets:[{label:'Utilization',data:D.q.util[W],backgroundColor:'#00A88Fcc',borderRadius:6},{label:'Standardization',data:Q.map((_,i)=>M.stdv(D,W,i)),backgroundColor:'#5B2C91cc',borderRadius:6}]},options:{scales:AXS('%')}});
+ const pv=M.series(D,W,'prod').map(r2),ov=M.series(D,W,'otd').map(r2),fp=E.fc(pv,3).f;mk('dd3',{type:'line',data:{labels:[...mo,'F+1','F+2','F+3'],datasets:[ln('Productivity',[...pv,null,null,null],CW[W]||'#5B2C91',{fill:true}),ln('OTD',[...ov,null,null,null],'#2386C8',{fill:false}),ln('Forecast',[...Array(pv.length-1).fill(null),pv[pv.length-1],...fp],'#D94B68',{fill:false,borderDash:[6,5]}),tgt(mo.length+3,T.prod)]},options:{scales:AXS('%',Y(pv,ov,fp,[T.prod])),interaction:{mode:'index',intersect:false}}});
+ mk('dd4',{type:'bar',data:{labels:Q,datasets:[{label:'Value',data:val,backgroundColor:['#00A88F','#2386C8','#5B2C91'],borderRadius:10}]},options:{scales:AXS('USD'),plugins:{legend:{display:false}}}});
+ const rg=RG.map(x=>{const q=r.filter(y=>y.rg===x);return[x,q.length?+kv(agg(q),'prod').toFixed(1):null]}).filter(a=>a[1]!=null);mk('dd5',{type:'bar',data:{labels:rg.map(a=>a[0]),datasets:[{label:'Productivity %',data:rg.map(a=>a[1]),backgroundColor:rg.map((a,i)=>PAL[i%PAL.length]+'dd'),borderRadius:8}]},options:{scales:AXS('%',Yb(rg.map(a=>a[1]))),plugins:{legend:{display:false}},onClick:(e,els,ch)=>{if(els.length)drill('rg',ch.data.labels[els[0].index])}}});
+ const bc=BANDS.map(b=>new Set(r.filter(x=>x.band===b).map(x=>x.id)).size);mk('dd6',{type:'doughnut',data:{labels:BANDS,datasets:[{data:bc,backgroundColor:PAL.slice(0,5),borderWidth:3,borderColor:'#fff'}]},options:{cutout:'64%',plugins:{ctext:{text:String(E.sum(bc)),sub:'employees',size:26}}}})}
+/* region charts across dashboard are clickable too */
+document.addEventListener('click',e=>{const c=e.target.closest&&e.target.closest('#charts canvas');if(!c||!window.Chart)return;const ch=Chart.getChart(c);if(!ch)return;const ev=e,els=ch.getElementsAtEventForMode(ev,'nearest',{intersect:true},true);if(!els.length)return;const lb=ch.data.labels[els[0].index];if(RG.includes(lb))drill('rg',lb);else if(CW[lb])drill('ws',lb)},true);
+/* ---------------- Excel master-template import ---------------- */
+const nm=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,''),iso=v=>v instanceof Date?v.toISOString().slice(0,10):v;
+const NUMK=['progress','spi','cpi','ftr','contract','budget','actualCost','allocation','capacity','amount'];
+function imp(wb){const rowsOf=n=>wb.Sheets[n]?XLSX.utils.sheet_to_json(wb.Sheets[n],{defval:''}):[];
+ const map=n=>{const sc=SCH[n],m={};sc.forEach(([k,l])=>m[nm(l)]=k);return rowsOf(n).map(o=>{const r={};for(const h in o){const k=m[nm(h)];if(k)r[k]=NUMK.includes(k)?(Number(o[h])||0):iso(o[h])}return r}).filter(r=>r[sc[0][0]]!==''&&r[sc[0][0]]!=null)};
+ const done=[];if(window.PQ){const P=PQ.get();[['Projects','projects'],['Tasks','tasks'],['Resources','resources'],['Revenue','transactions'],['Escalations','escalations']].forEach(([s,k])=>{const a=map(s);if(a.length){P[k]=a;done.push(s)}});if(done.length){PQ.save();if(PQ.render)PQ.render()}}
+ const tg=rowsOf('Targets');if(tg.length){const key={productivity:'prod',otd:'otd',qualitydefect:'qual',utilization:'util',standardization:'std',csat:'csat'},o={};tg.forEach(r=>{const k=key[nm(r.KPI)];if(k&&Number(r.Target))o[k]=Number(r.Target)});E.setT(o);done.push('Targets')}
+ const k=K();if(k){const D=k.DS(),mm=map('Maint_KPI_Monthly'),qq=map('Maint_KPI_Quarterly'),mi=v=>typeof v==='number'?v-1:MON.findIndex(x=>String(v).slice(0,3).toLowerCase()===x.toLowerCase());
+  if(mm.length){const ms=[...new Set(mm.map(r=>mi(r.m)))].filter(i=>i>=0).sort((a,b)=>a-b);D.months.length=0;ms.forEach(i=>D.months.push(MON[i]));D.ws.forEach(w=>{['deliv','recyc','prod'].forEach(f=>D[f][w]=ms.map(()=>null));const o=ms.map(()=>null);let has=false;mm.filter(r=>r.w===w).forEach(r=>{const j=ms.indexOf(mi(r.m));if(j<0)return;D.deliv[w][j]=Number(r.deliv)||0;D.recyc[w][j]=Number(r.recyc)||0;D.prod[w][j]=Number(r.prod)||0;if(r.otd!==''&&r.otd!=null){o[j]=Number(r.otd);has=true}});if(has)D.otd[w]=o;else delete D.otd[w]});done.push('Maint_KPI_Monthly')}
+  if(qq.length){qq.forEach(r=>{const i=['q1','q2','q3'].indexOf(String(r.q).toLowerCase()),w=r.w;if(i<0||!D.q.util[w])return;D.q.util[w][i]=Number(r.util)||0;D.q.prod[w][i]=Number(r.prod)||0;D.q.std_head[w][i]=Number(r.std)||0;D.q.value[w].q[i]=Number(r.val)||0});done.push('Maint_KPI_Quarterly')}
+  if(mm.length||qq.length){k.save();k.paint()}}
+ const st=g('st');if(st&&done.length)setTimeout(()=>{st.textContent+='  ✔ Master template sheets read: '+done.join(', ')},50)}
+const op=window.parseWorkbookRows;window.parseWorkbookRows=function(wb){try{imp(wb)}catch(e){console.error(e);showErr('Template import: '+e.message)}return op.apply(this,arguments)};
+/* hook re-render points */
+const br=window.render;window.render=function(){const r=br.apply(this,arguments);sched();return r};const bs=window.setTab;window.setTab=function(){const r=bs.apply(this,arguments);sched();return r};
+window.piqDrill=drill;setTimeout(draw,120);setTimeout(draw,700);
 })();
 </script>
 
