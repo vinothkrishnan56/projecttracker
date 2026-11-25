@@ -2139,7 +2139,7 @@ const stat=(v,t,lowGood)=>v==null?'<span class="na">n/a</span>':((lowGood?v<t:v>
 const V={};
 V.quality=()=>{const ws=vis(),avg=avgK(ws,'quality'),tot=sum(ws.map(w=>sum(DS.deliv[w]))),rc=sum(ws.map(w=>sum(MO.map((_,i)=>rec(w,i)))));
  const rows=[];ws.forEach(w=>{const q=DS.q.quality[w];Object.keys(q).forEach(m=>{const t=(w==='Asset Register'||w==='SPID')&&m==='Functional'?10:5;rows.push([w,m,...q[m].map(v=>v==null?'<span class="na">-</span>':stat(v,t,true)),'<'+t+'%'])})});
- return fbox('quality')+kk([['Avg Recycled %',pc(avg)],['Total delivered',Math.round(tot).toLocaleString()],['Recycled MMs / equipment',rc.toLocaleString()],['Workstreams shown',ws.length]])+multiples('quality',ws)+`<div class="kx"><h3>Quarterly defect % by category (Critical / Functional, Internal / External)</h3>${tbl(['Workstream','Category','Q1','Q2','Q3','Target'],rows)}</div>`};
+ return fbox('quality')+multiples('quality',ws)+`<div class="kx"><h3>Quarterly defect % by category (Critical / Functional, Internal / External)</h3>${tbl(['Workstream','Category','Q1','Q2','Q3','Target'],rows)}</div>`};
 V.prod=()=>{const ws=vis(),a=avgK(ws,'prod'),all=[];ws.forEach(w=>ser(w,'prod').forEach(v=>all.push(v)));
  const rows=ws.map(w=>[w,...DS.q.prod[w].map(v=>f2(v,w==='SPID'?1:2)+(w==='Asset Register'?' tags/day':w==='SPID'?' BOM/day/FTE':'%')),w==='Asset Register'?'60 tags/day':w==='SPID'?'4 BOM/day/FTE':'>95%']);
  return fbox('prod')+kk([['Avg Productivity %',pc(a)],['Best month',pc(Math.max(...all))],['Lowest month',pc(Math.min(...all))],['Months below 95%',all.filter(v=>v<95).length+' / '+all.length]])+multiples('prod',ws)+`<div class="kx"><h3>Quarterly productivity</h3>${tbl(['Workstream','Q1','Q2','Q3','Target'],rows)}</div>`};
@@ -2402,6 +2402,16 @@ aside.tree .pt,#deptNav,#tree{display:none!important}
 #xside .si b{width:20px;height:20px;border-radius:50%;background:#EEE5F8;color:#5B2C91;font:700 10.5px var(--fb);display:grid;place-items:center;flex:none}#xside .si.on b{background:rgba(255,255,255,.25);color:#fff}
 #xside .si em{margin-left:auto;font:500 9.5px var(--fb);opacity:.6;font-style:normal}
 #xside .sk,#xside .bc{font-weight:500;font-size:12px;padding-left:40px;position:relative}
+/* programme tree: purple sub-headers, teal sub-sub items */
+#xside .sg .sh{color:#6B3FA0;font-weight:700;margin-top:6px}#xside .sh span{flex:1}#xside .sh em{margin-left:auto;font:500 9.5px var(--fb);opacity:.6;font-style:normal;text-transform:none;letter-spacing:0}
+#xside .sh:hover{background:#F1EAFA}#xside .sh.on{background:linear-gradient(90deg,#5B2C91,#7650A3);color:#fff;box-shadow:0 6px 16px rgba(91,44,145,.25)}
+#xside .sh i{padding:2px 6px;margin:-2px -4px -2px 0;border-radius:6px}#xside .sh i:hover{background:rgba(91,44,145,.12)}
+#xside .sg.o .sb{max-height:560px}
+#xside .sk{color:#007F6C;font-weight:600}#xside .sk:before{background:#00A88F}#xside .sk:hover{background:#E4F6F2;color:#00695A}
+#xside .sk.on{background:linear-gradient(90deg,#00A88F,#2CC9AE);color:#fff;box-shadow:0 6px 16px rgba(0,168,143,.25)}#xside .sk.on:before{background:#fff}
+#xn .nc{color:#D7C4F2;font:700 11px var(--fb);letter-spacing:.8px;margin:8px 0 0;padding:8px 12px}#xn .ns{color:#7FE3D2;font-weight:500;padding-left:30px!important}
+#xn .ng.o .nb{max-height:1600px}
+
 #xside .sk:before,#xside .bc:before{content:'';position:absolute;left:26px;top:50%;width:6px;height:6px;border-radius:50%;background:#C9B5E6;transform:translateY(-50%);transition:background .2s}
 #xside .sk.on:before,#xside .bc.on:before{background:#fff}
 #xside .sk.on,#xside .bc.on,#xside .bh.on{background:linear-gradient(90deg,#5B2C91,#7650A3);color:#fff;box-shadow:0 6px 16px rgba(91,44,145,.25)}
@@ -2417,7 +2427,7 @@ aside.tree .pt,#deptNav,#tree{display:none!important}
 #xpmm.on{opacity:1;transform:none;pointer-events:auto}
 #xpmm button{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:9px;font:600 12.5px var(--fb);color:#4A4260;transition:background .2s,padding-left .2s}
 #xpmm button:hover{background:#F1EAFA;padding-left:16px}#xpmm button.on{background:#5B2C91;color:#fff}
-.xqs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:10px 0}@media(max-width:900px){.xqs{grid-template-columns:repeat(2,1fr)}.xqs .xq{grid-column:span 1!important}}
+.xqs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:10px 0}.xqs.q3{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:900px){.xqs,.xqs.q3{grid-template-columns:repeat(2,1fr)}.xqs .xq{grid-column:span 1!important}}
 .xq{border-radius:18px;padding:14px 18px;color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 22px rgba(43,29,65,.14);animation:xc .6s cubic-bezier(.2,.8,.2,1) backwards;transition:transform .25s,box-shadow .25s}
 .xq:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(43,29,65,.2)}
 .xq:after{content:'';position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.12)}
@@ -2436,7 +2446,8 @@ const S={dept:'All',item:'All',sub:'All',bu:'All',cty:'All',ws:'All',q:'All',m:'
 const C={ok:'#1E9E5A',am:'#E59A00',rd:'#D94B68',na:'#858093'};
 const D=()=>KPI.DS();
 const idx=()=>{const n=D().months.length,all=[...Array(n).keys()];let a=S.q==='All'?all:all.filter(i=>Math.floor(i/3)===+S.q.slice(1)-1);return S.m==='All'?a:a.filter(i=>D().months[i]===S.m)};
-const CATS=()=>{const d=D(),A='Asset Register',mat=d.ws.filter(w=>d.dept[w]==='Materials Engineering'&&w!==A),ar=d.ws.filter(w=>w===A),rel=d.ws.filter(w=>d.dept[w]==='Reliability Engineering'&&w!==A);return{Maintenance:{Shutdown:[],Planning:[],AMP:[]},Materials:{'Asset Register':ar,Materials:mat},Reliability:{Reliability:rel},Sustainability:{Sustainability:[]}}};
+const SUBS={'Asset Register':['SPID','BOM'],Materials:['MMC','MM Enrichment','MSQ','M&SC','Obsolescence'],Reliability:['BAD Actor Management','Equipment Criticality Assessment','Single Point of Failure','Root Cause Failure Analysis','Reliability Stewardship','Fleet Equipment Strategy']};
+const CATS=()=>{const d=D(),has=w=>d.ws.includes(w),L=a=>a.filter(has);return{Planning:{Planning:[]},Shutdown:{Shutdown:[]},AMP:{AMP:[]},'Asset Register':{'Asset Register':L(['Asset Register',...SUBS['Asset Register']])},Materials:{Materials:L(SUBS.Materials)},Reliability:{Reliability:L(SUBS.Reliability)},Sustainability:{Sustainability:[]}}};
 const catOf=w=>{const C=CATS();for(const c in C)for(const i in C[c])if(C[c][i].includes(w))return c;return'Other'};
 const base=()=>{const C=CATS(),d=D();if(S.dept==='All')return d.ws;const c=C[S.dept]||{},l=S.item!=='All'&&c[S.item]?c[S.item]:[...new Set(Object.values(c).flat())];return S.sub!=='All'?l.filter(w=>w===S.sub):l};
 const wsl=()=>base().filter(w=>S.ws==='All'||S.ws===w);
@@ -2558,8 +2569,7 @@ function tabsFix(){const bar=$('tabs');if(!bar||bar.dataset.x)return;bar.dataset
  $('xpmb').onclick=e=>{e.stopPropagation();const r=$('xpmb').getBoundingClientRect();m.style.left=Math.max(8,Math.min(r.left,innerWidth-220))+'px';m.style.top=r.bottom+6+'px';m.classList.toggle('on');w.classList.toggle('o')};
  m.onclick=e=>{const b=e.target.closest('button');if(b){by(b.dataset.t).click();shut()}};
  document.addEventListener('click',shut);new MutationObserver(sy).observe(bar,{subtree:true,attributes:true,attributeFilter:['class']});sy()}
-const OP=new Set(['Maintenance','Materials','Reliability','Sustainability']),OB=new Set(['Upstream','Midstream','Product Solution']);
-const SUBS={Materials:['MMC','MM Enrichment','MSQ','M&SC','Obsolescence'],Reliability:['BOM','SPID']};
+const OP=new Set(['Asset Register','Materials','Reliability']),OB=new Set(['Upstream','Midstream','Product Solution']);
 const BU={Upstream:[['United Kingdom','Manchester'],['Denmark'],['Norway'],['Netherlands'],['Germany']],Midstream:[['Nigeria','Nigeria'],['Angola','Angola'],['Ghana'],['Egypt'],['Algeria']],'Product Solution':[['India'],['Singapore'],['Saudi Arabia'],['Qatar'],['UAE']]};
 const aliasOf=()=>{for(const b in BU)for(const c of BU[b])if(c[0]===S.cty&&c[1])return c[1];return'All'};
 function sync(l,rg){try{if(!window.setDeptRegion)return;rg=rg||aliasOf();const d=D();if(!l||!l.length)return setDeptRegion('All','All',rg);const ds=[...new Set(l.map(w=>d.dept[w]))];setDeptRegion(ds.length===1?ds[0]:'All',l.length===1?l[0]:'All',rg)}catch(e){console.warn(e)}}
@@ -2569,17 +2579,17 @@ function side(){const a=document.querySelector('aside.tree');if(!a)return;let e=
  if(!e){e=document.createElement('div');e.id='xside';a.appendChild(e);e.onclick=ev=>{const t=ev.target,g=(q)=>t.closest(q);
   if(g('.bh')){const b=g('.bh').dataset.b;OB.has(b)?OB.delete(b):OB.add(b);return setBU(b,'All')}
   if(g('.bc'))return setBU(g('.bc').dataset.b,g('.bc').dataset.c);
-  if(g('.sh')){const c=g('.sh').dataset.c;OP.has(c)?OP.delete(c):OP.add(c);return g('.sh').parentElement.classList.toggle('o')}
+  if(g('.sh')){const h=g('.sh'),c=h.dataset.c,has=!!SUBS[c];if(has&&t.closest('i')){OP.has(c)?OP.delete(c):OP.add(c);return h.parentElement.classList.toggle('o')}if(has)OP.add(c);return pick(c,c)}
   if(g('.sk'))return pick(g('.sk').dataset.c,g('.sk').dataset.i,g('.sk').dataset.s);
   if(g('.si'))return pick(g('.si').dataset.c,g('.si').dataset.i);
   if(g('.sa')){Object.assign(S,{dept:'All',item:'All',sub:'All',bu:'All',cty:'All',ws:'All'});sync();paint()}}}
  const C=CATS(),d=D(),has=w=>d.ws.includes(w);
- e.innerHTML=`<div class="st">MAINTENANCE &amp; RELIABILITY CENTRE</div><button class="sa${S.dept==='All'?' on':''}">◧ All programmes</button>`+Object.keys(C).map(c=>`<div class="sg${OP.has(c)?' o':''}"><button class="sh" data-c="${c}">${c}<i>▾</i></button><div class="sb">${Object.keys(C[c]).map((i,n)=>`<button class="si${S.dept===c&&S.item===i&&S.sub==='All'?' on':''}" data-c="${c}" data-i="${esc(i)}"><b>${n+1}</b>${esc(i)}${C[c][i].length?'':'<em>no data</em>'}</button>`+((c==='Materials'&&i==='Materials')||(c==='Reliability'&&i==='Reliability')?SUBS[i].map(x=>`<button class="sk${S.dept===c&&S.sub===x?' on':''}" data-c="${c}" data-i="${i}" data-s="${esc(x)}">${esc(x)}${has(x)?'':'<em>no data</em>'}</button>`).join(''):'')).join('')}</div></div>`).join('')+`<div class="st" style="margin-top:18px">BUSINESS UNIT</div>`+Object.keys(BU).map(b=>`<div class="sg${OB.has(b)?' o':''}"><button class="sh bh${S.bu===b&&S.cty==='All'?' on':''}" data-b="${esc(b)}">${b}<i>▾</i></button><div class="sb">${BU[b].map(c=>`<button class="bc${S.bu===b&&S.cty===c[0]?' on':''}" data-b="${esc(b)}" data-c="${esc(c[0])}">${esc(c[0])}${c[1]?'':'<em>no data</em>'}</button>`).join('')}</div></div>`).join('')}
-const NAV=[['Maintenance',['Shutdown','Planning','AMP']],['Materials',['Asset Register','Materials']],['Reliability',['Reliability']],['Sustainability',['Sustainability']]];
+ e.innerHTML=`<div class="st">MAINTENANCE &amp; RELIABILITY CENTRE</div><button class="sa${S.dept==='All'?' on':''}">◧ All programmes</button>`+Object.keys(C).map(c=>{const sb=SUBS[c]||[],nd=!C[c][c].length;return `<div class="sg${sb.length&&OP.has(c)?' o':''}${sb.length?'':' nos'}"><button class="sh${S.dept===c&&S.sub==='All'&&S.item!=='All'?' on':''}" data-c="${esc(c)}" data-i="${esc(c)}"><span>${esc(c)}</span>${sb.length?'<i>▾</i>':(nd?'<em>no data</em>':'')}</button>${sb.length?`<div class="sb">${sb.map(x=>`<button class="sk${S.dept===c&&S.sub===x?' on':''}" data-c="${esc(c)}" data-i="${esc(c)}" data-s="${esc(x)}"><span>${esc(x)}</span>${has(x)?'':'<em>no data</em>'}</button>`).join('')}</div>`:''}</div>`}).join('')+`<div class="st" style="margin-top:18px">BUSINESS UNIT</div>`+Object.keys(BU).map(b=>`<div class="sg${OB.has(b)?' o':''}"><button class="sh bh${S.bu===b&&S.cty==='All'?' on':''}" data-b="${esc(b)}">${b}<i>▾</i></button><div class="sb">${BU[b].map(c=>`<button class="bc${S.bu===b&&S.cty===c[0]?' on':''}" data-b="${esc(b)}" data-c="${esc(c[0])}">${esc(c[0])}${c[1]?'':'<em>no data</em>'}</button>`).join('')}</div></div>`).join('')}
+const NAV=Object.keys(SUBS).length?[['Planning',[]],['Shutdown',[]],['AMP',[]],['Asset Register',SUBS['Asset Register']],['Materials',SUBS.Materials],['Reliability',SUBS.Reliability],['Sustainability',[]]]:[];
 const navClose=()=>{$('xn').classList.remove('on');$('xnb').classList.remove('on')},TAB=t=>{const b=document.querySelector('#tabs [data-t="'+t+'"]');if(b){b.click();return true}return false},CLS='<button class="xb p" onclick="document.getElementById(\'xm\').classList.remove(\'on\')">Close</button>';
 function navHTML(){const g=(t,h)=>`<div class="ng"><button class="nh">${t}<i>▾</i></button><div class="nb">${h}</div></div>`,it=(a,l)=>`<button class="ni" data-a="${a}">${l}</button>`;
- return '<div class="nt">MAINTENANCE &amp; RELIABILITY CENTRE</div>'+it('home','◧ Overview (reset filters)')+g('PROGRAMS',NAV.map(c=>`<div class="nc">${c[0]}</div>`+c[1].map(m=>it('m:'+m,m)).join('')).join(''))+g('PROJECT MANAGEMENT',[['projects','Projects'],['performance','Performance'],['escalations','Escalations'],['resources','Resources'],['revenue','Revenue'],['follow','Follow-up'],['management','Management']].map(a=>it('t:'+a[0],a[1])).join(''))+g('VALUE CAPTURE',it('t:k:value','Value Capture (seven tabs)'))+g('ORDER MANAGEMENT',it('o:otd','OTD')+it('o:qual','Quality')+it('o:prod','Productivity'))+it('ts','Timesheet Compliance')+g('DATA MANAGEMENT',it('d:xl','Excel Data Upload')+it('d:sq','SQL Server Connection')+it('d:ds','Data Source'))+g('REPORTING',it('r:bPdf','PDF export')+it('r:bPpt','PPT export')+it('r:bXls','Excel export'))}
-function mod(n){navClose();const C=CATS();for(const c in C)if(C[c][n])return pick(c,n)}
+ return '<div class="nt">MAINTENANCE &amp; RELIABILITY CENTRE</div>'+it('home','◧ Overview (reset filters)')+g('PROGRAMS',NAV.map(c=>`<button class="ni nc" data-a="m:${esc(c[0])}">${esc(c[0])}</button>`+c[1].map(m=>`<button class="ni ns" data-a="m:${esc(c[0]+'|'+m)}">${esc(m)}</button>`).join('')).join(''))+g('PROJECT MANAGEMENT',[['projects','Projects'],['performance','Performance'],['escalations','Escalations'],['resources','Resources'],['revenue','Revenue'],['follow','Follow-up'],['management','Management']].map(a=>it('t:'+a[0],a[1])).join(''))+g('VALUE CAPTURE',it('t:k:value','Value Capture (seven tabs)'))+g('ORDER MANAGEMENT',it('o:otd','OTD')+it('o:qual','Quality')+it('o:prod','Productivity'))+it('ts','Timesheet Compliance')+g('DATA MANAGEMENT',it('d:xl','Excel Data Upload')+it('d:sq','SQL Server Connection')+it('d:ds','Data Source'))+g('REPORTING',it('r:bPdf','PDF export')+it('r:bPpt','PPT export')+it('r:bXls','Excel export'))}
+function mod(n){navClose();const p=n.split('|'),C=CATS();if(C[p[0]])return pick(p[0],p[0],p[1])}
 function navGo(a){const i=a.indexOf(':'),k=i<0?a:a.slice(0,i),v=i<0?'':a.slice(i+1);if(k==='m')return mod(v);navClose();
  if(k==='home'){Object.assign(S,{dept:'All',item:'All',sub:'All',bu:'All',cty:'All',ws:'All',q:'All',m:'All'});return paint()}
  if(k==='t'){if(!TAB(v))alert('This tab is not available in the loaded workbook.');return}
@@ -2599,7 +2609,7 @@ const nf=v=>v==null||!isFinite(v)?'–':Math.round(v).toLocaleString();
 const TL=(c,l,v,s,sp)=>`<div class="xq ${c}"${sp?` style="grid-column:span ${sp}"`:''}><span>${l}</span><b>${v}</b><i>${s||'&nbsp;'}</i></div>`;
 function tiles(k){k=k==='qual'?'quality':k;const ws=wsl(),ix=idx(),d=D(),c=calc(ws,ix),T=E.T;
  if(k==='quality'){const wo=qsum('wor'),wr=qsum('wrc'),mc=qsum('mspc'),mf=qsum('mspf'),tc=qsum('tcc'),tf=qsum('tcf'),sh=(a,b)=>a!=null&&b!=null&&a+b?Math.round(a/(a+b)*100)+'% critical':'No review data';
-  return TL('c1','WO received / WR completed',`${nf(wo)} <small>/</small> ${nf(wr)}`,wo?'Completion '+f1(wr/wo*100)+'%':'Import WO / WR counts',2)+TL('c2','MSP review · Critical | Functional',`${nf(mc)} <small>|</small> ${nf(mf)}`,sh(mc,mf))+TL('c3','TC review · Critical | Functional',`${nf(tc)} <small>|</small> ${nf(tf)}`,sh(tc,tf))+TL('c4','Quality %',c.qual==null?'–':f1(100-c.qual)+'%','100 − defect % ('+f1(c.qual)+'%) · target ≥ '+(100-T.qual)+'%')}
+  return TL('c1','WO received',nf(wo),wo==null?'Import WO counts':'Work orders received')+TL('c2','WR completed',nf(wr),wr==null?'Import WR counts':'Work requests completed')+TL('c3','WO / WR completion',wo?f1(wr/wo*100)+'%':'–',wo?'WR completed ÷ WO received':'Import WO / WR counts')+TL('c2','MSP review · Critical | Functional',`${nf(mc)} <small>|</small> ${nf(mf)}`,sh(mc,mf))+TL('c3','TC review · Critical | Functional',`${nf(tc)} <small>|</small> ${nf(tf)}`,sh(tc,tf))+TL('c4','Quality %',c.qual==null?'–':f1(100-c.qual)+'%','100 − defect % ('+f1(c.qual)+'%) · target ≥ '+(100-T.qual)+'%')}
  if(k==='prod'){const sr=ix.map(i=>mean(ws.map(w=>M.prod(d,w,i)))),v=sr.filter(x=>x!=null),b=v.length?Math.max(...v):null;
   return TL('c1','Productivity %',fv(DEF[0],c.prod),'Target > '+T.prod+'%',2)+TL('c2','Best month',b==null?'–':f1(b)+'%',b==null?'':d.months[ix[sr.indexOf(b)]])+TL('c3','Months below target',v.length?v.filter(x=>x<T.prod).length+' / '+v.length:'–','&nbsp;')+TL('c4','Variance vs target',c.prod==null?'–':(c.prod-T.prod>=0?'+':'')+f1(c.prod-T.prod)+' pt','&nbsp;')}
  if(k==='otd'){let dl=0,sl=0;ws.forEach(w=>ix.forEach(i=>{const s=M.sla(d,w,i);if(s!=null){dl+=+d.deliv[w][i]||0;sl+=s}}));
@@ -2608,7 +2618,7 @@ function tiles(k){k=k==='qual'?'quality':k;const ws=wsl(),ix=idx(),d=D(),c=calc(
 function inj(){const v=$('v-kpi');if(!v||v.style.display!=='block'||inj.b)return;inj.b=1;setTimeout(()=>inj.b=0,60);
  if(!wsl().length){v.innerHTML='<div class="xw" style="margin:18px"><b>No data loaded for this selection.</b> Shutdown, Planning, AMP and Sustainability have no workflows in the current data. Import a workbook containing them (Data Management) or choose another programme.</div>';return}
  const t=KPI.st().tab,old=$('xqs');if(old)old.remove();const kp=$('kP');if(kp&&!$('kPpt')){const b=document.createElement('button');b.className='kbtn g';b.id='kPpt';b.textContent='⇩ Export PPT';kp.after(b)}
- if(!['prod','quality','otd'].includes(t))return;const kk=v.querySelector('.kk');if(!kk)return;const el=document.createElement('div');el.id='xqs';el.className='xqs';el.innerHTML=tiles(t);kk.parentNode.insertBefore(el,kk)}
+ if(!['prod','quality','otd'].includes(t))return;const kk=v.querySelector('.kk')||v.querySelector('.km');if(!kk)return;const el=document.createElement('div');el.id='xqs';el.className='xqs'+(t==='quality'?' q3':'');el.innerHTML=tiles(t);kk.parentNode.insertBefore(el,kk)}
 function vObs(){const v=$('v-kpi');if(v){new MutationObserver(inj).observe(v,{childList:true});inj()}}
 function kSync(){try{const st=KPI.st(),l=wsl(),d=D();if(l.length===1){st.dept=d.dept[l[0]];st.ws=l[0]}else{const ds=[...new Set(l.map(w=>d.dept[w]))];if(ds.length===1&&d.ws.filter(w=>d.dept[w]===ds[0]).length===l.length){st.dept=ds[0];st.ws='All'}else{st.dept='All';st.ws='All'}}st.qtr=S.q;
  const v=$('v-kpi');if(v&&v.style.display==='block')KPI.open(st.tab)}catch(e){console.warn(e)}}
@@ -2626,7 +2636,7 @@ function fbBuild(){const f=document.querySelector('.filters');if(!f||f.dataset.x
   if(id==='xfBU')setBU(v==='All'?'All':v,'All');
   if(id==='xfRg'){if(v==='All')setBU('All','All');else{const a=v.split('|');setBU(a[0],a[1])}}
   if(id==='xfWf')wfPick(v)})}
-function wfPick(w){if(w==='All'){Object.assign(S,{dept:'All',item:'All',sub:'All',ws:'All'});sync();return paint()}const C=CATS();for(const c in C)for(const i in C[c])if(C[c][i].includes(w))return pick(c,i,(c==='Materials'&&i==='Materials')||(c==='Reliability'&&i==='Reliability')?w:undefined)}
+function wfPick(w){if(w==='All'){Object.assign(S,{dept:'All',item:'All',sub:'All',ws:'All'});sync();return paint()}const C=CATS();for(const c in C)for(const i in C[c])if(C[c][i].includes(w))return pick(c,i,(SUBS[c]||[]).includes(w)?w:undefined)}
 function fbSync(){const g=i=>$(i);if(!g('xfBU'))return;g('xfBU').value=S.bu;g('xfRg').value=S.cty==='All'?'All':S.bu+'|'+S.cty;g('xfWf').value=S.sub!=='All'?S.sub:S.item==='Asset Register'?'Asset Register':'All'}
 /* Timesheet Compliance */
 const TSC={};
