@@ -2093,262 +2093,7 @@ updateTabExportBar();
 })();
 </script>
 
-<script id="qc-module">
-(function(){
-'use strict';
-const Q=s=>document.querySelector(s),KEY='piq_qc_v2';
-const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const num=v=>{const n=parseFloat(v);return isNaN(n)?null:n};
-const sum=a=>a.reduce((x,y)=>x+y,0),mean=a=>a.length?sum(a)/a.length:0;
-const sd=a=>{if(a.length<2)return 0;const m=mean(a);return Math.sqrt(sum(a.map(x=>(x-m)**2))/(a.length-1))};
-const med=a=>{if(!a.length)return 0;const s=[...a].sort((x,y)=>x-y),h=s.length>>1;return s.length%2?s[h]:(s[h-1]+s[h])/2};
-const fx=(v,d=2)=>v==null||isNaN(v)||!isFinite(v)?'-':(+v).toFixed(d);
-const uniq=a=>[...new Set(a.filter(x=>x!==''&&x!=null))];
-const T0=new Date(),ds=o=>{const d=new Date(T0);d.setDate(d.getDate()-o);return d.toISOString().slice(0,10)};
-let seed=11;const rnd=()=>{seed=seed*16807%2147483647;return seed/2147483647};
-const gs=()=>Math.sqrt(-2*Math.log(rnd()||1e-9))*Math.cos(2*Math.PI*rnd());
-const pick=(a,w)=>{let r=rnd()*sum(w),i=0;while(r>w[i]&&i<a.length-1){r-=w[i];i++}return a[i]};
-const SM6=['Man','Machine','Method','Material','Measurement','Mother Nature'];
-/* ---------- sample data ---------- */
-function sample(){
- const D={check:[],pareto:[],fish:[],hist:[],ctrl:[],scat:[],flow:[]};
- const cats=['Weld defect (porosity / lack of fusion)','NDT rejectable indication','Coating DFT deficiency','CUI / corrosion finding','Dimensional / alignment deviation','MTC / PMI grade mismatch','Mechanical seal leakage','Hydrotest leak','Missing ITP hold-point record','Bolting torque deviation'],w=[24,18,14,12,9,7,6,4,4,2];
- const wbs=['M12 Topsides piping spools','Hull cargo tank 3P coating','K-1001 Export gas compressor (rotating)','V-1101 HP separator (static)'],
-  proj=['FPSO Topsides Fabrication','FPSO Hull & Marine','FPSO Operations Maintenance','FPSO Operations Maintenance'],pid=['FPSO-01-TS','FPSO-01-HM','FPSO-01-OM','FPSO-01-OM'],
-  loc=['Module M12 - Fab yard','Cargo tank 3P','Compressor deck','Process deck'],dep=['QA/QC','Fabrication Yard','Mechanical Maint.','Integrity (RBI)'],own=['A. Rao (QC)','S. Khan (Integrity)','M. Iyer (Mech.)','J. Costa (Marine)'];
- for(let i=0;i<48;i++){const k=i%4,c=pick(cats,w);D.check.push({pid:pid[k],pname:proj[k],wbs:wbs[k],date:ds(Math.floor(i*1.4)),dept:dep[k],loc:loc[k],itype:['Daily','Weekly','Monthly'][i%7?0:(i%2?1:2)],cat:c,desc:'NCR raised: '+c,cnt:1+Math.floor(rnd()*(w[cats.indexOf(c)]/5+1)),owner:own[i%4],rem:i%9?'':'Ref ITP hold point'})}
- [[52,18200],[40,26000],[31,9300],[27,54000],[16,4800],[11,15400],[9,31500],[6,22000],[5,500],[3,900]].forEach((v,i)=>D.pareto.push({cat:cats[i],freq:v[0],cost:v[1],period:'Q4-2026',ref:wbs[i%4]}));
- const F=(problem,ref,defect,cat,cause,ev,imp,act,own,st,ver)=>D.fish.push({problem,ref,defect,cat,cause,evidence:ev,impact:imp,action:act,owner:own,target:ds(-14),verified:ver,status:st});
- const p1='Repeated mechanical seal failures - export gas compressor K-1001',r1='K-1001 Export gas compressor (rotating)',d1='Mechanical seal leakage';
- F(p1,r1,d1,'Man','Seal installed without alignment check by new technician','Overhaul WO review','High','Competency sign-off for API 682 seals','M. Iyer (Mech.)','In Progress',true);
- F(p1,r1,d1,'Machine','Shaft misalignment / coupling soft foot','Laser alignment report','High','Re-align; add alignment hold point','M. Iyer (Mech.)','Done',true);
- F(p1,r1,d1,'Machine','Seal flush (API Plan 32) flow low','DCS trend','High','Clean strainer; fit flow transmitter','S. Khan (Integrity)','Open',true);
- F(p1,r1,d1,'Method','Start-up without seal pot venting step in procedure','Procedure audit','Medium','Revise start-up SOP','A. Rao (QC)','In Progress',false);
- F(p1,r1,d1,'Material','Elastomer incompatible with sour gas (H2S)','Seal teardown report','High','Change to FFKM / re-evaluate datasheet','S. Khan (Integrity)','Open',true);
- F(p1,r1,d1,'Measurement','Vibration probe drift - late alarm','Calibration record','Medium','Calibrate bently-nevada probes','M. Iyer (Mech.)','Open',false);
- F(p1,r1,d1,'Mother Nature','Hot humid salt-laden atmosphere on compressor deck','Weather / ambient log','Low','Enclosure ventilation upgrade','J. Costa (Marine)','Open',false);
- F(p1,r1,d1,'Man','Operator unfamiliar with seal pot topping-up','Shift log','Medium','Toolbox training','M. Iyer (Mech.)','In Progress',false);
- const p2='Recurring CUI on topsides process piping',r2='M12 Topsides piping spools',d2='CUI / corrosion finding';
- F(p2,r2,d2,'Material','Carbon steel in 60-120 C CUI temperature range without coating','RBI CUI screening','High','Apply TSA coating on CS 60-120 C lines','S. Khan (Integrity)','In Progress',true);
- F(p2,r2,d2,'Method','Insulation jacketing seals not inspected','Inspection round','High','Add to inspection plan (RBI)','S. Khan (Integrity)','Open',true);
- F(p2,r2,d2,'Man','Damaged cladding after scaffolding works','Walkdown photos','Medium','Scaffold handling controls','J. Costa (Marine)','Open',false);
- F(p2,r2,d2,'Measurement','Corrosion monitoring (CML) points insufficient','CML review','Medium','Add UT CMLs on dead-legs','A. Rao (QC)','Done',true);
- F(p2,r2,d2,'Mother Nature','Offshore splash & salt spray','Environmental data','Medium','Upgrade jacketing sealant','J. Costa (Marine)','Open',false);
- F(p2,r2,d2,'Machine','Failed heat tracing causing wet insulation','Maintenance notification','Low','Repair heat tracing','M. Iyer (Mech.)','Open',false);
- [['Weld hardness HV10 (sour service)','HV','',250,212,14],['Coating DFT - hull tank','µm',280,450,340,38],['UT wall thickness - production header','mm',10.5,'',12.4,.5]].forEach(p=>{for(let i=0;i<40;i++)D.hist.push({ref:p[0].startsWith('Coating')?wbs[1]:wbs[0],param:p[0],unit:p[1],lsl:p[2],usl:p[3],sample:i+1,value:+(p[4]+gs()*p[5]).toFixed(2),date:ds(40-i),inspector:own[i%4],rem:''})});
- const VP='Vibration K-1001 DE bearing (mm/s RMS)',UT='UT wall thickness CML-12 (mm)',NR='Weld NDT rejection per batch (RT/UT)',CUI='CUI findings per inspection round';
- for(let s=1;s<=30;s++)D.ctrl.push({ref:wbs[2],param:VP,unit:'mm/s',date:ds(60-s*2),sample:s,value:+(2.8+gs()*.25+(s>20?(s-20)*.09:0)+(s==9?1.1:0)).toFixed(2),n:1,owner:'M. Iyer (Mech.)',rem:s>26?'ISO 20816 alert 4.5 mm/s':''});
- for(let s=1;s<=20;s++)for(let j=0;j<4;j++)D.ctrl.push({ref:wbs[3],param:UT,unit:'mm',date:ds(120-s*5),sample:s,value:+(12.6-s*.015+gs()*.12).toFixed(3),n:4,owner:'S. Khan (Integrity)',rem:''});
- for(let s=1;s<=20;s++)D.ctrl.push({ref:wbs[0],param:NR,unit:'welds',date:ds(60-s*3),sample:s,value:s==13?11:Math.max(0,Math.round(2.5+gs()*1.3)),n:50,owner:'A. Rao (QC)',rem:''});
- for(let s=1;s<=20;s++)D.ctrl.push({ref:wbs[0],param:CUI,unit:'findings',date:ds(120-s*6),sample:s,value:Math.max(0,Math.round(5+gs()*2)),n:1,owner:'S. Khan (Integrity)',rem:''});
- [['Operating temperature (°C)','CUI corrosion rate (mpy)',.85,60,6,2,.12],['Months since overhaul','Mech. seal leakage (ml/h)',.8,2,3,3,.9],['PM compliance (%)','Unplanned trips per quarter',-.8,70,3,9,-.4],['Welder experience (yrs)','Weld repair rate (%)',-.1,3,3,6,-.1]].forEach(p=>{for(let i=0;i<20;i++){const x=+(p[3]+i*p[4]/3+gs()).toFixed(1),y=+(p[5]+p[6]*(x-p[3])*(Math.abs(p[2])>.5?1:.3)+gs()*(Math.abs(p[2])>.5?.6:2.2)).toFixed(2);D.scat.push({ref:'FPSO-01',xn:p[0],x,yn:p[1],y,date:ds(30-i),id:'S'+(i+1),rem:''})}});
- const FL='Weld fabrication & NDT release - topsides spool',S=[['Start','Material receipt & MTC/PMI verification','QA/QC','PO + MTC','Released material','','Receiving inspection checklist','A. Rao (QC)'],['Process','Cutting, bevelling & fit-up','Fabrication Yard','Released material','Fitted joint','Misalignment / high-low','','S. Khan (Integrity)'],['Inspection','Fit-up inspection (hold point)','QA/QC','Fitted joint','Fit-up report','','ITP hold point','A. Rao (QC)'],['Process','Welding per WPS/PQR','Fabrication Yard','Fit-up report','Welded joint','Porosity / lack of fusion',' ','S. Khan (Integrity)'],['Inspection','NDT (RT / UT / MPI)','NDT Contractor','Welded joint','NDT report','Missed indication','NDT procedure + Level II review','A. Rao (QC)'],['Decision','NDT accepted?','QA/QC','NDT report','Accept / repair','','','A. Rao (QC)'],['Process','PWHT & hydrotest','Fabrication Yard','Accepted weld','Tested spool','Leak at flange','Test procedure','M. Iyer (Mech.)'],['Approval','Class / client release (MDR)','QA/QC','Dossier','Signed MDR','','Release note','J. Costa (Marine)'],['End','Load-out to FPSO','Marine','Released spool','Shipped spool','','','J. Costa (Marine)']];
- S.forEach((r,i)=>D.flow.push({pid:'PR-FAB-01',ref:wbs[0],pname:FL,seq:i+1,step:r[1],dept:r[2],input:r[3],output:r[4],stype:r[0],decision:r[0]=='Decision'?'Pass?':'',fail:r[5],qc:r[6].trim(),owner:r[7],next:r[0]=='Decision'?7:'',x:'',y:''}));
- const OH='Rotating equipment overhaul - K-1001',S2=[['Start','Work order raised (CMMS)','Planning','PM / notification','Approved WO','','',''],['Process','Isolate, depressurise & LOTO (PTW)','Operations','Approved WO','Safe work area','Incomplete isolation','Permit to work','M. Iyer (Mech.)'],['Process','Dismantle & inspect','Mechanical Maint.','Machine','Inspection findings','Damage during removal','',''],['Inspection','Dimensional & NDT check (shaft / seals)','Integrity (RBI)','Components','Measurements','Missed crack','API 617 limits table','S. Khan (Integrity)'],['Decision','Within API 617 limits?','Integrity (RBI)','Measurements','Reuse / replace','','','S. Khan (Integrity)'],['Process','Reassemble & align','Mechanical Maint.','Accepted parts','Assembled train','Soft foot / misalignment','','M. Iyer (Mech.)'],['Inspection','Laser alignment & seal leak test','Mechanical Maint.','Assembled train','Test record','','Alignment tolerance sheet','M. Iyer (Mech.)'],['Approval','Maintenance supervisor release','Mechanical Maint.','Test record','Signed WO','','Sign-off form','M. Iyer (Mech.)'],['End','Return to service','Operations','Signed WO','Machine in service','','','']];
- S2.forEach((r,i)=>D.flow.push({pid:'PR-MNT-01',ref:wbs[2],pname:OH,seq:i+1,step:r[1],dept:r[2],input:r[3],output:r[4],stype:r[0],decision:r[0]=='Decision'?'Reuse?':'',fail:r[5],qc:r[6],owner:r[7],next:r[0]=='Decision'?6:'',x:'',y:''}));
- return D}
-const COLS={
-check:[['pid','Project ID'],['pname','Project name'],['wbs','Activity / WBS'],['date','Inspection date','date'],['dept','Department'],['loc','Location'],['itype','Inspection type','sel',['Daily','Weekly','Monthly']],['cat','Defect category'],['desc','Defect description'],['cnt','Frequency / count','number'],['owner','Responsible person'],['rem','Remarks']],
-pareto:[['cat','Defect category'],['freq','Defect frequency','number'],['cost','Defect cost (optional)','number'],['period','Reporting period'],['ref','Project / activity ref']],
-fish:[['problem','Problem statement'],['ref','Project / activity'],['defect','Defect category'],['cat','Cause category','sel',SM6],['cause','Potential root cause'],['evidence','Supporting evidence'],['impact','Impact','sel',['High','Medium','Low']],['action','Corrective action'],['owner','Responsible person'],['target','Target date','date'],['verified','Verified root cause','chk'],['status','Action status','sel',['Open','In Progress','Done']]],
-hist:[['ref','Project / activity ref'],['param','Measurement parameter'],['unit','Unit'],['lsl','Spec min','number'],['usl','Spec max','number'],['sample','Sample no.','number'],['value','Measurement value','number'],['date','Date','date'],['inspector','Inspector'],['rem','Remarks']],
-ctrl:[['ref','Project / activity ref'],['param','Process / quality parameter'],['unit','Unit'],['date','Date','date'],['sample','Sample no.','number'],['value','Measurement','number'],['n','Sample size','number'],['owner','Process owner'],['rem','Remarks']],
-scat:[['ref','Project / activity ref'],['xn','Variable X name'],['x','X measurement','number'],['yn','Variable Y name'],['y','Y measurement','number'],['date','Date','date'],['id','Sample / ref ID'],['rem','Remarks']],
-flow:[['pid','Process ID'],['ref','Project / activity ref (links to Check Sheet WBS)'],['pname','Process name'],['seq','Sequence','number'],['step','Process step'],['dept','Responsible dept'],['input','Input'],['output','Output'],['stype','Symbol / stage','sel',['Start','Process','Decision','Inspection','Approval','End']],['decision','Decision point'],['fail','Potential failure point'],['qc','Quality control measure'],['owner','Responsible person'],['next','Next seq (optional)','number']]};
-const BLANK={check:{cnt:1,itype:'Daily',date:ds(0)},pareto:{},fish:{cat:'Man',impact:'Medium',status:'Open',verified:false},hist:{},ctrl:{n:1,date:ds(0)},scat:{date:ds(0)},flow:{stype:'Process'}};
-let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-if(!S||!S.data){S={data:sample(),cfg:{cur:'int',f:{check:{},hist:{},scat:{},fish:{},flow:{}},pareto:{src:'check',mode:'freq',thr:80},ctrl:{param:'Vibration K-1001 DE bearing (mm/s RMS)',types:{'Vibration K-1001 DE bearing (mm/s RMS)':'imr','UT wall thickness CML-12 (mm)':'xbar','Weld NDT rejection per batch (RT/UT)':'p','CUI findings per inspection round':'c'},run:7,trend:6,spec:{'Vibration K-1001 DE bearing (mm/s RMS)':{u:4.5,l:null},'UT wall thickness CML-12 (mm)':{l:10.5,u:null}}},check:{grain:'daily'},tabDD:false}}}
-const C=S.cfg,Dt=S.data;
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
-const CH={};
-function chart(id,cfg){const el=document.getElementById(id);if(!el||!window.Chart)return;const old=window.Chart.getChart?window.Chart.getChart(el):null;if(old)old.destroy();if(CH[id]){try{CH[id].destroy()}catch(e){}}if(!cfg.type)cfg.type='bar';cfg.options=Object.assign({responsive:true,maintainAspectRatio:false,animation:{duration:800,easing:'easeOutQuart'},plugins:{legend:{labels:{boxWidth:10,font:{size:10}}}}},cfg.options||{});CH[id]=new Chart(el,cfg)}
-const PAL=['#5B2C91','#00A3A3','#E67E22','#2E86DE','#C0392B','#7F8C8D','#27AE60','#D4AC0D'];
-const cv=id=>`<div class="qc"><canvas id="${id}"></canvas></div>`;
-const card=(t,b)=>`<div class="card glass"><h3>${t}</h3>${b}</div>`;
-const kpis=a=>`<div class="qk">${a.map(k=>`<div><b>${k[1]}</b><span>${k[0]}</span></div>`).join('')}</div>`;
-const tbl=(h,r)=>`<div class="qs"><table><thead><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${r.map(x=>`<tr>${x.map(c=>`<td style="padding:5px 8px">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-const al=(m,c)=>`<div class="qa ${c||''}">${m}</div>`;
-const opts=(a,v,all)=>(all?`<option value="">${all}</option>`:'')+a.map(x=>`<option${String(x)===String(v)?' selected':''}>${esc(x)}</option>`).join('');
-/* ---------- analysis functions ---------- */
-const inR=(d,a,b)=>(!a||d>=a)&&(!b||d<=b);
-const chkRows=()=>{const f=C.f.check;return Dt.check.filter(r=>(!f.p||r.pname===f.p)&&(!f.d||r.dept===f.d)&&(!f.w||r.wbs===f.w)&&inR(r.date,f.a,f.b))};
-const grp=(rows,kf,vf)=>{const m={};rows.forEach(r=>{const k=kf(r)||'(blank)';m[k]=(m[k]||0)+vf(r)});return m};
-const cnt=r=>num(r.cnt)||0;
-function pareto(){const P=C.pareto;let m,cost={};
- if(P.src==='check'){m=grp(Dt.check,r=>r.cat,cnt);const uc={};Dt.pareto.forEach(r=>{if(num(r.freq))uc[r.cat]=(num(r.cost)||0)/num(r.freq)});Object.keys(m).forEach(k=>cost[k]=(uc[k]||0)*m[k])}
- else{m=grp(Dt.pareto,r=>r.cat,r=>num(r.freq)||0);cost=grp(Dt.pareto,r=>r.cat,r=>num(r.cost)||0)}
- const val=k=>P.mode==='cost'?cost[k]:m[k];let rows=Object.keys(m).map(k=>({cat:k,freq:m[k],cost:cost[k]||0,v:val(k)||0})).sort((a,b)=>b.v-a.v);
- const tot=sum(rows.map(r=>r.v));let c=0;rows.forEach(r=>{r.pct=tot?r.v/tot*100:0;const prev=c;c+=r.v;r.cum=tot?c/tot*100:0;r.vital=prev/(tot||1)*100<P.thr});return{rows,tot}}
-function hist(){const p=C.f.hist.param||(Dt.hist[0]||{}).param,rows=Dt.hist.filter(r=>r.param===p&&num(r.value)!=null),v=rows.map(r=>num(r.value));
- if(!v.length)return{p,v:[],bins:[]};const n=v.length,mn=Math.min(...v),mx=Math.max(...v),k=Math.min(15,Math.max(5,Math.ceil(1+3.322*Math.log10(n)))),w=(mx-mn)/k||1;
- const bins=Array.from({length:k},(_,i)=>({lo:mn+i*w,hi:mn+(i+1)*w,c:0}));v.forEach(x=>{bins[Math.min(k-1,Math.floor((x-mn)/w))].c++});
- const r0=rows.find(r=>num(r.lsl)!=null||num(r.usl)!=null)||{},lsl=num(r0.lsl),usl=num(r0.usl),m=mean(v),s=sd(v);
- const out=rows.filter(r=>(lsl!=null&&num(r.value)<lsl)||(usl!=null&&num(r.value)>usl)),cp=lsl!=null&&usl!=null&&s?(usl-lsl)/(6*s):null,cpk=s?Math.min(usl!=null?(usl-m)/(3*s):1e9,lsl!=null?(m-lsl)/(3*s):1e9):null;
- return{p,unit:r0.unit||'',v,bins,w,lsl,usl,m,s,md:med(v),mn,mx,out,pin:(n-out.length)/n*100,cp,cpk:cpk>1e8?null:cpk,rows}}
-const A2=[1.88,1.023,.729,.577,.483,.419,.373,.337,.308],D3=[0,0,0,0,0,.076,.136,.184,.223],D4=[3.267,2.574,2.282,2.114,2.004,1.924,1.864,1.816,1.777];
-function vio(p,cl,u,l){const o=p.map(()=>''),R=C.ctrl.run,Tn=C.ctrl.trend;
- p.forEach((x,i)=>{if(x>u[i]||x<l[i])o[i]='R1'});
- for(let i=R-1;i<p.length;i++){const s=p.slice(i-R+1,i+1);if(s.every(x=>x>cl)||s.every(x=>x<cl))for(let j=i-R+1;j<=i;j++)o[j]=o[j]||'R2'}
- for(let i=Tn-1;i<p.length;i++){const s=p.slice(i-Tn+1,i+1);let up=1,dn=1;for(let j=1;j<s.length;j++){if(!(s[j]>s[j-1]))up=0;if(!(s[j]<s[j-1]))dn=0}if(up||dn)for(let j=i-Tn+1;j<=i;j++)o[j]=o[j]||'R3'}return o}
-function ctrl(param,type){const rows=Dt.ctrl.filter(r=>r.param===param&&num(r.value)!=null);let L,P,cl,u,l,sec=null,dts;
- if(!rows.length)return null;
- if(type==='xbar'){const g={},dd={};rows.forEach(r=>{(g[r.sample]=g[r.sample]||[]).push(num(r.value));dd[r.sample]=r.date});const k=Object.keys(g).sort((a,b)=>a-b),arr=k.map(x=>g[x]),n=Math.min(10,Math.max(2,Math.round(mean(arr.map(a=>a.length)))));
-  P=arr.map(mean);const R=arr.map(a=>Math.max(...a)-Math.min(...a)),X=mean(P),Rb=mean(R);L=k;dts=k.map(x=>dd[x]);cl=X;u=P.map(()=>X+A2[n-2]*Rb);l=P.map(()=>X-A2[n-2]*Rb);
-  const su=R.map(()=>D4[n-2]*Rb),sl=R.map(()=>D3[n-2]*Rb);sec={t:'R chart (range)',L,P:R,cl:Rb,u:su,l:sl,v:vio(R,Rb,su,sl)}}
- else{const rs=[...rows].sort((a,b)=>(a.date+String(1e6+(+a.sample))).localeCompare(b.date+String(1e6+(+b.sample))));L=rs.map(r=>r.sample);dts=rs.map(r=>r.date);const v=rs.map(r=>num(r.value));
-  if(type==='imr'){P=v;cl=mean(v);const mr=v.slice(1).map((x,i)=>Math.abs(x-v[i])),mb=mean(mr);u=v.map(()=>cl+2.66*mb);l=v.map(()=>cl-2.66*mb);const su=mr.map(()=>3.267*mb);sec={t:'Moving range chart',L:L.slice(1),P:mr,cl:mb,u:su,l:mr.map(()=>0),v:vio(mr,mb,su,mr.map(()=>0))}}
-  else if(type==='p'){const nn=rs.map(r=>num(r.n)||1);P=v.map((x,i)=>x/nn[i]);cl=sum(v)/sum(nn);u=nn.map(n=>cl+3*Math.sqrt(cl*(1-cl)/n));l=nn.map(n=>Math.max(0,cl-3*Math.sqrt(cl*(1-cl)/n)))}
-  else{P=v;cl=mean(v);u=v.map(()=>cl+3*Math.sqrt(cl));l=v.map(()=>Math.max(0,cl-3*Math.sqrt(cl)))}}
- const vi=vio(P,cl,u,l),bad=vi.filter(x=>x).length+(sec?sec.v.filter(x=>x).length:0);return{L,P,cl,u,l,sec,vi,dts,bad,ok:!bad,type}}
-function corr(rows){const x=rows.map(r=>num(r.x)),y=rows.map(r=>num(r.y)),n=x.length;if(n<2)return{n};const mx=mean(x),my=mean(y);let sxy=0,sxx=0,syy=0;x.forEach((a,i)=>{sxy+=(a-mx)*(y[i]-my);sxx+=(a-mx)**2;syy+=(y[i]-my)**2});
- const r=sxx&&syy?sxy/Math.sqrt(sxx*syy):null,b=sxx?sxy/sxx:0,a=my-b*mx,TC={1:12.71,2:4.3,3:3.18,4:2.78,5:2.57,6:2.45,7:2.36,8:2.31,9:2.26,10:2.23,12:2.18,15:2.13,20:2.09,25:2.06,30:2.04,60:2};
- let sig=null;if(r!=null&&n>=5){const df=n-2,kk=Object.keys(TC).map(Number).filter(k=>k<=df).pop(),t=Math.abs(r)*Math.sqrt(df/(1-r*r||1e-12));sig=t>TC[kk]}
- return{n,r,b,a,r2:r==null?null:r*r,sig,x,y,mx,my,xmin:Math.min(...x),xmax:Math.max(...x)}}
-const strength=r=>{const a=Math.abs(r);return a>=.7?'strong':a>=.4?'moderate':a>=.2?'weak':'negligible'};
-const flowRows=()=>{const p=C.f.flow.p||(Dt.flow[0]||{}).pname;return Dt.flow.filter(r=>r.pname===p).sort((a,b)=>(num(a.seq)||0)-(num(b.seq)||0))};
-const linked=r=>r.ref?sum(Dt.check.filter(c=>c.wbs&&c.wbs.toLowerCase().includes(String(r.ref).toLowerCase())).map(cnt)):0;
-function flowAn(rows){const gaps=[];rows.forEach(r=>{if(r.fail&&!r.qc)gaps.push(`Step ${r.seq} "${r.step}": failure point "${r.fail}" has no QC measure`)});
- if(rows.length&&!rows.some(r=>r.stype==='Inspection'))gaps.push('No inspection stage defined in this process');if(rows.length&&!rows.some(r=>r.stype==='Approval'))gaps.push('No approval stage defined in this process');
- rows.forEach(r=>{if(r.stype==='Decision'&&!r.next)gaps.push(`Decision step ${r.seq} has no "next" branch defined`)});
- const L=rows.map(linked),mx=Math.max(0,...L),bott=rows.filter((r,i)=>mx>0&&L[i]>=.75*mx&&L[i]>0).map(r=>r.seq);return{gaps,bott,fails:rows.filter(r=>r.fail),L}}
-const grain=(d,g)=>{if(g==='monthly')return d.slice(0,7);if(g==='weekly'){const x=new Date(d);x.setDate(x.getDate()-((x.getDay()+6)%7));return x.toISOString().slice(0,10)}return d};
-/* ---------- grid ---------- */
-function grid(key,rows){const cols=COLS[key];return `<div class="qs qgd"><table><thead><tr><th>#</th>${cols.map(c=>`<th>${c[1]}</th>`).join('')}<th></th></tr></thead><tbody>${rows.map((r,i)=>`<tr data-i="${Dt[key].indexOf(r)}"><td>${i+1}</td>${cols.map(c=>`<td>${c[2]==='sel'?`<select data-k="${c[0]}">${opts(c[3],r[c[0]])}</select>`:c[2]==='chk'?`<input type="checkbox" data-k="${c[0]}"${r[c[0]]?' checked':''}>`:`<input data-k="${c[0]}" type="${c[2]||'text'}" value="${esc(r[c[0]])}">`}</td>`).join('')}<td><button class="qb d" data-del="${Dt[key].indexOf(r)}">✕</button></td></tr>`).join('')}</tbody></table></div>`}
-function bindGrid(key,onchg){const root=Q('#qcGrid');if(!root)return;root.onchange=e=>{const t=e.target,tr=t.closest('tr');if(!tr||!t.dataset.k)return;const r=Dt[key][+tr.dataset.i];r[t.dataset.k]=t.type==='checkbox'?t.checked:t.value;save();onchg(t.dataset.k)};
- root.onclick=e=>{const b=e.target.closest('[data-del]');if(b){Dt[key].splice(+b.dataset.del,1);save();open(C.cur)}}}
-const filt=(id,l,h)=>`<div><label>${l}</label>${h}</div>`;
-/* ---------- tool modules ---------- */
-const M={};
-M.check={title:'Tool 1 · Check Sheet',purpose:'FPSO fabrication, hull/marine and static & rotating machinery maintenance: record NCRs, inspection failures and non-conformities; auto-totals and frequency distribution.',
- bar(){const f=C.f.check,D=Dt.check;return filt('','Project',`<select data-f="p">${opts(uniq(D.map(r=>r.pname)),f.p,'All')}</select>`)+filt('','Department',`<select data-f="d">${opts(uniq(D.map(r=>r.dept)),f.d,'All')}</select>`)+filt('','Activity / WBS',`<select data-f="w">${opts(uniq(D.map(r=>r.wbs)),f.w,'All')}</select>`)+filt('','From',`<input type="date" data-f="a" value="${f.a||''}">`)+filt('','To',`<input type="date" data-f="b" value="${f.b||''}">`)+filt('','Trend',`<select data-g="1">${['daily','weekly','monthly'].map(x=>`<option${C.check.grain===x?' selected':''}>${x}</option>`).join('')}</select>`)},
- dash(){const R=chkRows(),tot=sum(R.map(cnt)),bc=grp(R,r=>r.cat,cnt),ks=Object.keys(bc).sort((a,b)=>bc[b]-bc[a]);
-  const html=kpis([['Total inspections',R.length],['Total defects',tot],['Defect categories',ks.length],['Top category',ks[0]||'-']])+
-  `<div class="qg">${card('Defect frequency by category',cv('qcc1'))}${card('Defects by project activity',cv('qcc2'))}${card('Defect trend ('+C.check.grain+')',cv('qcc3'))}${card('Frequency distribution',tbl(['Category','Count','%','Cum %'],(()=>{let c=0;return ks.map(k=>{c+=bc[k];return[esc(k),bc[k],fx(bc[k]/tot*100,1),fx(c/tot*100,1)]})})()))}</div>`;
-  const draw=()=>{chart('qcc1',{type:'bar',data:{labels:ks,datasets:[{label:'Defects',data:ks.map(k=>bc[k]),backgroundColor:PAL[0]}]}});const bw=grp(R,r=>r.wbs,cnt);chart('qcc2',{type:'bar',data:{labels:Object.keys(bw),datasets:[{label:'Defects',data:Object.values(bw),backgroundColor:PAL[1]}]},options:{indexAxis:'y'}});
-   const bt=grp(R,r=>grain(r.date,C.check.grain),cnt),tk=Object.keys(bt).sort();chart('qcc3',{type:'line',data:{labels:tk,datasets:[{label:'Defects',data:tk.map(k=>bt[k]),borderColor:PAL[2],backgroundColor:PAL[2],tension:.25}]}})};
-  return{html,draw,sheet:[['Category','Count','%'],...ks.map(k=>[k,bc[k],+(bc[k]/tot*100).toFixed(1)])],txt:[`Inspections: ${R.length}`,`Total defects: ${tot}`,...ks.slice(0,5).map(k=>`${k}: ${bc[k]}`)]}}};
-M.pareto={title:'Tool 2 · Pareto Chart',purpose:'Rank defect categories, show cumulative % and isolate the vital few using a configurable 80/20 threshold.',
- bar(){const P=C.pareto;return filt('','Data source',`<select data-p="src"><option value="check"${P.src==='check'?' selected':''}>Check Sheet (auto)</option><option value="manual"${P.src==='manual'?' selected':''}>Manual entry</option></select>`)+filt('','Analysis basis',`<select data-p="mode"><option value="freq"${P.mode==='freq'?' selected':''}>Frequency</option><option value="cost"${P.mode==='cost'?' selected':''}>Cost</option></select>`)+filt('','Threshold %',`<input type="number" data-p="thr" value="${P.thr}" min="1" max="100" style="width:70px">`)},
- note:'Manual rows are used directly in Manual mode; in Check Sheet mode, cost = (manual cost ÷ manual frequency) × check-sheet frequency.',
- dash(){const {rows,tot}=pareto(),P=C.pareto,u=P.mode==='cost'?'Cost':'Frequency',vf=rows.filter(r=>r.vital);
-  const html=kpis([['Total '+u.toLowerCase(),fx(tot,0)],['Categories',rows.length],['Vital few (≤'+P.thr+'%)',vf.length],['Top contributor',rows[0]?rows[0].cat:'-']])+`<div class="qg">${card('Pareto chart',cv('qcc1'))}${card('Top 5 defect categories',tbl(['Rank','Category',u,'%','Cum %'],rows.slice(0,5).map((r,i)=>[i+1,esc(r.cat),fx(r.v,0),fx(r.pct,1),fx(r.cum,1)])))}${card('Distribution by project / activity',cv('qcc2'))}${card('Priority improvement areas',vf.map(r=>al(`<b>${esc(r.cat)}</b> — ${fx(r.pct,1)}% of ${u.toLowerCase()} (cum ${fx(r.cum,1)}%). Focus corrective action here first.`)).join('')||'<div class="qn">No data</div>')}</div>`;
-  const draw=()=>{chart('qcc1',{data:{labels:rows.map(r=>r.cat),datasets:[{type:'bar',label:u,data:rows.map(r=>r.v),backgroundColor:rows.map(r=>r.vital?PAL[0]:'#C9BBE0'),yAxisID:'y'},{type:'line',label:'Cumulative %',data:rows.map(r=>r.cum),borderColor:PAL[2],backgroundColor:PAL[2],yAxisID:'y1'},{type:'line',label:P.thr+'% threshold',data:rows.map(()=>P.thr),borderColor:PAL[4],borderDash:[6,4],pointRadius:0,yAxisID:'y1'}]},options:{scales:{y:{beginAtZero:true},y1:{position:'right',min:0,max:100,grid:{drawOnChartArea:false}}}}});
-   const bw=P.src==='check'?grp(Dt.check,r=>r.wbs,cnt):grp(Dt.pareto,r=>r.ref,r=>P.mode==='cost'?num(r.cost)||0:num(r.freq)||0);chart('qcc2',{type:'doughnut',data:{labels:Object.keys(bw),datasets:[{data:Object.values(bw),backgroundColor:PAL}]}})};
-  return{html,draw,sheet:[['Rank','Category',u,'%','Cum %','Vital few'],...rows.map((r,i)=>[i+1,r.cat,r.v,+r.pct.toFixed(1),+r.cum.toFixed(1),r.vital?'Yes':'No'])],txt:rows.slice(0,5).map((r,i)=>`#${i+1} ${r.cat}: ${fx(r.v,0)} (${fx(r.pct,1)}%, cum ${fx(r.cum,1)}%)`)}}};
-M.fish={title:'Tool 3 · Cause-and-Effect (Fishbone) Diagram',purpose:'Capture multiple 6M causes per problem, highlight verified root causes and link them to corrective actions.',
- bar(){const ps=uniq(Dt.fish.map(r=>r.problem));return filt('','Problem',`<select data-f="p">${opts(ps,C.f.fish.p||ps[0])}</select>`)},
- rows(){const ps=uniq(Dt.fish.map(r=>r.problem)),p=C.f.fish.p||ps[0];return Dt.fish.filter(r=>r.problem===p)},
- dash(){const R=M.fish.rows(),prob=R[0]?R[0].problem:'(no problem)',by=SM6.map(m=>R.filter(r=>r.cat===m)),ver=R.filter(r=>r.verified),unres=ver.filter(r=>r.status!=='Done');
-  const rec={};R.forEach(r=>{const k=String(r.cause).trim().toLowerCase();rec[k]=rec[k]||{c:0,t:r.cause};rec[k].c++});const rc=Object.values(rec).filter(x=>x.c>1);
-  const st={Open:0,'In Progress':0,Done:0};R.forEach(r=>st[r.status]=(st[r.status]||0)+1);
-  let svg=`<svg id="fbSvg" viewBox="0 0 1120 520" width="1120" height="520" xmlns="http://www.w3.org/2000/svg" font-family="Arial,sans-serif"><rect width="1120" height="520" fill="#fff"/><line x1="30" y1="260" x2="880" y2="260" stroke="#4B2378" stroke-width="4"/><rect x="880" y="225" width="225" height="70" rx="10" fill="#5B2C91"/><text x="992" y="256" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">${esc(prob.slice(0,30))}</text><text x="992" y="274" fill="#E7D9F7" font-size="11" text-anchor="middle">EFFECT / PROBLEM</text>`;
-  by.forEach((cs,bi)=>{const top=bi<3,x0=170+(bi%3)*250,y0=top?50:470,x1=x0+110;svg+=`<rect x="${x0-60}" y="${top?18:476}" width="130" height="26" rx="6" fill="#F1EAFA" stroke="#5B2C91"/><text x="${x0+5}" y="${top?36:494}" font-size="12" font-weight="700" fill="#4B2378" text-anchor="middle">${SM6[bi]} (${cs.length})</text><line x1="${x0}" y1="${y0+(top?-6:6)}" x2="${x1}" y2="260" stroke="#4B2378" stroke-width="2.5"/>`;
-   const gap=Math.min(26,170/Math.max(cs.length,1));cs.slice(0,7).forEach((c,i)=>{const y=top?85+i*gap:435-i*gap,x=x0+Math.abs(y-y0)*(110/210),ver=c.verified;svg+=`<line x1="${x-70}" y1="${y}" x2="${x}" y2="${y}" stroke="${ver?'#C0392B':'#9A8FB0'}" stroke-width="${ver?2.5:1.3}"/><text x="${x-74}" y="${y-3}" font-size="10.5" text-anchor="end" fill="${ver?'#C0392B':'#2B2240'}" font-weight="${ver?700:400}">${ver?'★ ':''}${esc(String(c.cause).slice(0,30))}</text>`})});
-  svg+=`</svg>`;
-  const html=kpis([['Causes logged',R.length],['Verified root causes',ver.length],['Unresolved verified',unres.length],['Actions done',st.Done||0]])+`<div class="card glass"><h3>Fishbone diagram — ${esc(prob)}</h3><div class="qsvg">${svg}</div><div class="qn">★ red = verified root cause. Edit the table below; the diagram redraws automatically.</div></div><div class="qg">${card('Root-cause distribution by 6M',cv('qcc1'))}${card('Corrective action status',cv('qcc2'))}${card('Major recurring causes',rc.length?tbl(['Cause','Occurrences'],rc.map(x=>[esc(x.t),x.c])):'<div class="qn">No cause appears more than once.</div>')}${card('Unresolved root causes & actions',unres.length?tbl(['Root cause','Action','Owner','Target','Status'],unres.map(r=>[esc(r.cause),esc(r.action),esc(r.owner),esc(r.target),esc(r.status)])):al('All verified root causes have completed actions.','ok'))}</div>${al('<b>RCA summary:</b> '+(R.length?`${R.length} potential causes across ${by.filter(b=>b.length).length} of 6 categories; ${ver.length} verified. Largest category: ${SM6[by.map(b=>b.length).indexOf(Math.max(...by.map(b=>b.length)))]}. ${unres.length} verified root cause(s) still need corrective action completion.`:'No data'))}`;
-  const draw=()=>{chart('qcc1',{type:'bar',data:{labels:SM6,datasets:[{label:'All causes',data:by.map(b=>b.length),backgroundColor:'#C9BBE0'},{label:'Verified',data:by.map(b=>b.filter(r=>r.verified).length),backgroundColor:PAL[4]}]}});chart('qcc2',{type:'doughnut',data:{labels:Object.keys(st),datasets:[{data:Object.values(st),backgroundColor:[PAL[4],PAL[2],PAL[6]]}]}})};
-  return{html,draw,sheet:[['Category','Causes','Verified'],...SM6.map((m,i)=>[m,by[i].length,by[i].filter(r=>r.verified).length])],txt:[`Problem: ${prob}`,`Causes: ${R.length}, verified: ${ver.length}, unresolved verified: ${unres.length}`,...SM6.map((m,i)=>`${m}: ${by[i].length}`)],svg:'fbSvg'}}};
-M.hist={title:'Tool 4 · Histogram',purpose:'Analyse distribution and variation, compare against specification limits and flag out-of-spec measurements.',
- bar(){return filt('','Parameter',`<select data-f="param">${opts(uniq(Dt.hist.map(r=>r.param)),C.f.hist.param||(Dt.hist[0]||{}).param)}</select>`)},
- rows(){const p=C.f.hist.param||(Dt.hist[0]||{}).param;return Dt.hist.filter(r=>r.param===p)},
- dash(){const h=hist();if(!h.v.length)return{html:al('No numeric data for this parameter.'),draw(){},sheet:[],txt:[]};
-  const lab=h.bins.map(b=>fx((b.lo+b.hi)/2,2)),pdf=x=>Math.exp(-.5*((x-h.m)/h.s)**2)/(h.s*Math.sqrt(2*Math.PI)),inb=b=>{const c=(b.lo+b.hi)/2;return !((h.lsl!=null&&c<h.lsl)||(h.usl!=null&&c>h.usl))};
-  const html=kpis([['Samples',h.v.length],['Mean',fx(h.m)],['Median',fx(h.md)],['Std deviation',fx(h.s,3)],['Min / Max',fx(h.mn)+' / '+fx(h.mx)],['Within spec',fx(h.pin,1)+'%'],['Cp / Cpk',fx(h.cp)+' / '+fx(h.cpk)]])+`<div class="qg">${card('Histogram — '+esc(h.p)+' ('+esc(h.unit)+')',cv('qcc1'))}${card('Specification comparison',tbl(['Item','Value'],[['Spec min (LSL)',fx(h.lsl)],['Spec max (USL)',fx(h.usl)],['Observed min',fx(h.mn)],['Observed max',fx(h.mx)],['Out of spec',h.out.length],['Within spec %',fx(h.pin,1)],['Class width',fx(h.w,3)]]))}</div>${card('Measurements outside specification',h.out.length?tbl(['Sample','Value','Date','Inspector'],h.out.map(r=>[r.sample,r.value,r.date,esc(r.inspector)])):al('All measurements are within specification.','ok'))}`;
-  const draw=()=>chart('qcc1',{data:{labels:lab,datasets:[{type:'bar',label:'Frequency',data:h.bins.map(b=>b.c),backgroundColor:h.bins.map(b=>inb(b)?PAL[1]:PAL[4]),barPercentage:1,categoryPercentage:1},...(h.s?[{type:'line',label:'Normal fit',data:h.bins.map(b=>h.v.length*h.w*pdf((b.lo+b.hi)/2)),borderColor:PAL[0],pointRadius:0,tension:.35}]:[])]},options:{scales:{x:{title:{display:true,text:`Class midpoint (${h.unit}) — spec ${fx(h.lsl)} to ${fx(h.usl)}; red = outside spec`}}}}});
-  return{html,draw,sheet:[['Class low','Class high','Frequency'],...h.bins.map(b=>[+b.lo.toFixed(3),+b.hi.toFixed(3),b.c]),[],['Mean',h.m],['Median',h.md],['Std dev',h.s],['Within spec %',h.pin]],txt:[`Parameter: ${h.p}`,`n=${h.v.length} mean=${fx(h.m)} median=${fx(h.md)} sd=${fx(h.s,3)}`,`Spec ${fx(h.lsl)}-${fx(h.usl)}; within spec ${fx(h.pin,1)}%; Cp ${fx(h.cp)} Cpk ${fx(h.cpk)}`]}}};
-M.ctrl={title:'Tool 5 · Control Chart',purpose:'Monitor condition & process stability (vibration, UT wall thickness, NDT rejection, CUI findings) using statistical limits; alarm/spec limits (e.g. ISO 20816, min. wall) are shown separately.',
- bar(){const c=C.ctrl,ps=uniq(Dt.ctrl.map(r=>r.param)),t=c.types[c.param]||'imr',sp=c.spec[c.param]||{};return filt('','Parameter',`<select data-c="param">${opts(ps,c.param)}</select>`)+filt('','Chart type',`<select data-c="type">${[['imr','Individuals & Moving Range'],['xbar','X-bar & R'],['p','p chart'],['c','c chart']].map(o=>`<option value="${o[0]}"${t===o[0]?' selected':''}>${o[1]}</option>`).join('')}</select>`)+filt('','Run rule (N same side)',`<input type="number" data-c="run" value="${c.run}" min="3" max="12" style="width:70px">`)+filt('','Trend rule (N points)',`<input type="number" data-c="trend" value="${c.trend}" min="3" max="12" style="width:70px">`)+filt('','Spec LSL (engineering)',`<input type="number" data-c="lsl" value="${sp.l??''}" style="width:80px">`)+filt('','Spec USL (engineering)',`<input type="number" data-c="usl" value="${sp.u??''}" style="width:80px">`)},
- rows(){return Dt.ctrl.filter(r=>r.param===C.ctrl.param)},
- dash(){const c=C.ctrl,type=c.types[c.param]||'imr',R=ctrl(c.param,type);if(!R)return{html:al('No data for this parameter.'),draw(){},sheet:[],txt:[]};const sp=c.spec[c.param]||{};
-  const alerts=[];R.vi.forEach((x,i)=>{if(x)alerts.push([R.L[i],R.dts[i],fx(R.P[i],3),x==='R1'?'Beyond control limit':x==='R2'?`Run of ${c.run}+ on one side of centre line`:`Trend of ${c.trend}+ points`])});
-  if(R.sec)R.sec.v.forEach((x,i)=>{if(x)alerts.push([R.sec.L[i],'-',fx(R.sec.P[i],3),'Variation chart: '+(x==='R1'?'beyond limit':'pattern')])});
-  const bym={};R.dts.forEach((d,i)=>{const m=String(d).slice(0,7);bym[m]=bym[m]||{p:[],v:0};bym[m].p.push(R.P[i]);if(R.vi[i])bym[m].v++});
-  const html=kpis([['Process status',R.ok?'IN CONTROL':'OUT OF CONTROL'],['Centre line',fx(R.cl,3)],['UCL',fx(R.u[0],3)],['LCL',fx(R.l[0],3)],['Signals',R.bad]])+(R.ok?al('Process appears statistically stable.','ok'):al(`<b>Potential process instability:</b> ${R.bad} signal(s) detected — investigate special causes.`,'r'))+`<div class="qn" style="margin:0 0 6px">Control limits (UCL/LCL) are computed from the process data. Specification limits (purple dashed) are engineering requirements and are not used to calculate control limits.</div><div class="qg">${card('Control chart ('+({imr:'Individuals',xbar:'X-bar',p:'p',c:'c'}[type])+')',cv('qcc1'))}${R.sec?card(R.sec.t,cv('qcc2')):''}${card('Out-of-control / pattern signals',alerts.length?tbl(['Sample','Date','Value','Signal'],alerts):al('No signals.','ok'))}${card('Historical process performance',tbl(['Month','Points','Mean','Signals'],Object.keys(bym).sort().map(m=>[m,bym[m].p.length,fx(mean(bym[m].p),3),bym[m].v])))}</div>`;
-  const ds=(l,d,col,dash,step)=>({label:l,data:d,borderColor:col,borderDash:dash,pointRadius:0,borderWidth:1.6,stepped:step||false,fill:false});
-  const draw=()=>{const ptc=R.vi.map(x=>x==='R1'?PAL[4]:x?PAL[2]:PAL[0]),sets=[{label:'Measurement',data:R.P,borderColor:PAL[0],backgroundColor:ptc,pointBackgroundColor:ptc,pointRadius:R.vi.map(x=>x?6:3.5),borderWidth:1.6},ds('Centre line',R.P.map(()=>R.cl),'#27AE60',[]),ds('UCL (control)',R.u,PAL[4],[6,4],true),ds('LCL (control)',R.l,PAL[4],[6,4],true)];
-   if(sp.u!=null&&sp.u!=='')sets.push(ds('USL (spec)',R.P.map(()=>+sp.u),'#8E44AD',[2,3]));if(sp.l!=null&&sp.l!=='')sets.push(ds('LSL (spec)',R.P.map(()=>+sp.l),'#8E44AD',[2,3]));
-   chart('qcc1',{type:'line',data:{labels:R.L,datasets:sets}});if(R.sec){const s=R.sec,sc=s.v.map(x=>x?PAL[4]:PAL[0]);chart('qcc2',{type:'line',data:{labels:s.L,datasets:[{label:s.t,data:s.P,borderColor:PAL[0],pointBackgroundColor:sc,borderWidth:1.6},ds('Centre',s.P.map(()=>s.cl),'#27AE60',[]),ds('UCL',s.u,PAL[4],[6,4]),ds('LCL',s.l,PAL[4],[6,4])]}})}};
-  return{html,draw,sheet:[['Sample','Date','Value','UCL','CL','LCL','Signal'],...R.L.map((l,i)=>[l,R.dts[i],R.P[i],R.u[i],R.cl,R.l[i],R.vi[i]])],txt:[`Parameter: ${c.param} (${type})`,`Status: ${R.ok?'IN CONTROL':'OUT OF CONTROL'}; signals: ${R.bad}`,`CL ${fx(R.cl,3)}  UCL ${fx(R.u[0],3)}  LCL ${fx(R.l[0],3)}`,...alerts.slice(0,8).map(a=>`Sample ${a[0]}: ${a[3]}`)],R}}};
-M.scat={title:'Tool 6 · Scatter Diagram',purpose:'Explore relationships between two quality variables. Correlation does not prove causation.',
- bar(){const D=Dt.scat,f=C.f.scat,pairs=uniq(D.map(r=>r.xn+' | '+r.yn));return filt('','Variable pair (X | Y)',`<select data-f="pair">${opts(pairs,f.pair||pairs[0])}</select>`)+filt('','Project / activity',`<select data-f="ref">${opts(uniq(D.map(r=>r.ref)),f.ref,'All')}</select>`)+filt('','From',`<input type="date" data-f="a" value="${f.a||''}">`)+filt('','To',`<input type="date" data-f="b" value="${f.b||''}">`)},
- rows(){const D=Dt.scat,f=C.f.scat,pair=f.pair||(D[0]?D[0].xn+' | '+D[0].yn:'');return D.filter(r=>r.xn+' | '+r.yn===pair&&(!f.ref||r.ref===f.ref)&&inR(r.date,f.a,f.b))},
- dash(){const R=M.scat.rows(),s=corr(R),pair=R[0]?`${R[0].xn} vs ${R[0].yn}`:'';if(!R.length)return{html:al('No data.'),draw(){},sheet:[],txt:[]};
-  let it='Not enough data for correlation (need at least 5 paired points).';if(s.n>=5&&s.r!=null)it=`${strength(s.r)} ${s.r>0?'positive':'negative'} linear relationship (r = ${fx(s.r,3)}, R² = ${fx(s.r2,3)}). ${s.sig?'Statistically significant at ~95% confidence.':'Not statistically significant at ~95% confidence.'}`;
-  const html=kpis([['Observations',s.n],['Correlation r',fx(s.r,3)],['R²',fx(s.r2,3)],['Slope',fx(s.b,3)],['Intercept',fx(s.a,3)]])+`<div class="qg">${card('Scatter plot — '+esc(pair),cv('qcc1'))}${card('Relationship interpretation',al(`<b>${esc(it)}</b>`,s.sig?'':'')+al('Correlation does not prove causation. Confirm with designed experiments, process knowledge and root-cause analysis.')+`<div class="qn"><b>Areas for further investigation:</b> ${s.r!=null&&Math.abs(s.r)>=.4?'Check for lurking variables (shift, supplier, operator), examine outliers, and stratify by project/activity.':'Weak/no linear pattern — try other variables, non-linear relationships, or stratify the data.'}</div>`)}</div>`;
-  const draw=()=>chart('qcc1',{type:'scatter',data:{datasets:[{label:'Observations',data:R.map(r=>({x:num(r.x),y:num(r.y)})),backgroundColor:PAL[0]},...(s.r!=null?[{type:'line',label:'Trend line',data:[{x:s.xmin,y:s.a+s.b*s.xmin},{x:s.xmax,y:s.a+s.b*s.xmax}],borderColor:PAL[4],pointRadius:0,borderWidth:2}]:[])]},options:{scales:{x:{title:{display:true,text:R[0].xn}},y:{title:{display:true,text:R[0].yn}}}}});
-  return{html,draw,sheet:[['Statistic','Value'],['n',s.n],['r',s.r],['R2',s.r2],['Slope',s.b],['Intercept',s.a],['Interpretation',it]],txt:[pair,it,'Correlation does not prove causation.'],r:s}}};
-M.flow={title:'Tool 7 · Process Flowchart',purpose:'Visualise fabrication / ITP and maintenance workflows (hold points, NDT, PTW, MDR release); drag symbols, highlight gaps, failure points and defect-linked bottlenecks.',
- bar(){const ps=uniq(Dt.flow.map(r=>r.pname));return filt('','Process',`<select data-f="p">${opts(ps,C.f.flow.p||ps[0])}</select>`)+`<div><button class="qb g" id="qcRL">Reset layout</button></div>`},
- rows:flowRows,
- dash(){const R=flowRows(),a=flowAn(R),n=R.length;const pos=R.map((r,i)=>{const row=Math.floor(i/4),col=row%2?3-i%4:i%4;return{x:num(r.x)!=null&&r.x!==''?+r.x:40+col*250,y:num(r.y)!=null&&r.y!==''?+r.y:30+row*130}});
-  const W=Math.max(1060,...pos.map(p=>p.x+220)),H=Math.max(300,...pos.map(p=>p.y+110));
-  const html=kpis([['Process steps',n],['Inspection stages',R.filter(r=>r.stype==='Inspection').length],['Approval stages',R.filter(r=>r.stype==='Approval').length],['Decision points',R.filter(r=>r.stype==='Decision').length],['Process gaps',a.gaps.length],['Failure points',a.fails.length]])+`<div class="card glass"><h3>Interactive flowchart (drag symbols to move)</h3><div class="qsvg"><svg id="flSvg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,sans-serif"></svg></div><div class="qn">Red dashed = QC gap · Orange = bottleneck (high linked defects from Check Sheet) · ⚠ = failure point</div></div><div class="qg">${card('Process gaps',a.gaps.length?a.gaps.map(g=>al(esc(g),'r')).join(''):al('No gaps detected.','ok'))}${card('Potential failure points & linked defects',tbl(['Step','Failure point','QC measure','Linked defects'],R.map((r,i)=>r.fail||a.L[i]?[r.seq+' '+esc(r.step),esc(r.fail),esc(r.qc)||'<b style="color:#C0392B">none</b>',a.L[i]]:null).filter(Boolean)))}${card('Improvement opportunities',(a.gaps.map(g=>'• Add/define controls: '+esc(g)).concat(a.bott.map(s=>`• Step ${s} is a bottleneck — high linked defects; add an in-process inspection`)).join('<br>'))||'<div class="qn">No opportunities identified.</div>')}</div>`;
-  const draw=()=>{const svg=Q('#flSvg');if(!svg)return;const bx=(i,t)=>{const p=pos[i],cx=p.x+85,cy=p.y+32;return{cx,cy}};
-   const render=()=>{let s='<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#4B2378"/></marker></defs><rect width="100%" height="100%" fill="#fff"/>';
-    R.forEach((r,i)=>{const tgt=num(r.next)!=null?R.findIndex(q=>+q.seq===+r.next):i+1;if(tgt<0||tgt>=n||r.stype==='End')return;const A=bx(i),B=bx(tgt),dx=B.cx-A.cx,dy=B.cy-A.cy,k=Math.min(85/Math.abs(dx||1e-9),32/Math.abs(dy||1e-9));
-     s+=`<line x1="${A.cx+dx*Math.min(k,.45)}" y1="${A.cy+dy*Math.min(k,.45)}" x2="${B.cx-dx*Math.min(Math.min(85/Math.abs(dx||1e-9),32/Math.abs(dy||1e-9))+.02,.45)}" y2="${B.cy-dy*Math.min(Math.min(85/Math.abs(dx||1e-9),32/Math.abs(dy||1e-9))+.02,.45)}" stroke="#4B2378" stroke-width="2" marker-end="url(#ar)"/>${r.stype==='Decision'&&num(r.next)!=null&&tgt!==i+1?`<text x="${(A.cx+B.cx)/2}" y="${(A.cy+B.cy)/2-4}" font-size="10" fill="#4B2378">${tgt<i?'No':'Yes'}</text>`:''}`});
-    R.forEach((r,i)=>{const p=pos[i],gap=r.fail&&!r.qc,bt=a.bott.includes(r.seq),fill=bt?'#FFE2BD':{Start:'#E8F5E9',End:'#E8F5E9',Process:'#EFF3FF',Decision:'#FFF8DC',Inspection:'#E6F7F7',Approval:'#F1EAFA'}[r.stype]||'#fff',st=gap?'#C0392B':'#4B2378',da=gap?'stroke-dasharray="5 3"':'',x=p.x,y=p.y;let sh;
-     if(r.stype==='Decision')sh=`<polygon points="${x+85},${y-4} ${x+170},${y+32} ${x+85},${y+68} ${x},${y+32}" fill="${fill}" stroke="${st}" stroke-width="2" ${da}/>`;
-     else if(r.stype==='Start'||r.stype==='End')sh=`<rect x="${x}" y="${y+6}" width="170" height="52" rx="26" fill="${fill}" stroke="${st}" stroke-width="2" ${da}/>`;
-     else if(r.stype==='Inspection')sh=`<rect x="${x}" y="${y+4}" width="170" height="56" rx="8" fill="${fill}" stroke="${st}" stroke-width="2" ${da}/><rect x="${x+4}" y="${y+8}" width="162" height="48" rx="5" fill="none" stroke="${st}"/>`;
-     else if(r.stype==='Approval')sh=`<polygon points="${x+16},${y+4} ${x+170},${y+4} ${x+154},${y+60} ${x},${y+60}" fill="${fill}" stroke="${st}" stroke-width="2" ${da}/>`;
-     else sh=`<rect x="${x}" y="${y+4}" width="170" height="56" fill="${fill}" stroke="${st}" stroke-width="2" ${da}/>`;
-     s+=`<g data-i="${i}" style="cursor:grab">${sh}<text x="${x+85}" y="${y+28}" font-size="10.5" text-anchor="middle" fill="#2B2240" font-weight="700">${r.seq}. ${esc(String(r.step).slice(0,24))}</text><text x="${x+85}" y="${y+43}" font-size="9" text-anchor="middle" fill="#6E687A">${esc(r.stype==='Decision'?r.decision:String(r.dept).slice(0,22))}</text>${r.fail?`<text x="${x+160}" y="${y+2}" font-size="14" fill="#E67E22">⚠</text>`:''}${gap?`<text x="${x+2}" y="${y+2}" font-size="9" fill="#C0392B" font-weight="700">NO QC</text>`:''}</g>`});svg.innerHTML=s};render();
-   let drag=null;svg.onpointerdown=e=>{const g=e.target.closest('[data-i]');if(!g)return;const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse()),i=+g.dataset.i;drag={i,ox:q.x-pos[i].x,oy:q.y-pos[i].y};svg.setPointerCapture(e.pointerId)};
-   svg.onpointermove=e=>{if(!drag)return;const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());pos[drag.i]={x:Math.max(0,q.x-drag.ox),y:Math.max(0,q.y-drag.oy)};render()};
-   svg.onpointerup=()=>{if(!drag)return;R.forEach((r,i)=>{r.x=Math.round(pos[i].x);r.y=Math.round(pos[i].y)});drag=null;save()}};
-  return{html,draw,sheet:[['Seq','Step','Type','Failure point','QC measure','Linked defects'],...R.map((r,i)=>[r.seq,r.step,r.stype,r.fail,r.qc,a.L[i]]),[],...a.gaps.map(g=>['GAP',g])],txt:[`Steps: ${n}; gaps: ${a.gaps.length}; failure points: ${a.fails.length}`,...a.gaps],svg:'flSvg'}}};
-/* ---------- integrated dashboard ---------- */
-M.int={title:'SEVEN BASIC QC TOOLS – INTEGRATED QUALITY DASHBOARD',purpose:'One-page summary across all seven tools. Open each tool from the QUALITY TOOLS menu to edit data.',
- dash(){const tot=sum(Dt.check.map(cnt)),P=pareto(),vf=P.rows.filter(r=>r.vital),fr=Dt.fish,ver=fr.filter(r=>r.verified),un=ver.filter(r=>r.status!=='Done'),h=hist(),ps=uniq(Dt.ctrl.map(r=>r.param)),cs=ps.map(p=>({p,t:C.ctrl.types[p]||'imr',R:ctrl(p,C.ctrl.types[p]||'imr')})).filter(x=>x.R),fa=flowAn(Dt.flow.filter(r=>r.pname===(Dt.flow[0]||{}).pname));
-  const pairs=uniq(Dt.scat.map(r=>r.xn+' | '+r.yn)).map(k=>({k,s:corr(Dt.scat.filter(r=>r.xn+' | '+r.yn===k))})).filter(x=>x.s.r!=null);
-  const html=kpis([['Total defects',tot],['Inspections',Dt.check.length],['Vital few categories',vf.length],['Verified root causes',ver.length],['Unresolved RCA actions',un.length],['Within spec ('+esc(h.p||'-')+')',fx(h.pin,1)+'%'],['Unstable processes',cs.filter(c=>!c.R.ok).length+' / '+cs.length],['Process gaps',fa.gaps.length]])+
-  `<div class="qg">${card('Pareto — vital few',cv('qcc1'))}${card('Defect trend (monthly)',cv('qcc2'))}${card('Root causes by 6M',cv('qcc3'))}${card('Process stability (control charts)',tbl(['Parameter','Chart','Status','Signals'],cs.map(c=>[esc(c.p),c.t,c.R.ok?'<b style="color:#27AE60">In control</b>':'<b style="color:#C0392B">Out of control</b>',c.R.bad])))}${card('Scatter correlations',tbl(['Pair (X | Y)','r','Reading'],pairs.map(x=>[esc(x.k),fx(x.s.r,2),strength(x.s.r)+(x.s.r>0?' +':' −')])))}${card('Priority actions',[...vf.slice(0,3).map(r=>`Pareto: attack <b>${esc(r.cat)}</b> (${fx(r.pct,1)}%)`),...un.slice(0,3).map(r=>`RCA: complete "${esc(r.action)}" for ${esc(r.cause)}`),...cs.filter(c=>!c.R.ok).map(c=>`Control: investigate ${esc(c.p)}`),...fa.gaps.slice(0,2).map(esc)].map(x=>al(x)).join('')||al('No priority actions.','ok'))}</div><div class="qn">Correlation does not imply causation. Control limits are statistical; specification limits are engineering requirements.</div>`;
-  const draw=()=>{chart('qcc1',{data:{labels:P.rows.map(r=>r.cat),datasets:[{type:'bar',label:'Value',data:P.rows.map(r=>r.v),backgroundColor:P.rows.map(r=>r.vital?PAL[0]:'#C9BBE0')},{type:'line',label:'Cum %',data:P.rows.map(r=>r.cum),borderColor:PAL[2],yAxisID:'y1'}]},options:{scales:{y1:{position:'right',min:0,max:100,grid:{drawOnChartArea:false}}}}});
-   const bt=grp(Dt.check,r=>r.date.slice(0,7),cnt),tk=Object.keys(bt).sort();chart('qcc2',{type:'line',data:{labels:tk,datasets:[{label:'Defects',data:tk.map(k=>bt[k]),borderColor:PAL[2]}]}});chart('qcc3',{type:'bar',data:{labels:SM6,datasets:[{label:'Causes',data:SM6.map(m=>fr.filter(r=>r.cat===m).length),backgroundColor:PAL[3]}]}})};
-  return{html,draw,sheet:[['KPI','Value'],['Total defects',tot],['Vital few',vf.length],['Verified root causes',ver.length],['Unresolved actions',un.length],['Unstable processes',cs.filter(c=>!c.R.ok).length],['Process gaps',fa.gaps.length]],txt:[`Total defects ${tot}; vital few ${vf.length}`,`Verified root causes ${ver.length}; unresolved ${un.length}`,`Unstable processes ${cs.filter(c=>!c.R.ok).length}/${cs.length}`,`Process gaps ${fa.gaps.length}`]}}};
-/* ---------- view ---------- */
-const NAV=[['int','Integrated Quality Dashboard'],['check','1 · Check Sheet'],['pareto','2 · Pareto Chart'],['fish','3 · Cause-and-Effect (Fishbone)'],['hist','4 · Histogram'],['ctrl','5 · Control Chart'],['scat','6 · Scatter Diagram'],['flow','7 · Process Flowchart']];
-function gridRows(k){return M[k].rows?M[k].rows():Dt[k]}
-function open(k){C.cur=k;save();const m=M[k],root=Q('#v-qc');document.querySelectorAll('main .view').forEach(v=>v.style.display=v===root?'block':'none');const none=Q('#none');if(none)none.style.display='none';
- document.querySelectorAll('#tabs .tab').forEach(b=>b.classList.remove('on'));Q('#qcBtn').classList.add('on');Q('#qcTabSel').value='qc:'+k;menu.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));
- const isT=k!=='int';root.innerHTML=`<h2>${m.title}</h2><div class="qp">${m.purpose}</div><div class="qbar" id="qcBar">${m.bar?m.bar():''}${isT?`<button class="qb" id="qcAdd">＋ Add row</button>`:''}<button class="qb g" id="qcX">⇩ Export Excel</button><button class="qb g" id="qcP">⇩ Export PDF</button>${k==='int'?'<button class="qb g" id="qcXA">⇩ Export all tools (Excel)</button>':''}<button class="qb g" id="qcRs">↺ Reload sample data</button></div>${m.note?`<div class="qn">${m.note}</div>`:''}<div id="qcDash"></div>${isT?`<div class="card glass" style="margin-top:14px"><h3>Input template — editable (changes recalculate instantly)</h3><div id="qcGrid">${k==='pareto'&&C.pareto.src==='check'?'<div class="qn">Pareto is using Check Sheet data. Rows below supply optional cost (cost ÷ frequency = unit cost); switch to “Manual entry” to use them directly.</div>':''}${grid(k,gridRows(k))}</div></div>`:''}`;
- const dr=()=>{const o=M[k].dash();Q('#qcDash').innerHTML=o.html;o.draw();Q('#qcDash')._o=o;return o};dr();
- if(isT){bindGrid(k,()=>{const sc=Q('#qcGrid .qs').scrollTop;dr();if(k==='fish'||k==='hist'||k==='flow'||k==='ctrl'||k==='scat')void 0});
-  Q('#qcAdd').onclick=()=>{const b=Object.assign({},BLANK[k]),f=C.f[k]||{},rs=gridRows(k),last=rs[rs.length-1]||Dt[k][Dt[k].length-1];COLS[k].forEach(c=>{if(b[c[0]]==null)b[c[0]]=(last&&['pid','pname','problem','param','ref','xn','yn','unit','lsl','usl'].includes(c[0]))?last[c[0]]:c[2]==='number'?'':''});if(k==='flow'&&last)b.seq=(+last.seq||0)+1;Dt[k].push(b);save();open(k)}}
- const bar=Q('#qcBar');bar.onchange=e=>{const t=e.target;if(t.dataset.f!=null){C.f[k][t.dataset.f]=t.value;save();open(k)}else if(t.dataset.p){C.pareto[t.dataset.p]=t.dataset.p==='thr'?+t.value||80:t.value;save();open(k)}else if(t.dataset.g){C.check.grain=t.value;save();open(k)}else if(t.dataset.c){const c=C.ctrl,d=t.dataset.c;if(d==='param')c.param=t.value;else if(d==='type')c.types[c.param]=t.value;else if(d==='run'||d==='trend')c[d]=+t.value||c[d];else{c.spec[c.param]=c.spec[c.param]||{};c.spec[c.param][d==='lsl'?'l':'u']=t.value===''?null:+t.value}save();open(k)}};
- Q('#qcX').onclick=()=>xls([k]);Q('#qcP').onclick=()=>pdf(k);if(Q('#qcXA'))Q('#qcXA').onclick=()=>xls(['check','pareto','fish','hist','ctrl','scat','flow','int']);
- Q('#qcRs').onclick=()=>{if(confirm('Replace all Quality Tools data with fresh sample data?')){S.data=sample();Object.keys(Dt).forEach(x=>delete Dt[x]);Object.assign(Dt,S.data);S.data=Dt;save();open(k)}};
- if(Q('#qcRL'))Q('#qcRL').onclick=()=>{flowRows().forEach(r=>{r.x='';r.y=''});save();open(k)}}
-/* ---------- export ---------- */
-function xls(keys){if(!window.XLSX)return alert('Excel library unavailable');const wb=XLSX.utils.book_new(),cur=C.cur;
- keys.forEach(k=>{if(k!=='int'){const rows=Dt[k].map(r=>{const o={};COLS[k].forEach(c=>o[c[1]]=r[c[0]]);return o});XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),(M[k].title.split('·')[1]||k).trim().slice(0,22)+' data')}
-  const keep=C.cur;C.cur=k;const o=M[k].dash();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(o.sheet.length?o.sheet:[['No data']]),(k==='int'?'Integrated':(M[k].title.split('·')[1]||k).trim().slice(0,19)+' analysis'));C.cur=keep});
- XLSX.writeFile(wb,'Quality_'+(keys.length>1?'All_Tools':keys[0])+'_'+ds(0)+'.xlsx')}
-const svgPng=id=>new Promise(res=>{const s=document.getElementById(id);if(!s)return res(null);const w=s.viewBox.baseVal.width,h=s.viewBox.baseVal.height,x=new XMLSerializer().serializeToString(s),im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=w*1.5;c.height=h*1.5;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);res({d:c.toDataURL('image/png'),w,h})};im.onerror=()=>res(null);im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(x)});
-async function pdf(k){if(!(window.jspdf&&window.jspdf.jsPDF))return alert('PDF library unavailable');const o=Q('#qcDash')._o,d=new window.jspdf.jsPDF('p','pt','a4'),safe=s=>String(s).replace(/[^\x20-\x7E]/g,'-');let y=48;const pg=h=>{if(y+h>800){d.addPage();y=40}};
- d.setFontSize(15);d.text(safe(M[k].title),40,y);y+=18;d.setFontSize(9);d.text('Generated '+ds(0),40,y);y+=18;d.setFontSize(10);(o.txt||[]).forEach(t=>{d.splitTextToSize(safe(t),510).forEach(l=>{pg(13);d.text(l,40,y);y+=13})});y+=6;
- if(o.svg){const im=await svgPng(o.svg);if(im){const w=515,h=w*im.h/im.w;pg(h);d.addImage(im.d,'PNG',40,y,w,h);y+=h+10}}
- document.querySelectorAll('#qcDash canvas').forEach(cn=>{const w=500,h=w*cn.height/cn.width;pg(h+6);d.addImage(cn.toDataURL('image/png'),'PNG',40,y,w,h);y+=h+10});d.save('Quality_'+k+'_'+ds(0)+'.pdf')}
-/* ---------- mount ---------- */
-const tabs=Q('#tabs'),main=Q('main');if(!tabs||!main)return;
-const wrap=document.createElement('div');wrap.className='qcdd';wrap.innerHTML='<button class="qcbtn" id="qcBtn" title="Seven Basic QC Tools">QUALITY TOOLS – SEVEN BASIC QC TOOLS ▾</button>';tabs.appendChild(wrap);
-const menu=document.createElement('div');menu.className='qcmenu';menu.innerHTML=NAV.map((n,i)=>(i==1?'<hr>':'')+`<button data-k="${n[0]}">${n[1]}</button>`).join('');document.body.appendChild(menu);
-wrap.onclick=e=>e.stopPropagation();
-Q('#qcBtn').onclick=e=>{const r=e.currentTarget.getBoundingClientRect();menu.style.left=Math.max(8,Math.min(r.left,innerWidth-310))+'px';menu.style.top=r.bottom+6+'px';menu.style.display=menu.style.display==='block'?'none':'block'};
-menu.onclick=e=>{const b=e.target.closest('button');if(b){menu.style.display='none';open(b.dataset.k)}};document.addEventListener('click',()=>menu.style.display='none');
-const v=document.createElement('div');v.id='v-qc';v.className='view';v.style.display='none';const foot=Q('#foot');foot?foot.parentNode.insertBefore(v,foot):main.appendChild(v);
-/* dropdown-mode for all project tabs */
-const sel=document.createElement('select');sel.id='qcTabSel';const tg=document.createElement('button');tg.className='pill ghost';tg.id='qcTg';tg.style.cssText='padding:7px 12px;font-size:12px';
-const hold=tabs.parentNode;hold.insertBefore(sel,tabs);hold.insertBefore(tg,sel);
-function fillSel(){sel.innerHTML='<optgroup label="Project tabs">'+[...tabs.querySelectorAll('.tab')].map(b=>`<option value="t:${b.dataset.t}">${b.textContent}</option>`).join('')+'</optgroup><optgroup label="QUALITY TOOLS – SEVEN BASIC QC TOOLS">'+NAV.map(n=>`<option value="qc:${n[0]}">${n[1]}</option>`).join('')+'</optgroup>'}
-function dd(){tabs.style.display=C.tabDD?'none':'';sel.style.display=C.tabDD?'inline-block':'none';tg.textContent=C.tabDD?'▦ Show tab bar':'▾ Dropdown tabs';const on=tabs.querySelector('.tab.on');if(on&&C.cur&&v.style.display!=='block')sel.value='t:'+on.dataset.t}
-tg.onclick=()=>{C.tabDD=!C.tabDD;save();fillSel();dd()};
-sel.onchange=()=>{const i=sel.value.indexOf(':'),a=sel.value.slice(0,i),b=sel.value.slice(i+1);if(a==='qc')open(b);else if(b.startsWith('k:')){v.style.display='none';Q('#qcBtn').classList.remove('on');window.KPI.open(b.slice(2));sel.value='t:'+b}else{v.style.display='none';Q('#qcBtn').classList.remove('on');window.setTab(b);sel.value='t:'+b}};
-tabs.addEventListener('click',e=>{if(e.target.closest('.tab')){Q('#qcBtn').classList.remove('on');v.style.display='none';setTimeout(()=>{const on=tabs.querySelector('.tab.on');if(on)sel.value='t:'+on.dataset.t},0)}},true);
-fillSel();dd();window.QC={open};
-})();
-</script>
+
 <script id="kpi-module">
 (function(){
 'use strict';
@@ -2587,6 +2332,366 @@ const op=window.parseWorkbookRows;window.parseWorkbookRows=function(wb){try{imp(
 /* hook re-render points */
 const br=window.render;window.render=function(){const r=br.apply(this,arguments);sched();return r};const bs=window.setTab;window.setTab=function(){const r=bs.apply(this,arguments);sched();return r};
 window.piqDrill=drill;setTimeout(draw,120);setTimeout(draw,700);
+})();
+</script>
+
+<style id="piq-exec-style">
+#piqOv,#kpiHead{display:none!important}
+#xo{grid-area:kpis;display:grid;gap:16px;animation:xin .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes xin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.xh{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px}
+.xh h2{font:700 22px var(--fd);color:#4B2378;letter-spacing:-.4px}.xh p{font-size:12px;color:#777184;margin-top:3px}
+.xb{padding:8px 14px;border-radius:10px;font:600 12px var(--fb);background:#fff;color:#5B2C91;border:1px solid #D9CCEC;transition:.2s}
+.xb:hover{border-color:#5B2C91;transform:translateY(-1px);box-shadow:0 4px 12px rgba(91,44,145,.14)}.xb.p{background:#5B2C91;color:#fff}
+#xf{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;padding:12px 16px;overflow:hidden;transition:max-height .35s ease,padding .35s,opacity .3s;max-height:140px}
+#xf.c{max-height:0;padding-top:0;padding-bottom:0;opacity:0;border-width:0}
+#xk{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px}
+@media(max-width:1280px){#xk{grid-template-columns:repeat(4,1fr)}}@media(max-width:700px){#xk{grid-template-columns:repeat(2,1fr)}}
+.xc{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px 14px 12px;cursor:pointer;position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s,border-color .25s;border-top:3px solid var(--s)}
+.xc:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(43,29,65,.12)}
+.xc .l{font:600 10.5px var(--fb);letter-spacing:.8px;text-transform:uppercase;color:#777184;display:flex;justify-content:space-between;align-items:center}
+.xc .v{font:700 30px var(--fd);margin:8px 0 6px;color:#2B2240;letter-spacing:-1px;transition:color .3s}
+.xc .m{display:flex;justify-content:space-between;font:500 11px var(--fm);color:#625D70}
+.xc .s{display:inline-flex;align-items:center;gap:5px;font:700 10px var(--fb);padding:3px 8px;border-radius:20px;margin-top:8px;background:var(--sb);color:var(--s)}
+.xc .s:before{content:'';width:6px;height:6px;border-radius:50%;background:var(--s)}
+.xi{width:18px;height:18px;border-radius:50%;border:1px solid #CFC6DC;color:#5B2C91;font:700 10px var(--fb);display:grid;place-items:center;background:#fff}
+.xi:hover{background:#5B2C91;color:#fff}
+#xt{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:16px}
+@media(max-width:560px){#xt{grid-template-columns:1fr}}
+.xt{padding:16px 18px}.xt .th{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+.xt h3{font:600 14px var(--fd);color:#3D3150}.xt .sub{font-size:11px;color:#858093;margin-top:2px}.xt .cv{height:260px}
+.xt .sw{display:flex;gap:4px;background:#F1EFF6;padding:3px;border-radius:9px}.xt .sw button{padding:4px 9px;border-radius:6px;font:600 10.5px var(--fb);color:#6E687A;transition:.2s}.xt .sw button.on{background:#fff;color:#5B2C91;box-shadow:0 1px 4px rgba(43,29,65,.1)}
+.xs{display:flex;gap:14px;flex-wrap:wrap;font:500 11px var(--fm);color:#625D70;margin-top:8px}.xs b{color:#2B2240}
+#xm{position:fixed;inset:0;background:rgba(34,25,46,.42);backdrop-filter:blur(3px);z-index:9000;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .3s}
+#xm.on{opacity:1;pointer-events:auto}
+#xm .bx{background:#fff;width:min(1000px,95vw);max-height:90vh;overflow:auto;border-radius:20px;padding:22px 24px;transform:translateY(18px) scale(.98);transition:transform .35s cubic-bezier(.2,.8,.2,1);box-shadow:0 24px 60px rgba(43,29,65,.3)}
+#xm.on .bx{transform:none}
+#xm h2{font:700 20px var(--fd);color:#4B2378}#xm h4{font:600 13px var(--fd);color:#4B2378;margin:14px 0 6px}
+.xp{display:inline-block;font:600 11px var(--fm);background:#F1EAFA;color:#5B2C91;padding:4px 10px;border-radius:20px;margin:6px 6px 0 0}
+.xg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0}.xg div{background:#FAF9FC;border:1px solid #EEE9F5;border-radius:12px;padding:10px 12px;font-size:11px;color:#6E687A}.xg b{display:block;font:700 19px var(--fd);color:#5B2C91}
+.xtb{width:100%;border-collapse:collapse;font-size:12px}.xtb th{background:#F5F0FB;color:#4B2378;padding:7px 9px;text-align:left}.xtb td{padding:7px 9px;border-top:1px solid #F0ECF6;color:#2B2240}.xtb tr.cl{cursor:pointer}.xtb tr.cl:hover td{background:#F7F5FA}
+.xr{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin:8px 0}
+.xw{padding:8px 12px;border-radius:10px;font-size:12px;margin:5px 0;background:#FFF4E5;border:1px solid #FFD9A0}.xw.e{background:#FDECEA;border-color:#F5B7B1}.xw.ok{background:#EAF7EF;border-color:#B7E4C7}
+.xtab{display:flex;gap:6px;margin:12px 0}.xtab button{padding:7px 14px;border-radius:10px;font:600 12px var(--fb);color:#6E687A;background:#F1EFF6}.xtab button.on{background:#5B2C91;color:#fff}
+.xc{animation:xc .65s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i)*70ms)}
+@keyframes xc{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+.xc:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.6) 50%,transparent 65%);transform:translateX(-120%);transition:transform .8s ease}
+.xc:hover:after{transform:translateX(120%)}
+.xc{background:linear-gradient(180deg,#fff,#FBFAFD)}
+.xc .m span:last-child{font-weight:700;color:var(--s)}
+.xt{transition:box-shadow .35s,transform .35s;background:linear-gradient(180deg,#fff,#FCFBFE)}.xt:hover{box-shadow:0 16px 38px rgba(43,29,65,.13);transform:translateY(-2px)}
+.xh h2{background:linear-gradient(90deg,#4B2378,#7650A3 60%,#2386C8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.xg div{animation:xc .5s backwards}.xg div:nth-child(2){animation-delay:.06s}.xg div:nth-child(3){animation-delay:.12s}.xg div:nth-child(4){animation-delay:.18s}
+.xtb tbody tr{animation:xin .45s backwards}.xtb tbody tr:nth-child(2){animation-delay:.04s}.xtb tbody tr:nth-child(3){animation-delay:.08s}.xtb tbody tr:nth-child(4){animation-delay:.12s}.xtb tbody tr:nth-child(5){animation-delay:.16s}
+#xn{position:fixed;left:0;top:0;bottom:0;width:290px;max-width:84vw;z-index:8900;background:linear-gradient(180deg,#3A1B5E,#2B1648);color:#EDE6F7;padding:18px 14px;overflow:auto;transform:translateX(-102%);transition:transform .4s cubic-bezier(.2,.8,.2,1);box-shadow:12px 0 40px rgba(0,0,0,.25)}#xn.on{transform:none}
+#xnb{position:fixed;inset:0;background:rgba(34,25,46,.4);backdrop-filter:blur(2px);z-index:8800;opacity:0;pointer-events:none;transition:opacity .3s}#xnb.on{opacity:1;pointer-events:auto}
+#xn .nt{font:700 12px var(--fd);letter-spacing:1.2px;margin:2px 4px 14px;color:#fff}
+#xn button{display:block;width:100%;text-align:left;color:inherit;font:500 13px var(--fb);padding:9px 12px;border-radius:10px;transition:background .2s,padding-left .2s}
+#xn .ni:hover{background:rgba(255,255,255,.12);padding-left:16px}
+#xn .nh{font:700 11px var(--fb);letter-spacing:1px;color:#C9B5E6;display:flex;justify-content:space-between;margin-top:10px}#xn .nh i{transition:transform .3s;font-style:normal}
+#xn .nb{max-height:0;overflow:hidden;transition:max-height .4s ease}#xn .ng.o .nb{max-height:600px}#xn .ng.o .nh i{transform:rotate(180deg)}
+#xn .nc{font:600 10.5px var(--fb);color:#9F86C4;margin:8px 12px 2px;text-transform:uppercase}#xn .nb .ni{padding-left:20px}
+aside.tree .pt,#deptNav,#tree{display:none!important}
+#xside{animation:xin .5s}#xside .st{font:700 11.5px var(--fd);letter-spacing:1.1px;color:#4B2378;margin:4px 6px 12px;line-height:1.35}
+#xside button{display:flex;width:100%;align-items:center;gap:8px;text-align:left;padding:9px 12px;border-radius:11px;font:600 12.5px var(--fb);color:#4A4260;transition:background .2s,color .2s,padding-left .2s,box-shadow .2s}
+#xside .sh{justify-content:space-between;font:700 11px var(--fb);letter-spacing:.9px;text-transform:uppercase;color:#7650A3;margin-top:8px}
+#xside .sh i{font-style:normal;transition:transform .3s}#xside .sg:not(.o) .sh i{transform:rotate(-90deg)}
+#xside .sb{max-height:0;overflow:hidden;transition:max-height .4s ease}#xside .sg.o .sb{max-height:320px}
+#xside .si:hover,#xside .sa:hover{background:#F1EAFA;padding-left:16px}
+#xside .si.on,#xside .sa.on{background:linear-gradient(90deg,#5B2C91,#7650A3);color:#fff;box-shadow:0 6px 16px rgba(91,44,145,.25)}
+#xside .si b{width:20px;height:20px;border-radius:50%;background:#EEE5F8;color:#5B2C91;font:700 10.5px var(--fb);display:grid;place-items:center;flex:none}#xside .si.on b{background:rgba(255,255,255,.25);color:#fff}
+#xside .si em{margin-left:auto;font:500 9.5px var(--fb);opacity:.6;font-style:normal}
+#xside .sk,#xside .bc{font-weight:500;font-size:12px;padding-left:40px;position:relative}
+#xside .sk:before,#xside .bc:before{content:'';position:absolute;left:26px;top:50%;width:6px;height:6px;border-radius:50%;background:#C9B5E6;transform:translateY(-50%);transition:background .2s}
+#xside .sk.on:before,#xside .bc.on:before{background:#fff}
+#xside .sk.on,#xside .bc.on,#xside .bh.on{background:linear-gradient(90deg,#5B2C91,#7650A3);color:#fff;box-shadow:0 6px 16px rgba(91,44,145,.25)}
+#xside .bc:hover,#xside .sk:hover{background:#F1EAFA}#xside .bc em,#xside .sk em{margin-left:auto;font:500 9.5px var(--fb);opacity:.6;font-style:normal}
+#v-kpi .kf{display:none!important}
+.xti{display:inline-grid;place-items:center;width:15px;height:15px;margin-left:7px;border-radius:50%;border:1px solid currentColor;font:700 9px var(--fb);opacity:.7;transition:.2s;vertical-align:middle}
+.xti:hover{opacity:1;transform:scale(1.18)}.tab:not(.on) .xti:hover{background:#5B2C91;color:#fff;border-color:#5B2C91}
+.xpm{position:relative;flex:0 0 auto}
+.xpmb{padding:9px 16px;border-radius:12px;font-size:12.5px;font-weight:600;color:#6E687A;white-space:nowrap;transition:all .25s;border:1px dashed #C9B5E6}
+.xpmb:hover{background:#F1EAFA;color:#5B2C91}.xpmb.on{background:linear-gradient(135deg,#5B2C91,#7650A3);color:#fff;border-style:solid;border-color:transparent}
+.xpmb i{font-style:normal;display:inline-block;transition:transform .3s;margin-left:6px}.xpm.o .xpmb i{transform:rotate(180deg)}
+#xpmm{position:fixed;z-index:8700;min-width:210px;background:#fff;border:1px solid #E6DDF2;border-radius:14px;padding:6px;box-shadow:0 16px 40px rgba(43,29,65,.18);opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .22s,transform .25s}
+#xpmm.on{opacity:1;transform:none;pointer-events:auto}
+#xpmm button{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:9px;font:600 12.5px var(--fb);color:#4A4260;transition:background .2s,padding-left .2s}
+#xpmm button:hover{background:#F1EAFA;padding-left:16px}#xpmm button.on{background:#5B2C91;color:#fff}
+.xqs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:10px 0}@media(max-width:900px){.xqs{grid-template-columns:repeat(2,1fr)}.xqs .xq{grid-column:span 1!important}}
+.xq{border-radius:18px;padding:14px 18px;color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 22px rgba(43,29,65,.14);animation:xc .6s cubic-bezier(.2,.8,.2,1) backwards;transition:transform .25s,box-shadow .25s}
+.xq:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(43,29,65,.2)}
+.xq:after{content:'';position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.12)}
+.xq span{font:600 10.5px var(--fb);letter-spacing:.7px;text-transform:uppercase;opacity:.92}.xq b{display:block;font:700 30px var(--fd);margin:6px 0 2px;letter-spacing:-.6px}.xq b small{font-size:20px;opacity:.65;font-weight:500}.xq i{font-style:normal;font-size:11px;opacity:.88}
+.xq.c1{background:linear-gradient(135deg,#4B2378,#7650A3)}.xq.c2{background:linear-gradient(135deg,#00A88F,#2CC9AE)}.xq.c3{background:linear-gradient(135deg,#2386C8,#4FA6E0)}.xq.c4{background:linear-gradient(135deg,#C2609F,#DC84BC)}
+.xtg{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:16px;margin:12px 0}
+#xtoast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:#2B213A;color:#fff;padding:11px 20px;border-radius:12px;font:600 13px var(--fb);z-index:9500;opacity:0;pointer-events:none;transition:.3s;box-shadow:0 12px 30px rgba(0,0,0,.3)}#xtoast.on{opacity:1;transform:translate(-50%,0)}
+#xexp *{animation:none!important;transition:none!important}#xexp .xi{display:none!important}#xexp .xc .m{flex-direction:column;gap:3px}#xexp .xc .l{font-size:10px}#xexp .xc:after,#xexp .xq:after{display:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script id="piq-exec-layer">
+(function(){'use strict';
+const E=PIQ,M=E.M,$=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const f1=v=>v==null||!isFinite(v)?'–':(+v).toFixed(1),mean=a=>{a=a.filter(x=>x!=null&&isFinite(x));return a.length?a.reduce((x,y)=>x+y,0)/a.length:null};
+const S={dept:'All',item:'All',sub:'All',bu:'All',cty:'All',ws:'All',q:'All',m:'All',view:'m'},CH={};
+const C={ok:'#1E9E5A',am:'#E59A00',rd:'#D94B68',na:'#858093'};
+const D=()=>KPI.DS();
+const idx=()=>{const n=D().months.length,all=[...Array(n).keys()];let a=S.q==='All'?all:all.filter(i=>Math.floor(i/3)===+S.q.slice(1)-1);return S.m==='All'?a:a.filter(i=>D().months[i]===S.m)};
+const CATS=()=>{const d=D(),A='Asset Register',mat=d.ws.filter(w=>d.dept[w]==='Materials Engineering'&&w!==A),ar=d.ws.filter(w=>w===A),rel=d.ws.filter(w=>d.dept[w]==='Reliability Engineering'&&w!==A);return{Maintenance:{Shutdown:[],Planning:[],AMP:[]},Materials:{'Asset Register':ar,Materials:mat},Reliability:{Reliability:rel},Sustainability:{Sustainability:[]}}};
+const catOf=w=>{const C=CATS();for(const c in C)for(const i in C[c])if(C[c][i].includes(w))return c;return'Other'};
+const base=()=>{const C=CATS(),d=D();if(S.dept==='All')return d.ws;const c=C[S.dept]||{},l=S.item!=='All'&&c[S.item]?c[S.item]:[...new Set(Object.values(c).flat())];return S.sub!=='All'?l.filter(w=>w===S.sub):l};
+const wsl=()=>base().filter(w=>S.ws==='All'||S.ws===w);
+const qis=ix=>[...new Set(ix.map(i=>Math.min(2,Math.floor(i/3))))];
+function calc(ws=wsl(),ix=idx()){const d=D(),T=E.T,qs=qis(ix),mm=k=>mean(ws.flatMap(w=>ix.map(i=>k==='p'?M.prod(d,w,i):k==='o'?M.otd(d,w,i):M.defect(d,w,i))));
+ const val0=ws.reduce((s,w)=>s+qs.reduce((a,q)=>a+(d.q.value[w].q[q]||0),0),0);
+ return{prod:mm('p'),qual:mm('q'),otd:mm('o'),acc:KPI.score(),val:ws.length?val0:null,std:mean(ws.flatMap(w=>qs.map(q=>M.stdv(d,w,q)))),util:mean(ws.flatMap(w=>qs.map(q=>d.q.util[w][q])))}}
+const DEF=[['prod','Productivity','%',()=>E.T.prod,0,'prod'],['qual','Quality (defect %)','%',()=>E.T.qual,1,'quality'],['otd','OTD','%',()=>E.T.otd,0,'otd'],['acc','Input Accuracy','%',()=>100,0,'acc'],['val','Value Capture','$',null,0,'value'],['std','Standardization','%',()=>E.T.std,0,'std'],['util','Utilization','%',()=>E.T.util,0,'util']];
+function stat(v,t,low){if(v==null)return['No data','na',null];if(t==null)return['Tracked','ok',null];const g=low?t-v:v-t;return g>=0?['On target','ok',g]:g>=-(low?t*.5:10)?['Watch','am',g]:['Off target','rd',g]}
+const fv=(d,v)=>v==null?'–':d[2]==='$'?'$'+(v>=1e6?(v/1e6).toFixed(2)+'M':Math.round(v).toLocaleString()):f1(v)+'%';
+function build(){if($('xo'))return;const sh=document.querySelector('.shell'),kh=$('kpiHead')||$('piqOv');if(!sh)return;const o=document.createElement('section');o.id='xo';
+ o.innerHTML=`<div class="xh"><div><h2>Maintenance &amp; Reliability Centre — Performance Overview</h2><p id="xsub"></p></div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="xp" id="xsrc" style="margin:0"></span><button class="xb" id="xmn">☰ Menu</button><button class="xb" id="xft">⇅ Filters</button><button class="xb p" id="xdm">⛁ Data Management</button></div></div>
+ <div class="glass" id="xf"></div><div id="xk"></div><div id="xt"></div>`;const ref=[$('piqOv'),$('kpiHead'),$('kpis'),sh.querySelector('main')].find(e=>e&&e.parentNode===sh);sh.insertBefore(o,ref||null);
+ const m=document.createElement('div');m.id='xm';m.innerHTML='<div class="bx" id="xbx"></div>';document.body.appendChild(m);m.onclick=e=>{if(e.target===m)close()};
+ $('xft').onclick=()=>$('xf').classList.toggle('c');$('xdm').onclick=()=>dm('xl');
+ const n=document.createElement('nav');n.id='xn';n.innerHTML=navHTML();document.body.appendChild(n);const nb=document.createElement('div');nb.id='xnb';document.body.appendChild(nb);nb.onclick=navClose;
+ n.onclick=e=>{const h=e.target.closest('.nh');if(h)return h.parentElement.classList.toggle('o');const b=e.target.closest('.ni');if(b)navGo(b.dataset.a)};
+ $('xmn').onclick=()=>{n.classList.add('on');nb.classList.add('on')};
+ $('xk').onclick=e=>{const i=e.target.closest('.xi');if(i){e.stopPropagation();return info(i.dataset.k)}const c=e.target.closest('.xc');if(c)drill(c.dataset.k)};
+ $('xf').onchange=e=>{S[e.target.dataset.f]=e.target.value;if(e.target.dataset.f==='dept'){S.ws='All';S.item='All';S.sub='All';sync()}paint()};
+ $('xf').onclick=e=>{if(e.target.id==='xclr'){Object.assign(S,{dept:'All',item:'All',sub:'All',bu:'All',cty:'All',ws:'All',q:'All',m:'All'});paint()}};
+ $('xt').onclick=e=>{const b=e.target.closest('.sw button');if(b){S.view=b.dataset.v;return drawT()}};}
+const opts=(a,v)=>['All',...a].map(x=>`<option ${x===v?'selected':''}>${esc(x)}</option>`).join('');
+function filters(){const d=D(),dep=Object.keys(CATS()),ws=base();
+ $('xf').innerHTML=[['dept','Programme',dep],['ws','Workflow',ws],['q','Quarter',['Q1','Q2','Q3']],['m','Month',d.months]].map(([k,l,a])=>`<div><label>${l}</label><select data-f="${k}">${opts(a,S[k])}</select></div>`).join('')+`<div style="align-self:end"><button class="xb" id="xclr" style="width:100%">Clear all filters</button></div>`}
+function paint(){build();filters();const c=calc(),ix=idx(),d=D();
+ $('xsub').textContent=`${S.sub!=='All'?S.item+' › '+S.sub:S.item!=='All'?S.item:S.dept==='All'?'All programmes':S.dept} · ${S.ws==='All'?'all workflows':S.ws} · ${S.q==='All'?'':S.q+' · '}${ix.length?d.months[ix[0]]+'–'+d.months[ix[ix.length-1]]:'no months'} ${S.bu!=='All'?' · '+S.bu+(S.cty!=='All'?' › '+S.cty:'')+' (your KPI workbook has no Business Unit field, so this does not filter the cards)':''} · live from the Project Tracker engine`;
+ $('xk').innerHTML=DEF.map(x=>{const v=c[x[0]],t=x[3]?x[3]():null,[lab,cl,g]=stat(v,t,x[4]);return`<div class="xc" data-k="${x[0]}" style="--s:${C[cl]};--sb:${C[cl]}1f;--i:${DEF.indexOf(x)}"><div class="l"><span>${x[1]}</span><span class="xi" data-k="${x[0]}" title="How it is calculated">i</span></div><div class="v" data-k="${x[0]}" data-v="${v==null?'':v}">${fv(x,v)}</div><div class="m"><span>Target ${t==null?'–':(x[4]?'<':'>')+t+'%'}</span><span>${g==null?'':(g>=0?'▲ +':'▼ ')+f1(g)+' pt'}</span></div><span class="s">${lab}</span></div>`}).join('');countUp();hdr();side();fbSync();kSync();tsRef();
+ drawT()}
+const PV={};
+function countUp(){document.querySelectorAll('#xk .v').forEach(el=>{const k=el.dataset.k,to=el.dataset.v===''?null:+el.dataset.v;if(to==null)return;const x=DEF.find(a=>a[0]===k),from=PV[k]??0,t0=performance.now();PV[k]=to;const st=t=>{const p=Math.min(1,(t-t0)/950),e=1-Math.pow(1-p,4);el.textContent=fv(x,from+(to-from)*e);if(p<1)requestAnimationFrame(st)};requestAnimationFrame(st)})}
+const gf=col=>c=>{const A=c.chart.chartArea;if(!A)return col+'22';const g=c.chart.ctx.createLinearGradient(0,A.top,0,A.bottom);g.addColorStop(0,col+'55');g.addColorStop(1,col+'00');return g};
+const XP={id:'xp',beforeDatasetsDraw(c){const{ctx,chartArea:A,scales:{y}}=c,t=c.data.datasets[1]&&c.data.datasets[1].data[0];if(t==null||!A)return;const yy=y.getPixelForValue(t),g=ctx.createLinearGradient(0,yy-28,0,yy+28);g.addColorStop(0,'rgba(30,158,90,0)');g.addColorStop(.5,'rgba(30,158,90,.08)');g.addColorStop(1,'rgba(30,158,90,0)');ctx.save();ctx.fillStyle=g;ctx.fillRect(A.left,yy-28,A.right-A.left,56);ctx.restore()},
+afterDatasetsDraw(c){const m=c.getDatasetMeta(0),d=c.data.datasets[0].data,{ctx}=c;let i=d.length-1;while(i>=0&&d[i]==null)i--;if(i<0||!m.data[i])return;const p=m.data[i],col=c.data.datasets[0].borderColor,txt=(+d[i]).toFixed(1)+'%';ctx.save();ctx.font='700 11px Inter';ctx.textAlign='center';const w=ctx.measureText(txt).width+16;ctx.shadowColor=col+'66';ctx.shadowBlur=12;ctx.fillStyle=col;ctx.beginPath();ctx.roundRect(p.x-w/2,p.y-36,w,21,10);ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#fff';ctx.fillText(txt,p.x,p.y-21);ctx.restore()},
+afterDraw(c){const a=c.tooltip&&c.tooltip._active;if(!a||!a.length)return;const x=a[0].element.x,{ctx,chartArea:A}=c;ctx.save();ctx.strokeStyle='rgba(91,44,145,.35)';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(x,A.top);ctx.lineTo(x,A.bottom);ctx.stroke();ctx.restore()}};
+const BL={id:'bl',afterDatasetsDraw(c){const{ctx}=c;ctx.save();ctx.font='700 11px Inter';ctx.fillStyle='#4B2378';ctx.textAlign='center';c.getDatasetMeta(0).data.forEach((b,i)=>{const v=c.data.datasets[0].data[i];ctx.fillText((+v).toFixed(1),b.x,b.y-6)});ctx.restore()}};
+const chartBase=(l)=>({responsive:true,maintainAspectRatio:false,animation:{duration:1100,easing:'easeOutQuart'},animations:{y:{from:c=>c.chart?c.chart.scales.y.getPixelForValue(c.chart.scales.y.min):0,delay:c=>(c.dataIndex||0)*70}},layout:{padding:{top:32,right:36}},transitions:{active:{animation:{duration:250}}},interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{usePointStyle:true,boxWidth:8,font:{size:11}}},tooltip:{backgroundColor:'#2B213A',padding:12,cornerRadius:12,titleFont:{family:'Space Grotesk',weight:'600'},callbacks:{label:c=>' '+c.dataset.label+': '+(+c.parsed.y).toFixed(1)+'%'}}},scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(91,44,145,.08)'},border:{display:false},ticks:{callback:v=>v+'%'}}}});
+function series(k){const d=D(),ws=wsl(),ix=idx(),f=(w,i)=>k==='prod'?M.prod(d,w,i):k==='otd'?M.otd(d,w,i):M.defect(d,w,i),at=i=>mean(ws.map(w=>f(w,i)));
+ if(S.view==='q'){const g={};ix.forEach(i=>(g['Q'+(Math.floor(i/3)+1)]=g['Q'+(Math.floor(i/3)+1)]||[]).push(i));const L=Object.keys(g);return{L,V:L.map(q=>mean(g[q].map(at))),I:L.map(q=>g[q])}}
+ return{L:ix.map(i=>d.months[i]),V:ix.map(at),I:ix.map(i=>[i])}}
+const TR=[['prod','Productivity Trend','Actual vs target · click a point for drill-down','#00A88F'],['qual','Quality Trend','Defect / recycle % (lower is better)','#2386C8'],['otd','OTD Trend','On-time delivery vs target','#5B2C91']];
+function drawT(){const box=$('xt');if(!box.children.length)box.innerHTML=TR.map(t=>`<div class="glass xt" data-k="${t[0]}"><div class="th"><div><h3>${t[1]}</h3><div class="sub">${t[2]}</div></div><div class="sw"><button data-v="m">Monthly</button><button data-v="q">Quarterly</button></div></div><div class="cv"><canvas id="xc_${t[0]}"></canvas></div><div class="xs" id="xs_${t[0]}"></div></div>`).join('');
+ box.querySelectorAll('.sw button').forEach(b=>b.classList.toggle('on',b.dataset.v===S.view));
+ TR.forEach(([k,,,col])=>{const s=series(k),t=E.T[k==='qual'?'qual':k],id='xc_'+k,el=$(id),vals=s.V.map(v=>v==null?null:+v.toFixed(2));
+  const ds=[{label:'Actual',data:vals,borderColor:col,backgroundColor:gf(col),fill:true,tension:.4,borderWidth:2.6,pointRadius:4,pointHoverRadius:9,pointHoverBorderWidth:4,pointBackgroundColor:'#fff',pointBorderColor:col,pointBorderWidth:2},{label:'Target',data:vals.map(()=>t),borderColor:'#D94B68',borderDash:[6,5],borderWidth:1.5,pointRadius:0,fill:false}];
+  if(CH[k]){CH[k].data.labels=s.L;CH[k].data.datasets.forEach((x,i)=>x.data=ds[i].data);CH[k].$I=s.I;CH[k].update()}
+  else{CH[k]=new Chart(el,{type:'line',plugins:[XP],data:{labels:s.L,datasets:ds},options:Object.assign(chartBase(),{onClick:(e,els,ch)=>{const i=els.length?els[0].index:null;drill(k,i==null?null:ch.$I[i])},onHover:(e,els)=>e.native.target.style.cursor=els.length?'pointer':'default'})});CH[k].$I=s.I}
+  const v=vals.filter(x=>x!=null);$('xs_'+k).innerHTML=v.length?`<span>Average <b>${f1(mean(v))}%</b></span><span>Best <b>${f1(k==='qual'?Math.min(...v):Math.max(...v))}%</b></span><span>Target <b>${t}%</b></span>`:'<span>No data for this filter</span>'})}
+const open=h=>{$('xbx').innerHTML=h;$('xm').classList.add('on')},close=()=>{$('xm').classList.remove('on');Object.values(CH).forEach(c=>c&&c.resize())};
+const ctxPills=()=>`<span class="xp">Programme: ${esc(S.item!=='All'?S.dept+' › '+S.item:S.dept)}</span><span class="xp">Workflow: ${esc(S.ws)}</span><span class="xp">Quarter: ${S.q}</span><span class="xp">Month: ${S.m}</span>`;
+const INFO={prod:['No. of deliverables × Estimated timeline','Actual booked time','% (target > 95%)','10 deliverables × 4 h estimate = 40 h; 42 h actually booked → 40 ÷ 42 × 100 = 95.2%','Deliverables, Estimated timeline, Actual booked'],
+qual:['Recycled MMs or Equipment','Total delivered','% (lower is better)','30 recycled out of 1,000 delivered → 30 ÷ 1,000 × 100 = 3.0%','Deliverables, Recycled MMs / equipment'],
+otd:['SLA met','Total delivered','% (target > 95%)','95 of 100 deliveries within SLA → 95 ÷ 100 × 100 = 95%','Deliverables, SLA met'],
+acc:['Data checks passed (variance, completeness, range)','Data checks run','% (variance ≤ 0.5 pt)','46 of 50 checks passed → 46 ÷ 50 × 100 = 92%','Reported vs recalculated values, completeness and range checks'],
+val:['Sum of the quarterly value components (USD)','Not a ratio — a sum','USD per quarter','$120k inventory reduction + $80k planner effort saving = $200k','DOAG, overstock visibility, inventory reduction, production loss, planner effort saving, value saving'],
+std:['Weighted score of the criteria met','Total criteria weight','% (100% = fully standardized)','With equal weights, 2 of 3 criteria met → 66.7%','Proper document available, equipment provided/linked, global procedure followed'],
+util:['Processed MMs or Equipment by us','Total MMs or Equipment created in SAP','% (target > 85%)','340 processed of 400 created → 340 ÷ 400 × 100 = 85%','Processed count, Total created in SAP']};
+function info(k){const x=DEF.find(a=>a[0]===k),kd=D().kpis.find(a=>a.k===x[5])||{},I=INFO[k]||[],c=calc(),t=x[3]?x[3]():null,[lab,cl]=stat(c[k],t,x[4]);
+ open(`<div style="display:flex;justify-content:space-between;gap:10px"><div><h2>ⓘ ${x[1]} — formula &amp; calculation</h2><span class="xp" style="color:${C[cl]}">Current: ${fv(x,c[k])} · ${lab}</span></div><button class="xb" id="xinfc">Close</button></div>
+ <h4>Definition</h4><div class="xw ok">${esc(kd.d||'')}</div>
+ <h4>Formula</h4><div class="xw" style="background:#F6EEFB;border-color:#E3D3F0;font:600 13px var(--fm)">${esc(kd.f||'')}</div>
+ <div class="xg"><div><b style="font-size:13px">${esc(I[0]||'–')}</b>Numerator</div><div><b style="font-size:13px">${esc(I[1]||'–')}</b>Denominator</div><div><b style="font-size:13px">${esc(I[2]||'')}</b>Measurement unit</div><div><b style="font-size:13px">${esc(kd.t||'')}</b>Target</div></div>
+ <h4>Example calculation <span style="font-weight:500;color:#858093">(illustrative)</span></h4><div class="xw">${esc(I[3]||'')}</div>
+ <h4>Source data fields</h4><div class="xw">${esc(I[4]||'')}</div>
+ <p style="font-size:11.5px;color:#858093;margin-top:8px">Definitions and formulas are read from the existing Project Tracker KPI engine and are unchanged.</p>`);$('xinfc').onclick=close}
+function drill(k,ix){const x=DEF.find(a=>a[0]===k)||DEF.find(a=>a[0]===k),d=D(),I=ix||idx(),c=calc(wsl(),I),t=x[3]?x[3]():null,key=x[5];
+ const per=I.length?d.months[I[0]]+(I.length>1?'–'+d.months[I[I.length-1]]:''):'–';
+ const rows=wsl().map(w=>{const cc=calc([w],I),v=cc[k],[l,cl]=stat(v,t,x[4]);return`<tr class="cl" data-w="${esc(w)}"><td>${esc(w)}</td><td>${esc(catOf(w))}</td><td>${fv(x,v)}</td><td>${t==null?'–':t+'%'}</td><td style="color:${C[cl]};font-weight:700">${t==null||v==null?'–':f1(v-t)}</td><td style="color:${C[cl]}">${l}</td></tr>`}).join('');
+ const mon=I.map(i=>`<tr><td>${d.months[i]}</td>${wsl().map(w=>`<td>${f1(k==='prod'?M.prod(d,w,i):k==='otd'?M.otd(d,w,i):k==='qual'?M.defect(d,w,i):null)}</td>`).join('')}</tr>`).join('');
+ const tr=['prod','otd','qual'].includes(k);
+ open(`<div style="display:flex;justify-content:space-between;gap:10px"><div><h2>${x[1]} — detailed analysis</h2>${ctxPills()}<span class="xp">Period: ${per}</span></div><button class="xb" id="xback">← Back to dashboard</button></div>
+ <div class="xg"><div><b>${fv(x,c[k])}</b>Actual</div><div><b>${t==null?'–':t+'%'}</b>Target</div><div><b>${t==null||c[k]==null?'–':f1(c[k]-t)+' pt'}</b>Variance</div><div><b>${wsl().length}</b>Workflows</div></div>
+ <h4>Workflow breakdown (click a row to filter the dashboard)</h4><div style="overflow:auto"><table class="xtb"><thead><tr><th>Workflow</th><th>Programme</th><th>Actual</th><th>Target</th><th>Variance</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div>
+ <h4>Workflow comparison</h4><div style="height:240px"><canvas id="xdc"></canvas></div>
+ ${tr?`<h4>Monthly records (%)</h4><div style="overflow:auto"><table class="xtb"><thead><tr><th>Month</th>${wsl().map(w=>`<th>${esc(w)}</th>`).join('')}</tr></thead><tbody>${mon}</tbody></table></div>`:''}
+ <p style="font-size:11.5px;color:#858093;margin-top:10px">Need the original module view? <a href="#" id="xmod" style="color:#5B2C91;font-weight:600">Open the ${x[1]} tab</a></p>`);
+ $('xback').onclick=close;$('xmod').onclick=e=>{e.preventDefault();close();KPI.open(key)};
+ $('xbx').querySelector('tbody').onclick=e=>{const r=e.target.closest('tr[data-w]');if(r){S.ws=r.dataset.w;close();paint()}};
+ const ws=wsl();if(window.__xdc)window.__xdc.destroy();window.__xdc=new Chart($('xdc'),{type:'bar',plugins:[BL],data:{labels:ws,datasets:[{label:x[1],data:ws.map(w=>+(+calc([w],I)[k]||0).toFixed(2)),backgroundColor:c=>{const A=c.chart.chartArea;if(!A)return'#5B2C91';const g=c.chart.ctx.createLinearGradient(0,A.top,0,A.bottom);g.addColorStop(0,'#7650A3');g.addColorStop(1,'#5B2C9133');return g},borderRadius:10,maxBarThickness:52}]},options:Object.assign(chartBase(),{plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(91,44,145,.08)'},border:{display:false},beginAtZero:true}}})})}
+/* ---------------- Data Management ---------------- */
+const AUTO={mh:c=>/man.?hour/i.test(c)&&!/bill/i.test(c),mhb:c=>/bill/i.test(c),mspc:c=>/msp/i.test(c)&&/crit/i.test(c),mspf:c=>/msp/i.test(c)&&/func/i.test(c),tcc:c=>/(^|\W)tc(\W|$)/i.test(c)&&/crit/i.test(c),tcf:c=>/(^|\W)tc(\W|$)/i.test(c)&&/func/i.test(c),wor:c=>/(^wo|work.?order).*rec/i.test(c),wrc:c=>/(^wr|work.?req).*comp/i.test(c)};
+const NUMF=['deliv','recyc','prod','otd','wor','wrc','mspc','mspf','tcc','tcf','mh','mhb'],QF=NUMF.slice(4);
+const FLD=[['w','Workstream *'],['m','Month *'],['deliv','Deliverables'],['recyc','Recycle %'],['prod','Productivity'],['otd','OTD %'],['wor','WO Received'],['wrc','WR Completed'],['mspc','MSP Critical Defects'],['mspf','MSP Functional Defects'],['tcc','TC Critical Defects'],['tcf','TC Functional Defects'],['mh','Man Hours'],['mhb','Billed Man Hours']],HK='piq_upload_history',X={wb:null,rows:[],map:{},name:''};
+const hist=()=>{try{return JSON.parse(localStorage.getItem(HK))||[]}catch(e){return[]}};
+function dm(t){const h=hist();open(`<div style="display:flex;justify-content:space-between"><h2>Data Management</h2><button class="xb" onclick="document.getElementById('xm').classList.remove('on')">Close</button></div>
+ <div class="xtab"><button data-t="xl" class="${t==='xl'?'on':''}">Excel Data Upload</button><button data-t="sq" class="${t==='sq'?'on':''}">SQL Server Connection</button><button data-t="ds" class="${t==='ds'?'on':''}">Data Source</button></div><div id="xdmb"></div>`);
+ $('xbx').querySelector('.xtab').onclick=e=>{const b=e.target.closest('button');if(b)dm(b.dataset.t)};t==='xl'?xl():t==='ds'?dsrc():sq()}
+function xl(){const h=hist();$('xdmb').innerHTML=`<div class="xr"><input type="file" id="xfi" accept=".xlsx,.xls"><select id="xsh" style="display:none"></select></div><div id="xpv"></div>
+ <h4>Upload history</h4>${h.length?`<table class="xtb"><thead><tr><th>When</th><th>File</th><th>Mode</th><th>OK</th><th>Failed</th></tr></thead><tbody>${h.slice(-8).reverse().map(r=>`<tr><td>${esc(r.t)}</td><td>${esc(r.f)}</td><td>${r.mode}</td><td>${r.ok}</td><td>${r.bad}</td></tr>`).join('')}</tbody></table>`:'<div class="xw">No uploads yet.</div>'}`;
+ $('xfi').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{X.name=f.name;X.wb=XLSX.read(await f.arrayBuffer(),{type:'array'});const s=$('xsh');s.style.display='';s.innerHTML=X.wb.SheetNames.map(n=>`<option>${esc(n)}</option>`).join('');s.onchange=()=>sheet(s.value);sheet(X.wb.SheetNames[0])}catch(err){$('xpv').innerHTML=`<div class="xw e">Could not read file: ${esc(err.message)}</div>`}}}
+function sheet(n){X.rows=XLSX.utils.sheet_to_json(X.wb.Sheets[n],{defval:''});const cols=Object.keys(X.rows[0]||{});if(!cols.length)return $('xpv').innerHTML='<div class="xw e">Sheet is empty.</div>';
+ FLD.forEach(([k,l])=>{X.map[k]=cols.find(c=>AUTO[k]?AUTO[k](c):c.toLowerCase().replace(/[^a-z]/g,'').startsWith(l.toLowerCase().replace(/[^a-z]/g,'').slice(0,4)))||''});
+ $('xpv').innerHTML=`<h4>Map columns (${X.rows.length} rows)</h4><div class="xr">${FLD.map(([k,l])=>`<div><label>${l}</label><select data-m="${k}"><option value="">— skip —</option>${cols.map(c=>`<option ${X.map[k]===c?'selected':''}>${esc(c)}</option>`).join('')}</select></div>`).join('')}</div>
+ <h4>Preview (first 6 rows)</h4><div style="overflow:auto;max-height:170px"><table class="xtb"><thead><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${X.rows.slice(0,6).map(r=>`<tr>${cols.map(c=>`<td>${esc(r[c])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+ <div class="xr"><div><label>If key exists (Workstream + Month)</label><select id="xmode"><option value="append">Append new only (skip existing)</option><option value="update">Update existing values</option></select></div><button class="xb" id="xval">Validate</button></div><div id="xvr"></div>`;
+ $('xpv').querySelectorAll('[data-m]').forEach(s=>s.onchange=()=>X.map[s.dataset.m]=s.value);$('xval').onclick=validate}
+function validate(){const d=D(),m=X.map,errs=[],ok=[],seen=new Set(),mon=d.months,num=v=>v===''||v==null?null:(isNaN(+v)?NaN:+v);
+ if(!m.w||!m.m)return $('xvr').innerHTML='<div class="xw e">Map the mandatory Workstream and Month columns first.</div>';
+ X.rows.forEach((r,i)=>{const w=String(r[m.w]).trim(),mo=String(r[m.m]).trim().slice(0,3).replace(/^./,c=>c.toUpperCase()),k=w+'|'+mo,e=[];
+  if(!w||!mo)e.push('missing Workstream/Month');else{if(!d.ws.includes(w))e.push('unknown workstream "'+w+'"');if(!mon.includes(mo))e.push('month "'+mo+'" not in dataset');if(seen.has(k))e.push('duplicate in file');seen.add(k)}
+  const v={};NUMF.forEach(f=>{if(m[f]){const n=num(r[m[f]]);if(Number.isNaN(n))e.push(f+' not numeric');v[f]=n}});
+  e.length?errs.push([i+2,e.join('; ')]):ok.push({w,mi:mon.indexOf(mo),v})});
+ X.ok=ok;const exist=ok.filter(o=>d.deliv[o.w]&&d.deliv[o.w][o.mi]!=null&&d.deliv[o.w][o.mi]!=='').length;
+ $('xvr').innerHTML=`<div class="xw ${errs.length?'':'ok'}"><b>${ok.length}</b> valid · <b>${errs.length}</b> failed · <b>${exist}</b> would hit existing records</div>${errs.slice(0,8).map(e=>`<div class="xw e">Row ${e[0]}: ${esc(e[1])}</div>`).join('')}${ok.length?'<button class="xb p" id="xgo">Confirm import</button>':''}`;
+ if(ok.length)$('xgo').onclick=()=>{if((localStorage.getItem('piq_src')||'excel')!=='excel')return alert('Active data source is SQL Server. Switch the source in the Data Source tab before importing Excel.');const mode=$('xmode').value;if(mode==='update'&&exist&&!confirm(exist+' existing records will be overwritten. Continue?'))return;let n=0,sk=0;
+  ok.forEach(o=>{const k=o.w+'|'+o.mi,dsF=['deliv','recyc','prod','otd'].filter(f=>o.v[f]!=null),qF=QF.filter(f=>o.v[f]!=null);
+   if(dsF.length){const has=d.deliv[o.w][o.mi]!=null&&d.deliv[o.w][o.mi]!=='';if(has&&mode==='append')sk++;else{dsF.forEach(f=>{if(d[f]&&d[f][o.w])d[f][o.w][o.mi]=o.v[f]});n++}}
+   if(qF.length){const has=QX[k]&&qF.some(f=>QX[k][f]!=null);if(has&&mode==='append')sk++;else{QX[k]=Object.assign(QX[k]||{},Object.fromEntries(qF.map(f=>[f,o.v[f]])));n++}}});
+  KPI.save();qxSave();const h=hist();h.push({t:new Date().toLocaleString(),f:X.name,mode,ok:n,bad:errs.length+sk});localStorage.setItem(HK,JSON.stringify(h));paint();try{KPI.paint()}catch(e){}kSync();inj();
+  $('xvr').innerHTML=`<div class="xw ok">Imported ${n} records · ${sk} skipped as existing · ${errs.length} failed. Dashboards refreshed.</div>`}}
+function tabsFix(){const bar=$('tabs');if(!bar||bar.dataset.x)return;bar.dataset.x='1';
+ const by=t=>bar.querySelector('.tab[data-t="'+t+'"]'),ORD=['k:prod','k:quality','k:otd','k:acc','k:value','k:std','k:util'],PM=['projects','follow','performance','resources','revenue','escalations','management'];
+ ORD.forEach(t=>{const b=by(t);if(!b)return;bar.appendChild(b);const x=DEF.find(a=>a[5]===t.slice(2)),i=document.createElement('span');i.className='xti';i.textContent='i';i.title='Formula & calculation';i.dataset.k=x[0];b.appendChild(i)});
+ window.addEventListener('click',e=>{const i=e.target.closest&&e.target.closest('.xti');if(i){e.stopImmediatePropagation();e.preventDefault();info(i.dataset.k)}},true);
+ const w=document.createElement('div');w.className='xpm';w.innerHTML='<button class="xpmb" id="xpmb">Project Management<i>▾</i></button>';bar.appendChild(w);
+ const m=document.createElement('div');m.id='xpmm';m.innerHTML=PM.map(t=>by(t)?`<button data-t="${t}">${esc(by(t).textContent)}</button>`:'').join('');document.body.appendChild(m);
+ PM.forEach(t=>{const b=by(t);if(b)b.style.display='none'});
+ const sy=()=>{const on=PM.find(t=>by(t)&&by(t).classList.contains('on')),b=$('xpmb');b.classList.toggle('on',!!on);b.firstChild.nodeValue=on?'Project Management › '+by(on).textContent:'Project Management';m.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.t===on))},shut=()=>{m.classList.remove('on');w.classList.remove('o')};
+ $('xpmb').onclick=e=>{e.stopPropagation();const r=$('xpmb').getBoundingClientRect();m.style.left=Math.max(8,Math.min(r.left,innerWidth-220))+'px';m.style.top=r.bottom+6+'px';m.classList.toggle('on');w.classList.toggle('o')};
+ m.onclick=e=>{const b=e.target.closest('button');if(b){by(b.dataset.t).click();shut()}};
+ document.addEventListener('click',shut);new MutationObserver(sy).observe(bar,{subtree:true,attributes:true,attributeFilter:['class']});sy()}
+const OP=new Set(['Maintenance','Materials','Reliability','Sustainability']),OB=new Set(['Upstream','Midstream','Product Solution']);
+const SUBS={Materials:['MMC','MM Enrichment','MSQ','M&SC','Obsolescence'],Reliability:['BOM','SPID']};
+const BU={Upstream:[['United Kingdom','Manchester'],['Denmark'],['Norway'],['Netherlands'],['Germany']],Midstream:[['Nigeria','Nigeria'],['Angola','Angola'],['Ghana'],['Egypt'],['Algeria']],'Product Solution':[['India'],['Singapore'],['Saudi Arabia'],['Qatar'],['UAE']]};
+const aliasOf=()=>{for(const b in BU)for(const c of BU[b])if(c[0]===S.cty&&c[1])return c[1];return'All'};
+function sync(l,rg){try{if(!window.setDeptRegion)return;rg=rg||aliasOf();const d=D();if(!l||!l.length)return setDeptRegion('All','All',rg);const ds=[...new Set(l.map(w=>d.dept[w]))];setDeptRegion(ds.length===1?ds[0]:'All',l.length===1?l[0]:'All',rg)}catch(e){console.warn(e)}}
+function pick(c,i,sub){const l=CATS()[c][i];Object.assign(S,{dept:c,item:i,sub:sub||'All',ws:'All'});const w=base();sync(w);paint();if(!w.length)setTimeout(()=>open(`<h2>${esc(sub||i)}</h2><div class="xw">No data for “${esc(sub||i)}” is loaded yet. Import a workbook containing this workflow (Data Management) and it will populate.</div>${CLS}`),200)}
+function setBU(b,c){Object.assign(S,{bu:b,cty:c||'All'});sync(S.dept==='All'?null:wsl());paint()}
+function side(){const a=document.querySelector('aside.tree');if(!a)return;let e=$('xside');
+ if(!e){e=document.createElement('div');e.id='xside';a.appendChild(e);e.onclick=ev=>{const t=ev.target,g=(q)=>t.closest(q);
+  if(g('.bh')){const b=g('.bh').dataset.b;OB.has(b)?OB.delete(b):OB.add(b);return setBU(b,'All')}
+  if(g('.bc'))return setBU(g('.bc').dataset.b,g('.bc').dataset.c);
+  if(g('.sh')){const c=g('.sh').dataset.c;OP.has(c)?OP.delete(c):OP.add(c);return g('.sh').parentElement.classList.toggle('o')}
+  if(g('.sk'))return pick(g('.sk').dataset.c,g('.sk').dataset.i,g('.sk').dataset.s);
+  if(g('.si'))return pick(g('.si').dataset.c,g('.si').dataset.i);
+  if(g('.sa')){Object.assign(S,{dept:'All',item:'All',sub:'All',bu:'All',cty:'All',ws:'All'});sync();paint()}}}
+ const C=CATS(),d=D(),has=w=>d.ws.includes(w);
+ e.innerHTML=`<div class="st">MAINTENANCE &amp; RELIABILITY CENTRE</div><button class="sa${S.dept==='All'?' on':''}">◧ All programmes</button>`+Object.keys(C).map(c=>`<div class="sg${OP.has(c)?' o':''}"><button class="sh" data-c="${c}">${c}<i>▾</i></button><div class="sb">${Object.keys(C[c]).map((i,n)=>`<button class="si${S.dept===c&&S.item===i&&S.sub==='All'?' on':''}" data-c="${c}" data-i="${esc(i)}"><b>${n+1}</b>${esc(i)}${C[c][i].length?'':'<em>no data</em>'}</button>`+((c==='Materials'&&i==='Materials')||(c==='Reliability'&&i==='Reliability')?SUBS[i].map(x=>`<button class="sk${S.dept===c&&S.sub===x?' on':''}" data-c="${c}" data-i="${i}" data-s="${esc(x)}">${esc(x)}${has(x)?'':'<em>no data</em>'}</button>`).join(''):'')).join('')}</div></div>`).join('')+`<div class="st" style="margin-top:18px">BUSINESS UNIT</div>`+Object.keys(BU).map(b=>`<div class="sg${OB.has(b)?' o':''}"><button class="sh bh${S.bu===b&&S.cty==='All'?' on':''}" data-b="${esc(b)}">${b}<i>▾</i></button><div class="sb">${BU[b].map(c=>`<button class="bc${S.bu===b&&S.cty===c[0]?' on':''}" data-b="${esc(b)}" data-c="${esc(c[0])}">${esc(c[0])}${c[1]?'':'<em>no data</em>'}</button>`).join('')}</div></div>`).join('')}
+const NAV=[['Maintenance',['Shutdown','Planning','AMP']],['Materials',['Asset Register','Materials']],['Reliability',['Reliability']],['Sustainability',['Sustainability']]];
+const navClose=()=>{$('xn').classList.remove('on');$('xnb').classList.remove('on')},TAB=t=>{const b=document.querySelector('#tabs [data-t="'+t+'"]');if(b){b.click();return true}return false},CLS='<button class="xb p" onclick="document.getElementById(\'xm\').classList.remove(\'on\')">Close</button>';
+function navHTML(){const g=(t,h)=>`<div class="ng"><button class="nh">${t}<i>▾</i></button><div class="nb">${h}</div></div>`,it=(a,l)=>`<button class="ni" data-a="${a}">${l}</button>`;
+ return '<div class="nt">MAINTENANCE &amp; RELIABILITY CENTRE</div>'+it('home','◧ Overview (reset filters)')+g('PROGRAMS',NAV.map(c=>`<div class="nc">${c[0]}</div>`+c[1].map(m=>it('m:'+m,m)).join('')).join(''))+g('PROJECT MANAGEMENT',[['projects','Projects'],['performance','Performance'],['escalations','Escalations'],['resources','Resources'],['revenue','Revenue'],['follow','Follow-up'],['management','Management']].map(a=>it('t:'+a[0],a[1])).join(''))+g('VALUE CAPTURE',it('t:k:value','Value Capture (seven tabs)'))+g('ORDER MANAGEMENT',it('o:otd','OTD')+it('o:qual','Quality')+it('o:prod','Productivity'))+it('ts','Timesheet Compliance')+g('DATA MANAGEMENT',it('d:xl','Excel Data Upload')+it('d:sq','SQL Server Connection')+it('d:ds','Data Source'))+g('REPORTING',it('r:bPdf','PDF export')+it('r:bPpt','PPT export')+it('r:bXls','Excel export'))}
+function mod(n){navClose();const C=CATS();for(const c in C)if(C[c][n])return pick(c,n)}
+function navGo(a){const i=a.indexOf(':'),k=i<0?a:a.slice(0,i),v=i<0?'':a.slice(i+1);if(k==='m')return mod(v);navClose();
+ if(k==='home'){Object.assign(S,{dept:'All',item:'All',sub:'All',bu:'All',cty:'All',ws:'All',q:'All',m:'All'});return paint()}
+ if(k==='t'){if(!TAB(v))alert('This tab is not available in the loaded workbook.');return}
+ if(k==='o')return setTimeout(()=>drill(v),250);if(k==='d')return setTimeout(()=>dm(v),250);
+ if(k==='r'){const b=document.getElementById(v);if(b)b.click();return}
+ if(k==='ts')setTimeout(()=>open('<h2>Timesheet Compliance</h2><div class="xw">The current dataset has no timesheet fields (expected, submitted, pending, approved, rejected). This dashboard needs that data source first; it is not shown with made-up numbers.</div>'+CLS),250)}
+function hdr(){const a=localStorage.getItem('piq_src')||'excel',d=D(),e=$('xsrc');if(e)e.textContent='Source: '+(a==='excel'?'Excel':'SQL Server')+' · '+d.ws.length*d.months.length+' records'}
+function dsrc(){const a=localStorage.getItem('piq_src')||'excel',h=hist(),d=D();
+ $('xdmb').innerHTML=`<div class="xg"><div><b>${a==='excel'?'Excel':'SQL Server'}</b>Active source</div><div><b>${d.ws.length*d.months.length}</b>Workflow-month records</div><div><b style="font-size:13px">${h.length?esc(h[h.length-1].t):'–'}</b>Last Excel import</div><div><b style="font-size:13px">${esc(localStorage.getItem('piq_sqlsync')||'–')}</b>Last SQL sync</div></div>
+ <div class="xr"><label><input type="radio" name="src" value="excel" ${a==='excel'?'checked':''}> Excel upload</label><label><input type="radio" name="src" value="sql" ${a==='sql'?'checked':''}> SQL Server</label></div>
+ <div class="xw">Only the active source can write to the dashboard. Datasets are never merged. A re-import of an existing Workstream + Month key follows the append/update choice and asks before overwriting.</div>`;
+ $('xdmb').onchange=e=>{if(e.target.name==='src'){localStorage.setItem('piq_src',e.target.value);hdr();dsrc()}}}
+const QXK='piq_qx';let QX={};try{QX=JSON.parse(localStorage.getItem(QXK))||{}}catch(e){}
+const qxSave=()=>{try{localStorage.setItem(QXK,JSON.stringify(QX))}catch(e){}};
+const qsum=(f,ws=wsl(),ix=idx())=>{let t=0,n=0;ws.forEach(w=>ix.forEach(i=>{const r=QX[w+'|'+i];if(r&&r[f]!=null){t+=+r[f];n++}}));return n?t:null};
+const nf=v=>v==null||!isFinite(v)?'–':Math.round(v).toLocaleString();
+const TL=(c,l,v,s,sp)=>`<div class="xq ${c}"${sp?` style="grid-column:span ${sp}"`:''}><span>${l}</span><b>${v}</b><i>${s||'&nbsp;'}</i></div>`;
+function tiles(k){k=k==='qual'?'quality':k;const ws=wsl(),ix=idx(),d=D(),c=calc(ws,ix),T=E.T;
+ if(k==='quality'){const wo=qsum('wor'),wr=qsum('wrc'),mc=qsum('mspc'),mf=qsum('mspf'),tc=qsum('tcc'),tf=qsum('tcf'),sh=(a,b)=>a!=null&&b!=null&&a+b?Math.round(a/(a+b)*100)+'% critical':'No review data';
+  return TL('c1','WO received / WR completed',`${nf(wo)} <small>/</small> ${nf(wr)}`,wo?'Completion '+f1(wr/wo*100)+'%':'Import WO / WR counts',2)+TL('c2','MSP review · Critical | Functional',`${nf(mc)} <small>|</small> ${nf(mf)}`,sh(mc,mf))+TL('c3','TC review · Critical | Functional',`${nf(tc)} <small>|</small> ${nf(tf)}`,sh(tc,tf))+TL('c4','Quality %',c.qual==null?'–':f1(100-c.qual)+'%','100 − defect % ('+f1(c.qual)+'%) · target ≥ '+(100-T.qual)+'%')}
+ if(k==='prod'){const sr=ix.map(i=>mean(ws.map(w=>M.prod(d,w,i)))),v=sr.filter(x=>x!=null),b=v.length?Math.max(...v):null;
+  return TL('c1','Productivity %',fv(DEF[0],c.prod),'Target > '+T.prod+'%',2)+TL('c2','Best month',b==null?'–':f1(b)+'%',b==null?'':d.months[ix[sr.indexOf(b)]])+TL('c3','Months below target',v.length?v.filter(x=>x<T.prod).length+' / '+v.length:'–','&nbsp;')+TL('c4','Variance vs target',c.prod==null?'–':(c.prod-T.prod>=0?'+':'')+f1(c.prod-T.prod)+' pt','&nbsp;')}
+ if(k==='otd'){let dl=0,sl=0;ws.forEach(w=>ix.forEach(i=>{const s=M.sla(d,w,i);if(s!=null){dl+=+d.deliv[w][i]||0;sl+=s}}));
+  return TL('c1','OTD %',fv(DEF[2],c.otd),'Target > '+T.otd+'%',2)+TL('c2','Delivered',nf(dl||null),'in selected period')+TL('c3','On time (SLA met)',nf(dl?sl:null),'&nbsp;')+TL('c4','Delayed',dl?nf(dl-sl):'–','&nbsp;')}
+ return''}
+function inj(){const v=$('v-kpi');if(!v||v.style.display!=='block'||inj.b)return;inj.b=1;setTimeout(()=>inj.b=0,60);
+ if(!wsl().length){v.innerHTML='<div class="xw" style="margin:18px"><b>No data loaded for this selection.</b> Shutdown, Planning, AMP and Sustainability have no workflows in the current data. Import a workbook containing them (Data Management) or choose another programme.</div>';return}
+ const t=KPI.st().tab,old=$('xqs');if(old)old.remove();const kp=$('kP');if(kp&&!$('kPpt')){const b=document.createElement('button');b.className='kbtn g';b.id='kPpt';b.textContent='⇩ Export PPT';kp.after(b)}
+ if(!['prod','quality','otd'].includes(t))return;const kk=v.querySelector('.kk');if(!kk)return;const el=document.createElement('div');el.id='xqs';el.className='xqs';el.innerHTML=tiles(t);kk.parentNode.insertBefore(el,kk)}
+function vObs(){const v=$('v-kpi');if(v){new MutationObserver(inj).observe(v,{childList:true});inj()}}
+function kSync(){try{const st=KPI.st(),l=wsl(),d=D();if(l.length===1){st.dept=d.dept[l[0]];st.ws=l[0]}else{const ds=[...new Set(l.map(w=>d.dept[w]))];if(ds.length===1&&d.ws.filter(w=>d.dept[w]===ds[0]).length===l.length){st.dept=ds[0];st.ws='All'}else{st.dept='All';st.ws='All'}}st.qtr=S.q;
+ const v=$('v-kpi');if(v&&v.style.display==='block')KPI.open(st.tab)}catch(e){console.warn(e)}}
+/* filter bar: Duration, Business Unit, Region, Workflow */
+function fbBuild(){const f=document.querySelector('.filters');if(!f||f.dataset.x)return;f.dataset.x='1';
+ ['fBand','fEmp'].forEach(i=>{const e=$(i);if(e&&e.parentElement)e.parentElement.style.display='none'});
+ const add=(id,l,h)=>{const dv=document.createElement('div');dv.innerHTML=`<label>${l}</label><select id="${id}">${h}</select>`;f.insertBefore(dv,f.lastElementChild)};
+ add('xfDur','Duration','<option>Monthly</option><option>Weekly</option><option>Bi-weekly</option>');
+ add('xfBU','Business Unit','<option>All</option>'+Object.keys(BU).map(b=>`<option>${b}</option>`).join(''));
+ add('xfRg','Region','<option value="All">All regions</option>'+Object.keys(BU).map(b=>`<optgroup label="${b}">${BU[b].map(c=>`<option value="${b}|${c[0]}">${c[0]}</option>`).join('')}</optgroup>`).join(''));
+ add('xfWf','Workflow','<option>All</option>'+D().ws.map(w=>`<option>${esc(w)}</option>`).join(''));
+ const n=document.createElement('div');n.id='xfn';n.className='xw';n.style.display='none';f.insertAdjacentElement('afterend',n);
+ f.addEventListener('change',e=>{const id=e.target.id,v=e.target.value;
+  if(id==='xfDur'){n.style.display=v==='Monthly'?'none':'block';n.textContent='Weekly and bi-weekly views need an activity/transaction date on each record. The loaded data is monthly, so trends stay monthly until such data is imported.'}
+  if(id==='xfBU')setBU(v==='All'?'All':v,'All');
+  if(id==='xfRg'){if(v==='All')setBU('All','All');else{const a=v.split('|');setBU(a[0],a[1])}}
+  if(id==='xfWf')wfPick(v)})}
+function wfPick(w){if(w==='All'){Object.assign(S,{dept:'All',item:'All',sub:'All',ws:'All'});sync();return paint()}const C=CATS();for(const c in C)for(const i in C[c])if(C[c][i].includes(w))return pick(c,i,(c==='Materials'&&i==='Materials')||(c==='Reliability'&&i==='Reliability')?w:undefined)}
+function fbSync(){const g=i=>$(i);if(!g('xfBU'))return;g('xfBU').value=S.bu;g('xfRg').value=S.cty==='All'?'All':S.bu+'|'+S.cty;g('xfWf').value=S.sub!=='All'?S.sub:S.item==='Asset Register'?'Asset Register':'All'}
+/* Timesheet Compliance */
+const TSC={};
+function tsBuild(){const bar=$('tabs');if(!bar||$('xts'))return;const b=document.createElement('button');b.className='tab';b.id='xts';b.dataset.t='timesheet';b.textContent='Timesheet Compliance';bar.insertBefore(b,bar.querySelector('.xpm'));
+ const v=document.createElement('div');v.id='v-ts';v.className='view';v.style.display='none';document.querySelector('main').appendChild(v);
+ window.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#xts')){e.stopImmediatePropagation();e.preventDefault();tsShow()}},true);
+ new MutationObserver(()=>{const on=bar.querySelector('.tab.on');if(on&&on.id!=='xts'&&v.style.display!=='none')v.style.display='none'}).observe(bar,{subtree:true,attributes:true,attributeFilter:['class']})}
+function tsShow(){$('tabs').querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.id==='xts'));document.querySelectorAll('main .view').forEach(x=>x.style.display=x.id==='v-ts'?'block':'none');const n=$('none');if(n)n.style.display='none';tsPaint()}
+const tsRef=()=>{const v=$('v-ts');if(v&&v.style.display==='block')tsPaint()};
+function tsData(){const d=D(),ws=wsl(),ix=idx(),by={};ws.forEach(w=>{const k=d.dept[w];by[k]=by[k]||{mh:0,mhb:0,n:0};ix.forEach(i=>{const r=QX[w+'|'+i];if(r&&r.mh!=null){by[k].mh+=+r.mh;by[k].mhb+=+(r.mhb||0);by[k].n++}})});
+ return{by,L:ix.map(i=>d.months[i]),mon:ix.map(i=>{let a=0,b=0,n=0;ws.forEach(w=>{const r=QX[w+'|'+i];if(r&&r.mh!=null){a+=+r.mh;b+=+(r.mhb||0);n++}});return n?{a,b}:null})}}
+const ctxLine=()=>`${S.sub!=='All'?S.item+' › '+S.sub:S.item!=='All'?S.item:S.dept==='All'?'All programmes':S.dept} · ${S.q==='All'?'All quarters':S.q} · ${S.m==='All'?'All months':S.m}`;
+function tsHTML(T,compact){const dp=Object.keys(T.by).filter(k=>T.by[k].n),a=dp.reduce((s,k)=>s+T.by[k].mh,0),b=dp.reduce((s,k)=>s+T.by[k].mhb,0);
+ if(!dp.length)return{has:false};
+ return{has:true,dp,a,b,tiles:TL('c1','Man hours',nf(a),'Available / expected',2)+TL('c2','Man hours billed',nf(b),'&nbsp;')+TL('c3','Unbilled gap',nf(a-b),'&nbsp;')+TL('c4','Compliance %',a?f1(b/a*100)+'%':'–','Billed ÷ man hours')}}
+function tsCharts(r,T,c1,c2,anim){const o={responsive:!!anim,maintainAspectRatio:false,animation:anim?{duration:900}:false,layout:{padding:{top:10}},plugins:{legend:{labels:{usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(91,44,145,.1)'},border:{display:false}}}};
+ return[new Chart(c1,{type:'bar',data:{labels:r.dp,datasets:[{label:'Man hours',data:r.dp.map(k=>T.by[k].mh),backgroundColor:'#5B2C91',borderRadius:8,maxBarThickness:50},{label:'Billed',data:r.dp.map(k=>T.by[k].mhb),backgroundColor:'#00A88F',borderRadius:8,maxBarThickness:50}]},options:o}),
+ new Chart(c2,{type:'line',data:{labels:T.L,datasets:[{label:'Man hours',data:T.mon.map(m=>m&&m.a),borderColor:'#5B2C91',tension:.4,borderWidth:3,pointRadius:4},{label:'Billed',data:T.mon.map(m=>m&&m.b),borderColor:'#00A88F',tension:.4,borderWidth:3,pointRadius:4}]},options:o})]}
+function tsPaint(){const v=$('v-ts');if(!v)return;Object.values(TSC).forEach(c=>c&&c.destroy());const T=tsData(),r=tsHTML(T);
+ v.innerHTML=`<div class="glass" style="padding:18px 20px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><h2 style="font:700 20px var(--fd);color:#4B2378;margin:0">Timesheet Compliance</h2><div style="display:flex;gap:8px"><button class="xb" id="tsPpt">⇩ PPT</button><button class="xb" id="tsPdf">⇩ PDF</button></div></div><p style="font-size:12px;color:#777184;margin:3px 0 12px">Man hours vs man hours billed by department · ${esc(ctxLine())}</p>`+(r.has?`<div class="xqs">${r.tiles}</div><div class="xtg"><div class="xt glass"><h3>Man hours vs billed — by department</h3><div class="cv"><canvas id="tsc1"></canvas></div></div><div class="xt glass"><h3>Monthly trend</h3><div class="cv"><canvas id="tsc2"></canvas></div></div></div>
+ <table class="xtb"><thead><tr><th>Department</th><th>Man hours</th><th>Billed</th><th>Unbilled gap</th><th>Compliance %</th></tr></thead><tbody>${r.dp.map(k=>`<tr><td>${esc(k)}</td><td>${nf(T.by[k].mh)}</td><td>${nf(T.by[k].mhb)}</td><td>${nf(T.by[k].mh-T.by[k].mhb)}</td><td><b>${T.by[k].mh?f1(T.by[k].mhb/T.by[k].mh*100)+'%':'–'}</b></td></tr>`).join('')}</tbody></table>`
+ :`<div class="xw"><b>No timesheet data is loaded for this selection.</b> Import a workbook with <i>Workstream, Month, Man Hours</i> and <i>Billed Man Hours</i> columns (Data Management → Excel Data Upload). Hours are stored per workflow and month and roll up by department here, following every filter.</div><button class="xb p" id="tsimp">Open Data Management</button>`)+'</div>';
+ if(r.has){const c=tsCharts(r,T,$('tsc1'),$('tsc2'),true);TSC.a=c[0];TSC.b=c[1]}else $('tsimp').onclick=()=>dm('xl')}
+/* ---------- PDF / PPT export ---------- */
+const toast=(m,ms)=>{let t=$('xtoast');if(!t){t=document.createElement('div');t.id='xtoast';document.body.appendChild(t)}t.textContent=m;t.classList.add('on');clearTimeout(toast.h);if(ms)toast.h=setTimeout(()=>t.classList.remove('on'),ms)};
+async function shot(h,draw,jpg){const el=document.createElement('div');el.id='xexp';el.style.cssText='position:fixed;left:-9999px;top:0;width:1280px;height:720px;background:#F6F4FA;overflow:hidden';el.innerHTML=h;document.body.appendChild(el);const ch=draw?draw(el):[];await new Promise(r=>setTimeout(r,150));const cv=await html2canvas(el,{scale:2,backgroundColor:'#F6F4FA',logging:false});ch.forEach(c=>c.destroy());el.remove();return jpg?cv.toDataURL('image/jpeg',.92):cv.toDataURL('image/png')}
+const SLH=(t,b)=>`<div style="height:720px;width:1280px;display:flex;flex-direction:column;font-family:'Space Grotesk',Inter,Arial,sans-serif"><div style="background:linear-gradient(90deg,#4B2378,#7650A3);color:#fff;padding:18px 36px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:27px;font-weight:700">${t}</div><div style="font-size:12.5px;opacity:.85;margin-top:3px">Maintenance &amp; Reliability Centre · ${esc(ctxLine())}</div></div><div style="font-size:15px;font-weight:700;letter-spacing:1.5px">PROCESSIQ</div></div><div style="flex:1;padding:18px 36px 8px;display:flex;flex-direction:column;gap:14px;min-height:0">${b}</div><div style="padding:6px 36px 10px;font-size:10.5px;color:#858093">Generated ${new Date().toLocaleString()}</div></div>`;
+const cardW=h=>`<div style="background:#fff;border:1px solid #E6DDF2;border-radius:14px;padding:12px 14px;flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#4B2378;margin-bottom:6px">${h[0]}</div><canvas id="${h[1]}" width="${h[2]}" height="${h[3]}"></canvas></div>`;
+const sc=(cv,type,L,V,col,tg,pct)=>new Chart(cv,{type,data:{labels:L,datasets:[{label:'Actual',data:V.map(v=>v==null?null:+(+v).toFixed(2)),borderColor:col,backgroundColor:type==='bar'?col+'cc':col+'22',fill:type!=='bar',tension:.4,borderWidth:3,pointRadius:4,borderRadius:8,maxBarThickness:60}].concat(tg==null?[]:[{type:'line',label:'Target',data:L.map(()=>tg),borderColor:'#D94B68',borderDash:[6,5],borderWidth:2,pointRadius:0,fill:false}]) },options:{responsive:false,animation:false,layout:{padding:{top:16,right:10}},plugins:{legend:{labels:{usePointStyle:true,font:{size:12}}}},scales:{x:{grid:{display:false},ticks:{font:{size:12}}},y:{grid:{color:'rgba(91,44,145,.1)'},ticks:{font:{size:12},callback:v=>v+(pct===false?'':'%')}}}}});
+function kTrend(k){const d=D(),ws=wsl(),ix=idx();if(['prod','qual','otd'].includes(k)){const f=(w,i)=>k==='prod'?M.prod(d,w,i):k==='otd'?M.otd(d,w,i):M.defect(d,w,i);return{L:ix.map(i=>d.months[i]),V:ix.map(i=>mean(ws.map(w=>f(w,i))))}}
+ if(k==='acc')return{L:[],V:[]};const qs=qis(ix);return{L:qs.map(q=>'Q'+(q+1)),V:qs.map(q=>k==='val'?ws.reduce((s,w)=>s+(d.q.value[w].q[q]||0),0):mean(ws.map(w=>k==='std'?M.stdv(d,w,q):d.q.util[w][q])))}}
+const COL={prod:'#00A88F',qual:'#2386C8',otd:'#5B2C91',acc:'#C2609F',val:'#E59A00',std:'#7650A3',util:'#1E9E5A'};
+function slideKpi(k){const x=DEF.find(a=>a[0]===k),c=calc(),t=x[3]?x[3]():null,[lab,cl,g]=stat(c[k],t,x[4]),kd=D().kpis.find(a=>a.k===x[5])||{},tr=kTrend(k),ws=wsl(),I=idx(),pct=x[2]!=='$';
+ const head=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">${[['Actual',fv(x,c[k])],['Target',t==null?'–':(x[4]?'<':'>')+t+'%'],['Variance',g==null?'–':(g>=0?'+':'')+f1(g)+' pt'],['Status',lab]].map((a,i)=>`<div style="background:#fff;border:1px solid #E6DDF2;border-top:4px solid ${i==3?C[cl]:'#5B2C91'};border-radius:14px;padding:10px 16px"><div style="font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#777184">${a[0]}</div><div style="font-size:30px;font-weight:700;color:${i==3?C[cl]:'#2B2240'}">${a[1]}</div></div>`).join('')}</div>`;
+ const tl=tiles(k),extra=tl?`<div class="xqs" style="margin:0">${tl}</div>`:'',h2=tl?250:320;
+ const body=head+extra+`<div style="display:flex;gap:14px">${tr.V.length?cardW([x[1]+' trend','s1',560,h2]):''}${cardW([x[1]+' by workflow','s2',tr.V.length?560:1130,h2])}</div><div style="background:#F1EAFA;border-left:5px solid #7B2D8E;border-radius:10px;padding:9px 16px;font-size:12.5px;color:#2B2240"><b>Formula:</b> ${esc(kd.f||'')} &nbsp;·&nbsp; <b>Target:</b> ${esc(kd.t||'')}</div>`;
+ return[SLH(x[1]+' — performance',body),el=>{const o=[];if(tr.V.length)o.push(sc(el.querySelector('#s1'),k==='val'?'bar':'line',tr.L,tr.V,COL[k],k==='val'?null:t,pct));o.push(sc(el.querySelector('#s2'),'bar',ws,ws.map(w=>calc([w],I)[k]),COL[k],t,pct));return o}]}
+function slideOverall(){const c=calc(),I=idx(),ws=wsl(),cards=[...$('xk').children].map(e=>e.outerHTML).join('');
+ const tmp=document.createElement('div');tmp.innerHTML=cards;tmp.querySelectorAll('.v').forEach(v=>{const x=DEF.find(a=>a[0]===v.dataset.k);v.textContent=fv(x,v.dataset.v===''?null:+v.dataset.v)});
+ const body=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:10px">${tmp.innerHTML}</div><div style="display:flex;gap:14px">${[['Productivity trend','o1'],['Quality trend (defect %)','o2'],['OTD trend','o3']].map(a=>cardW([a[0],a[1],360,340])).join('')}</div>`;
+ return[SLH('Overall performance dashboard',body),el=>['prod','qual','otd'].map((k,i)=>{const t=kTrend(k);return sc(el.querySelector('#o'+(i+1)),'line',t.L,t.V,COL[k],E.T[k])})]}
+function slideTs(){const T=tsData(),r=tsHTML(T);if(!r.has)return[SLH('Timesheet compliance',`<div style="background:#fff;border:1px solid #FFD9A0;border-radius:14px;padding:24px;font-size:16px;color:#2B2240">No timesheet data is loaded for this selection. Import <b>Man Hours</b> and <b>Billed Man Hours</b> per workflow and month via Data Management.</div>`),null];
+ return[SLH('Timesheet compliance — man hours vs billed',`<div class="xqs" style="margin:0">${r.tiles}</div><div style="display:flex;gap:14px">${cardW(['By department','t1',560,330])}${cardW(['Monthly trend','t2',560,330])}</div>`),el=>{const o={responsive:false,animation:false,plugins:{legend:{labels:{usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(91,44,145,.1)'}}}};return[new Chart(el.querySelector('#t1'),{type:'bar',data:{labels:r.dp,datasets:[{label:'Man hours',data:r.dp.map(k=>T.by[k].mh),backgroundColor:'#5B2C91',borderRadius:8,maxBarThickness:60},{label:'Billed',data:r.dp.map(k=>T.by[k].mhb),backgroundColor:'#00A88F',borderRadius:8,maxBarThickness:60}]},options:o}),new Chart(el.querySelector('#t2'),{type:'line',data:{labels:T.L,datasets:[{label:'Man hours',data:T.mon.map(m=>m&&m.a),borderColor:'#5B2C91',tension:.4,borderWidth:3},{label:'Billed',data:T.mon.map(m=>m&&m.b),borderColor:'#00A88F',tension:.4,borderWidth:3}]},options:o})]}]}
+async function exportDeck(fmt,which){toast('Preparing '+fmt.toUpperCase()+'…');try{const L=[];
+ if(which==='all'){L.push(slideOverall());DEF.forEach(x=>L.push(slideKpi(x[0])));L.push(slideTs())}else if(which==='ts')L.push(slideTs());else L.push(slideKpi(which));
+ const im=[];for(const s of L)im.push(await shot(s[0],s[1],fmt==='pdf'));
+ const nm='ProcessIQ_'+(which==='all'?'Dashboard':which==='ts'?'Timesheet':DEF.find(a=>a[0]===which)[1].replace(/\W+/g,'_'))+'_'+new Date().toISOString().slice(0,10);
+ if(fmt==='ppt'){const p=new PptxGenJS();p.layout='LAYOUT_WIDE';im.forEach(d=>p.addSlide().addImage({data:d,x:0,y:0,w:13.333,h:7.5}));await p.writeFile({fileName:nm+'.pptx'})}
+ else{const J=window.jspdf.jsPDF,doc=new J({orientation:'landscape',unit:'px',format:[1280,720],hotfixes:['px_scaling']});im.forEach((d,i)=>{if(i)doc.addPage([1280,720],'landscape');doc.addImage(d,'JPEG',0,0,1280,720,undefined,'FAST')});doc.save(nm+'.pdf')}
+ toast('Downloaded '+nm+'.'+(fmt==='ppt'?'pptx':'pdf'),3000)}catch(e){console.error(e);toast('Export failed: '+e.message,5000)}}
+window.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('#bPdf,#bPpt,#bTabPdf,#bTabPpt,#kPpt,#tsPpt,#tsPdf');if(!t)return;const id=t.id,fmt=/Pdf/.test(id)?'pdf':'ppt',on=document.querySelector('#tabs .tab.on'),tt=(on&&on.dataset.t)||'',kk=()=>{const x=DEF.find(a=>a[5]===KPI.st().tab);return x&&x[0]};
+ const go=w=>{e.stopImmediatePropagation();e.preventDefault();exportDeck(fmt,w)};
+ if(id==='bPdf'||id==='bPpt')return go('all');if(id==='tsPpt'||id==='tsPdf')return go('ts');if(id==='kPpt'){fmt==='ppt';return go(kk())}
+ if(tt.startsWith('k:')&&kk())return go(kk());if(tt==='timesheet')return go('ts')},true);
+async function api(p,o){const r=await fetch('/api/sql/'+p,Object.assign({headers:{'Content-Type':'application/json','X-Admin-Token':sessionStorage.getItem('piq_admin')||''}},o));const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||('HTTP '+r.status));return j}
+function sq(){$('xdmb').innerHTML=`<div class="xw">Browser code never talks to SQL Server. This panel calls the ProcessIQ backend (<code>server.js</code>), which holds the credentials. Admin token required.</div>
+ <div class="xr"><div><label>Admin token</label><input class="in" id="sTok" type="password"></div><div><label>Host / IP</label><input class="in" id="sH"></div><div><label>Port</label><input class="in" id="sP" value="1433" style="width:90px"></div><div><label>Database</label><input class="in" id="sD"></div><div><label>Username</label><input class="in" id="sU"></div><div><label>Password</label><input class="in" id="sW" type="password"></div><div><label>Table / view</label><input class="in" id="sT" placeholder="dbo.Maint_KPI_Monthly"></div></div>
+ <div class="xr"><button class="xb" id="sTest">Test connection</button><button class="xb p" id="sSave">Save connection</button><button class="xb" id="sSync">Sync now</button><button class="xb" id="sOff">Disconnect</button></div><div id="sOut"></div>`;
+ const out=(m,c)=>$('sOut').innerHTML=`<div class="xw ${c||''}">${esc(m)}</div>`,body=()=>JSON.stringify({host:$('sH').value,port:+$('sP').value,database:$('sD').value,user:$('sU').value,password:$('sW').value,table:$('sT').value}),tok=()=>sessionStorage.setItem('piq_admin',$('sTok').value);
+ const run=(f,ok)=>async()=>{tok();out('Working…');try{const j=await f();out(ok(j),'ok');$('sW').value=''}catch(e){out('Backend error: '+e.message,'e')}};
+ $('sTest').onclick=run(()=>api('test',{method:'POST',body:body()}),j=>'Connected · '+j.server);$('sSave').onclick=run(()=>api('save',{method:'POST',body:body()}),()=>'Connection saved on the server');
+ $('sSync').onclick=run(()=>(localStorage.getItem('piq_src')||'excel')!=='sql'?Promise.reject(new Error('Active data source is Excel. Switch the source in the Data Source tab first.')):api('sync',{method:'POST'}).then(j=>{j.rows.forEach(r=>{const d=D(),mi=d.months.indexOf(r.month);if(mi<0||!d.deliv[r.workstream])return;['deliv','recyc','prod','otd'].forEach(f=>{if(r[f]!=null&&d[f]&&d[f][r.workstream])d[f][r.workstream][mi]=r[f]})});KPI.save();paint();return j}),j=>{localStorage.setItem('piq_sqlsync',j.at);return 'Synced '+j.rows.length+' rows at '+j.at});
+ $('sOff').onclick=run(()=>api('disconnect',{method:'POST'}),()=>'Disconnected');api('status').then(j=>out(j.connected?'Connected · last sync '+(j.lastSync||'never'):'Not connected','')).catch(()=>out('Backend not reachable. Start server.js (see README) and open this page from it.','e'))}
+const boot=()=>{try{if(window.KPI&&KPI.DS&&document.querySelector('.shell')){paint();tabsFix();fbBuild();tsBuild();vObs();fbSync();new MutationObserver(()=>{if(!$('xo'))paint()}).observe(document.querySelector('.shell'),{childList:true})}else setTimeout(boot,300)}catch(e){console.warn(e);setTimeout(boot,600)}};
+window.addEventListener('load',()=>setTimeout(boot,400));
 })();
 </script>
 
